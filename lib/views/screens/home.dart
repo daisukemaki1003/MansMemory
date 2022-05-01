@@ -12,6 +12,20 @@ class HomeScreen extends StatelessWidget {
           icon: Icon(Icons.menu),
           onPressed: () {},
         ),
+        title: const Text("Man's memory"),
+        centerTitle: true,
+        // titleSpacing: 0,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.sort),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {},
+          ),
+          SizedBox(width: 5),
+        ],
       ),
     );
   }
