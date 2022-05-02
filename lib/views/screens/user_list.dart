@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mans_memory/provider/user_provider.dart';
 
 import '../../models/user.dart';
+import '../../provider/navigator_provider.dart';
 
-class HomeScreen extends ConsumerWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class UserListScreen extends ConsumerWidget {
+  const UserListScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -81,7 +82,7 @@ class HomeScreen extends ConsumerWidget {
                           title: Text(user.name),
                           subtitle: Text(user.wayOfReading ?? ""),
                           trailing: Text(user.birthday ?? ""),
-                          onTap: () {},
+                          onTap: () => ref.read(pageProvider.state).state = 1,
                         ),
                       );
                     },
