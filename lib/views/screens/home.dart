@@ -26,47 +26,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () => showDialog(
-              context: context,
-              builder: (_) {
-                return AlertDialog(
-                  title: const Text("ユーザーを登録"),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: const <Widget>[
-                      TextField(
-                        autofocus: true,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          hintText: '名前',
-                        ),
-                        // keyboardType: TextInputType.number,
-                      ),
-                      TextField(
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          hintText: 'ふりがな',
-                        ),
-                        // keyboardType: TextInputType.number,
-                      ),
-                    ],
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                        child: const Text('キャンセル'),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        }),
-                    TextButton(
-                      child: const Text('追加'),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ],
-                );
-              },
-            ),
+            onPressed: () => users.addUser(context),
           ),
           const SizedBox(width: 5),
         ],
@@ -105,11 +65,7 @@ class HomeScreen extends ConsumerWidget {
                           ),
                         ),
                         direction: DismissDirection.endToStart,
-                        onDismissed: (direction) {
-                          // スワイプ後に実行される（削除処理などを書く）
-                          print('onDismissed');
-                          userList.remove(user);
-                        },
+                        onDismissed: (direction) => userList.remove(user),
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 32.0,
@@ -118,12 +74,13 @@ class HomeScreen extends ConsumerWidget {
                           leading: CircleAvatar(
                             radius: 25,
                             child: ClipOval(
-                              child: Image.network(user.image),
+                              child: Image.network(user.image ??
+                                  "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
                             ),
                           ),
                           title: Text(user.name),
-                          subtitle: Text(user.wayOfReading),
-                          trailing: Text(user.birthday),
+                          subtitle: Text(user.wayOfReading ?? ""),
+                          trailing: Text(user.birthday ?? ""),
                           onTap: () {},
                         ),
                       );
