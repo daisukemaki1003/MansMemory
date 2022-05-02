@@ -69,6 +69,7 @@ class HomeScreen extends ConsumerWidget {
                         onDismissed: (direction) {
                           // スワイプ後に実行される（削除処理などを書く）
                           print('onDismissed');
+                          userList.remove(user);
                         },
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(

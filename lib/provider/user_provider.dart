@@ -9,6 +9,6 @@ class UsersProvider extends ChangeNotifier {
   UsersProvider._();
 
   Future<List<User>> fetchUserList() async {
-    return UserRepository.instance.fetchMessageList();
+    return UserRepository.instance.fetchUserList();
   }
 }
