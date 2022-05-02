@@ -14,7 +14,7 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.menu),
+          icon: const Icon(Icons.menu),
           onPressed: () {},
         ),
         title: const Text("Man's memory"),
@@ -22,14 +22,14 @@ class HomeScreen extends ConsumerWidget {
         // titleSpacing: 0,
         actions: [
           IconButton(
-            icon: Icon(Icons.sort),
+            icon: const Icon(Icons.sort),
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             onPressed: () {},
           ),
-          SizedBox(width: 5),
+          const SizedBox(width: 5),
         ],
       ),
       body: SafeArea(
@@ -37,7 +37,7 @@ class HomeScreen extends ConsumerWidget {
           future: users.fetchUserList(),
           builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
             if (!snapshot.hasData) {
-              return Text("no data");
+              return const Text("no data");
             }
             final userList = snapshot.data!;
             return SingleChildScrollView(
@@ -52,21 +52,40 @@ class HomeScreen extends ConsumerWidget {
                     itemCount: userList.length,
                     itemBuilder: (context, index) {
                       final user = userList[index];
-                      return ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 32.0,
-                          vertical: 3.0,
-                        ),
-                        leading: CircleAvatar(
-                          radius: 25,
-                          child: ClipOval(
-                            child: Image.network(user.image),
+                      return Dismissible(
+                        key: Key(user.name),
+                        background: Container(
+                          padding: const EdgeInsets.only(
+                            right: 10,
+                          ),
+                          alignment: AlignmentDirectional.centerEnd,
+                          color: Colors.red,
+                          child: const Icon(
+                            Icons.delete,
+                            color: Colors.white,
                           ),
                         ),
-                        title: Text(user.name),
-                        subtitle: Text(user.wayOfReading),
-                        trailing: Text(user.birthday),
-                        onTap: () {},
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) {
+                          // スワイプ後に実行される（削除処理などを書く）
+                          print('onDismissed');
+                        },
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 32.0,
+                            vertical: 3.0,
+                          ),
+                          leading: CircleAvatar(
+                            radius: 25,
+                            child: ClipOval(
+                              child: Image.network(user.image),
+                            ),
+                          ),
+                          title: Text(user.name),
+                          subtitle: Text(user.wayOfReading),
+                          trailing: Text(user.birthday),
+                          onTap: () {},
+                        ),
                       );
                     },
                   )
