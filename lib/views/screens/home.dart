@@ -19,7 +19,6 @@ class HomeScreen extends ConsumerWidget {
         ),
         title: const Text("Man's memory"),
         centerTitle: true,
-        // titleSpacing: 0,
         actions: [
           IconButton(
             icon: const Icon(Icons.sort),
@@ -27,7 +26,47 @@ class HomeScreen extends ConsumerWidget {
           ),
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {},
+            onPressed: () => showDialog(
+              context: context,
+              builder: (_) {
+                return AlertDialog(
+                  title: const Text("ユーザーを登録"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const <Widget>[
+                      TextField(
+                        autofocus: true,
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          hintText: '名前',
+                        ),
+                        // keyboardType: TextInputType.number,
+                      ),
+                      TextField(
+                        textInputAction: TextInputAction.next,
+                        decoration: InputDecoration(
+                          hintText: 'ふりがな',
+                        ),
+                        // keyboardType: TextInputType.number,
+                      ),
+                    ],
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                        child: const Text('キャンセル'),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        }),
+                    TextButton(
+                      child: const Text('追加'),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
           const SizedBox(width: 5),
         ],
