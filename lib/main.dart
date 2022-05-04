@@ -36,8 +36,8 @@ class MyApp extends ConsumerWidget {
                     child: UserListScreen(),
                   ),
                 if (page == 1)
-                  MaterialPage(
-                    child: UserDetailsScreen(),
+                  const MaterialPage(
+                    child: MyTabbedPage(),
                   ),
               ],
               onPopPage: (route, result) {
