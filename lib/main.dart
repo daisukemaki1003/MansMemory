@@ -36,7 +36,7 @@ class MyApp extends ConsumerWidget {
                     child: UserListScreen(),
                   ),
                 if (page == 1)
-                  const MaterialPage(
+                  MaterialPage(
                     child: UserDetailsScreen(),
                   ),
               ],

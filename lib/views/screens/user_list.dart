@@ -18,7 +18,7 @@ class UserListScreen extends ConsumerWidget {
           icon: const Icon(Icons.menu),
           onPressed: () {},
         ),
-        title: const Text("Man's memory"),
+        title: const Text("Title"),
         centerTitle: true,
         actions: [
           IconButton(
