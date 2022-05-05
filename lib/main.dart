@@ -17,12 +17,32 @@ Future<void> main() async {
 class MyApp extends ConsumerWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  final MaterialColor materialWhite = const MaterialColor(
+    0xFFFFFFFF,
+    <int, Color>{
+      50: Color(0xFFFFFFFF),
+      100: Color(0xFFFFFFFF),
+      200: Color(0xFFFFFFFF),
+      300: Color(0xFFFFFFFF),
+      400: Color(0xFFFFFFFF),
+      500: Color(0xFFFFFFFF),
+      600: Color(0xFFFFFFFF),
+      700: Color(0xFFFFFFFF),
+      800: Color(0xFFFFFFFF),
+      900: Color(0xFFFFFFFF),
+    },
+  );
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var page = ref.watch(pageProvider);
     final authentication = ref.watch(authenticationProvider);
 
     return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: materialWhite,
+      ),
+      darkTheme: ThemeData.dark(),
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {

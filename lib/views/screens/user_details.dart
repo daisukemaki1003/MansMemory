@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mans_memory/provider/user_provider.dart';
 
 class MyTabbedPage extends StatefulWidget {

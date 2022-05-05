@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:mans_memory/provider/user_provider.dart';
 
 import '../../models/user.dart';
@@ -81,7 +82,11 @@ class UserListScreen extends ConsumerWidget {
                           ),
                           title: Text(user.name),
                           subtitle: Text(user.wayOfReading ?? ""),
-                          trailing: Text(user.birthday ?? ""),
+                          trailing: user.birthday != null
+                              ? Text(DateFormat('yyyy年M月d日')
+                                  .format(user.birthday!))
+                              : const Text(""),
+                          // trailing: Text(DateFormat('yyyy年M月d日').format(user.birthday)),
                           onTap: () => ref.read(pageProvider.state).state = 1,
                         ),
                       );
