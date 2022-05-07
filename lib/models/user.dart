@@ -1,7 +1,3 @@
-import 'dart:collection';
-
-import 'package:flutter/material.dart';
-
 /*
 基本情報
   名前
@@ -17,119 +13,61 @@ import 'package:flutter/material.dart';
   職種
   年収 
 */
+import 'package:flutter/material.dart';
+
 class User {
-  final int uid;
-  final String? image;
+  final String uid;
 
   final String name;
-  final String? wayOfReading;
+  final String? furigana;
   final int? age;
   final DateTime? birthday;
 
-  final List<String>? hobby;
+  final List<dynamic>? hobby;
   final String? residence;
-  final List<int>? holiday;
+  final List<dynamic>? holiday;
 
   final String? educationalBackground;
   final String? occupation;
   final int? annualIncome;
 
-  final String? memo;
+  final String? image;
 
-  const User.create({
+  User({
+    required this.uid,
     required this.name,
-    this.wayOfReading,
-    this.birthday,
-    this.image,
-    this.age,
-    this.hobby,
-    this.residence,
-    this.holiday,
-    this.educationalBackground,
-    this.occupation,
-    this.annualIncome,
-    this.memo,
-  }) : uid = 0;
+    required this.furigana,
+    required this.birthday,
+    required this.image,
+    required this.age,
+    required this.hobby,
+    required this.residence,
+    required this.holiday,
+    required this.educationalBackground,
+    required this.occupation,
+    required this.annualIncome,
+  });
 }
 
-class UserRepository {
-  UserRepository._();
-  static UserRepository instance = UserRepository._();
+class UserTextEditingController {
+  Map<String, TextEditingController> basicInformationController = {
+    '名前': TextEditingController(),
+    'ふりがな': TextEditingController(),
+    '年齢': TextEditingController(),
+    '生年月日': TextEditingController()
+  };
 
-  final List<User> _userList = [
-    User.create(
-        name: '山本　太郎',
-        wayOfReading: 'やまもと　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '佐藤　太郎',
-        wayOfReading: 'さとう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-  ];
+  Map<String, TextEditingController> hobbiesAndLifeController = {
+    '趣味': TextEditingController(),
+    '居住地': TextEditingController(),
+    '休日': TextEditingController()
+  };
 
-  Future<List<User>> fetchUserList() async {
-    await Future<void>.delayed(const Duration(milliseconds: 1000));
-    return _userList;
-  }
-
-  void add(User user) => _userList.add(user);
-  void remove(User user) => _userList.remove(user);
+  Map<String, TextEditingController>
+      educationalBackgroundAndOccupationController = {
+    '学歴': TextEditingController(),
+    '職種': TextEditingController(),
+    '年齢': TextEditingController(),
+  };
 }
+
