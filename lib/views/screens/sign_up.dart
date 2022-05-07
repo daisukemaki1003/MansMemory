@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mans_memory/views/screens/home.dart';
+import 'package:mans_memory/views/screens/user_list.dart';
 
 import '../../provider/authentication_provider.dart';
 
@@ -61,7 +61,7 @@ class SignUpScreen extends ConsumerWidget {
                     if (signUpResult == FirebaseAuthResultStatus.successful) {
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {
-                          return const HomeScreen();
+                          return const UserListScreen();
                         }),
                       );
                     } else {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mans_memory/views/screens/home.dart';
+import 'package:mans_memory/views/screens/user_list.dart';
 import 'package:mans_memory/views/screens/sign_up.dart';
 import 'package:mans_memory/views/widgets/google_sign_in_button.dart';
 
@@ -68,7 +68,7 @@ class SignInScreen extends ConsumerWidget {
                     } else {
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {
-                          return const HomeScreen();
+                          return const UserListScreen();
                         }),
                       );
                     }
