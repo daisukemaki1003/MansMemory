@@ -23,8 +23,9 @@ class User {
   final int? age;
   final DateTime? birthday;
 
-  final List<dynamic>? hobby;
+  final String? birthplace;
   final String? residence;
+  final List<dynamic>? hobby;
   final List<dynamic>? holiday;
 
   final String? educationalBackground;
@@ -38,6 +39,7 @@ class User {
     required this.name,
     required this.furigana,
     required this.birthday,
+    required this.birthplace,
     required this.image,
     required this.age,
     required this.hobby,
@@ -59,6 +61,7 @@ class UserTextEditingController {
 
   Map<String, TextEditingController> hobbiesAndLifeController = {
     '趣味': TextEditingController(),
+    '出身地': TextEditingController(),
     '居住地': TextEditingController(),
     '休日': TextEditingController()
   };
@@ -67,7 +70,7 @@ class UserTextEditingController {
       educationalBackgroundAndOccupationController = {
     '学歴': TextEditingController(),
     '職種': TextEditingController(),
-    '年齢': TextEditingController(),
+    '年収': TextEditingController(),
   };
 }
 

@@ -1,19 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:mans_memory/provider/user_provider.dart';
+import 'package:intl/intl.dart';
+import 'package:mans_memory/models/user.dart';
 
 class MyTabbedPage extends StatefulWidget {
-  const MyTabbedPage({Key? key}) : super(key: key);
+  const MyTabbedPage(this.user, {Key? key}) : super(key: key);
+  final User user;
+
   @override
-  UserDetailsScreen createState() => UserDetailsScreen();
+  UserDetailsScreen createState() => UserDetailsScreen(user);
 }
 
 class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
+  UserDetailsScreen(this.user);
+  final User user;
   late TabController _tabController;
+
+  List<String> holiday = [];
+  List<String> holidayList = ['月', '火', '水', '木', '金', '土', '日'];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: 2);
+    for (var i = 0; i < holidayList.length; i++) {
+      if (user.holiday![i]) {
+        holiday.add(holidayList[i]);
+      }
+    }
   }
 
   @override
@@ -42,9 +55,32 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
                   ),
-                  profileWidget('名前', 'maki'),
-                  profileWidget('ふりがな', 'daisuke'),
-                  profileWidget('年齢', '21'),
+                  profileWidget('名前', user.name),
+                  profileWidget('ふりがな', user.furigana!),
+                  profileWidget('年齢', user.age!.toString()),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            height: 230,
+            decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 242, 242, 242),
+                borderRadius: BorderRadius.circular(30)),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 30.0, left: 40.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "基本情報",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
+                  ),
+                  profileWidget('出身地', user.birthplace!),
+                  profileWidget('居住地', user.residence!),
+                  profileWidget('趣味', user.hobby.toString()),
+                  profileWidget('休日', holiday.toString()),
                 ],
               ),
             ),
@@ -64,31 +100,9 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
                   ),
-                  profileWidget('名前', 'maki'),
-                  profileWidget('ふりがな', 'daisuke'),
-                  profileWidget('年齢', '21'),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            height: 180,
-            decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 242, 242, 242),
-                borderRadius: BorderRadius.circular(30)),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 30.0, left: 40.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "基本情報",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
-                  ),
-                  profileWidget('名前', 'maki'),
-                  profileWidget('ふりがな', 'daisuke'),
-                  profileWidget('年齢', '21'),
+                  profileWidget('学歴', user.educationalBackground!),
+                  profileWidget('職種', user.occupation!),
+                  profileWidget('年収', user.annualIncome.toString()),
                 ],
               ),
             ),
@@ -192,25 +206,27 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
-                              children: const [
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
                                 Text(
-                                  "牧大佑",
-                                  style: TextStyle(
+                                  user.name,
+                                  style: const TextStyle(
                                     fontSize: 30,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
                                 ),
                                 Text(
-                                  "まきだいすけ",
-                                  style: TextStyle(
+                                  user.furigana!,
+                                  style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.white,
                                   ),
                                 ),
                                 Text(
-                                  "2000/10/03",
-                                  style: TextStyle(
+                                  DateFormat('yyyy年M月d日')
+                                      .format(user.birthday!),
+                                  style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.white,
                                   ),

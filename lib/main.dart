@@ -49,23 +49,7 @@ class MyApp extends ConsumerWidget {
           if (authentication.isSignIn) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasData) {
-            return Navigator(
-              pages: [
-                if (page == 0)
-                  const MaterialPage(
-                    child: UserListScreen(),
-                  ),
-                if (page == 1)
-                  const MaterialPage(
-                    child: MyTabbedPage(),
-                  ),
-              ],
-              onPopPage: (route, result) {
-                if (!route.didPop(result)) return false;
-                ref.read(pageProvider.state).state = 0;
-                return true;
-              },
-            );
+            return const UserListScreen();
           } else {
             return const SignInScreen();
           }

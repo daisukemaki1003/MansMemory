@@ -25,7 +25,7 @@ class UserRepository extends ChangeNotifier {
       final List<dynamic>? hobby = data['hobby'];
       final List<dynamic>? holiday = data['holiday'];
       final String? image = data['image'];
-      final String? memo = data['memo'];
+      final String? birthplace = data['birthplace'];
       final String? occupation = data['occupation'];
       final String? residence = data['residence'];
       final Timestamp? birthday = data['birthday'];
@@ -42,6 +42,7 @@ class UserRepository extends ChangeNotifier {
         occupation: occupation,
         residence: residence,
         birthday: birthday!.toDate(),
+        birthplace: birthplace,
       );
     }).toList();
     return users;

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:mans_memory/models/user.dart';
 import 'package:mans_memory/provider/navigator_provider.dart';
 import 'package:mans_memory/provider/user_provider.dart';
+import 'package:mans_memory/views/screens/user_details.dart';
 
 class UserListScreen extends ConsumerWidget {
   const UserListScreen({Key? key}) : super(key: key);
@@ -96,7 +97,13 @@ class UserListScreen extends ConsumerWidget {
                               ? Text(DateFormat('yyyy年M月d日')
                                   .format(user.birthday!))
                               : const Text(""),
-                          onTap: () => ref.read(pageProvider.state).state = 1,
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return MyTabbedPage(user);
+                            }));
+                          },
+                          // onTap: () => ref.read(pageProvider.state).state = 1,
                         ),
                       );
                     },
