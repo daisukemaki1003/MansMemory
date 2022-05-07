@@ -2,26 +2,53 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 
+/*
+基本情報
+  名前
+  ふりがな
+  年齢
+  生年月日
+趣味、生活
+  趣味
+  居住地
+  休日
+学歴、職種
+  学歴
+  職種
+  年収 
+*/
 class User {
   final int uid;
-  final String name;
-  final String? wayOfReading;
-  final String? birthday;
   final String? image;
 
-  // const User({
-  //   required this.wayOfReading,
-  //   required this.birthday,
-  //   required this.image,
-  //   required this.uid,
-  //   required this.name,
-  // });
+  final String name;
+  final String? wayOfReading;
+  final int? age;
+  final DateTime? birthday;
+
+  final List<String>? hobby;
+  final String? residence;
+  final List<int>? holiday;
+
+  final String? educationalBackground;
+  final String? occupation;
+  final int? annualIncome;
+
+  final String? memo;
 
   const User.create({
     required this.name,
     this.wayOfReading,
     this.birthday,
     this.image,
+    this.age,
+    this.hobby,
+    this.residence,
+    this.holiday,
+    this.educationalBackground,
+    this.occupation,
+    this.annualIncome,
+    this.memo,
   }) : uid = 0;
 }
 
@@ -30,72 +57,72 @@ class UserRepository {
   static UserRepository instance = UserRepository._();
 
   final List<User> _userList = [
-    const User.create(
-        name: '牧　大佑',
-        wayOfReading: 'まき　だいすけ',
-        birthday: '2000/10/03',
+    User.create(
+        name: '山本　太郎',
+        wayOfReading: 'やまもと　たろう',
+        birthday: DateTime(2020, 10, 2),
         image:
-            'https://zukan.pokemon.co.jp/zukan-api/up/images/index/8ea8bf2182acb6d1a000909a5b90f74b.png'),
-    const User.create(
-        name: '芝辻　大輝',
-        wayOfReading: 'しばつじ　たいき',
-        birthday: '2000/12/23',
+            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+    User.create(
+        name: '佐藤　太郎',
+        wayOfReading: 'さとう　たろう',
+        birthday: DateTime(2020, 10, 2),
         image:
-            'https://coconutsjapan.com/wp-content/uploads/2021/05/jiji_anthony_matenro.jpg'),
-    const User.create(
-        name: '近藤　祐介',
-        wayOfReading: 'こんどう　ゆうすけ',
-        birthday: '2000/05/12',
+            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+    User.create(
+        name: '近藤　太郎',
+        wayOfReading: 'こんどう　たろう',
+        birthday: DateTime(2020, 10, 2),
         image:
-            'https://booth.pximg.net/2458bc40-5ac8-434a-a59b-32d33771cba3/i/1768071/74062995-425f-4e14-9599-f4913337eb8e_base_resized.jpg'),
-    const User.create(
-        name: '近藤　祐介',
-        wayOfReading: 'こんどう　ゆうすけ',
-        birthday: '2000/05/12',
+            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+    User.create(
+        name: '近藤　太郎',
+        wayOfReading: 'こんどう　たろう',
+        birthday: DateTime(2020, 10, 2),
         image:
-            'https://booth.pximg.net/2458bc40-5ac8-434a-a59b-32d33771cba3/i/1768071/74062995-425f-4e14-9599-f4913337eb8e_base_resized.jpg'),
-    const User.create(
-        name: '近藤　祐介',
-        wayOfReading: 'こんどう　ゆうすけ',
-        birthday: '2000/05/12',
+            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+    User.create(
+        name: '近藤　太郎',
+        wayOfReading: 'こんどう　たろう',
+        birthday: DateTime(2020, 10, 2),
         image:
-            'https://booth.pximg.net/2458bc40-5ac8-434a-a59b-32d33771cba3/i/1768071/74062995-425f-4e14-9599-f4913337eb8e_base_resized.jpg'),
-    const User.create(
-        name: '近藤　祐介',
-        wayOfReading: 'こんどう　ゆうすけ',
-        birthday: '2000/05/12',
+            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+    User.create(
+        name: '近藤　太郎',
+        wayOfReading: 'こんどう　たろう',
+        birthday: DateTime(2020, 10, 2),
         image:
-            'https://booth.pximg.net/2458bc40-5ac8-434a-a59b-32d33771cba3/i/1768071/74062995-425f-4e14-9599-f4913337eb8e_base_resized.jpg'),
-    const User.create(
-        name: '近藤　祐介',
-        wayOfReading: 'こんどう　ゆうすけ',
-        birthday: '2000/05/12',
+            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+    User.create(
+        name: '近藤　太郎',
+        wayOfReading: 'こんどう　たろう',
+        birthday: DateTime(2020, 10, 2),
         image:
-            'https://booth.pximg.net/2458bc40-5ac8-434a-a59b-32d33771cba3/i/1768071/74062995-425f-4e14-9599-f4913337eb8e_base_resized.jpg'),
-    const User.create(
-        name: '近藤　祐介',
-        wayOfReading: 'こんどう　ゆうすけ',
-        birthday: '2000/05/12',
+            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+    User.create(
+        name: '近藤　太郎',
+        wayOfReading: 'こんどう　たろう',
+        birthday: DateTime(2020, 10, 2),
         image:
-            'https://booth.pximg.net/2458bc40-5ac8-434a-a59b-32d33771cba3/i/1768071/74062995-425f-4e14-9599-f4913337eb8e_base_resized.jpg'),
-    const User.create(
-        name: '近藤　祐介',
-        wayOfReading: 'こんどう　ゆうすけ',
-        birthday: '2000/05/12',
+            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+    User.create(
+        name: '近藤　太郎',
+        wayOfReading: 'こんどう　たろう',
+        birthday: DateTime(2020, 10, 2),
         image:
-            'https://booth.pximg.net/2458bc40-5ac8-434a-a59b-32d33771cba3/i/1768071/74062995-425f-4e14-9599-f4913337eb8e_base_resized.jpg'),
-    const User.create(
-        name: '近藤　祐介',
-        wayOfReading: 'こんどう　ゆうすけ',
-        birthday: '2000/05/12',
+            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+    User.create(
+        name: '近藤　太郎',
+        wayOfReading: 'こんどう　たろう',
+        birthday: DateTime(2020, 10, 2),
         image:
-            'https://booth.pximg.net/2458bc40-5ac8-434a-a59b-32d33771cba3/i/1768071/74062995-425f-4e14-9599-f4913337eb8e_base_resized.jpg'),
-    const User.create(
-        name: '近藤　祐介',
-        wayOfReading: 'こんどう　ゆうすけ',
-        birthday: '2000/05/12',
+            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+    User.create(
+        name: '近藤　太郎',
+        wayOfReading: 'こんどう　たろう',
+        birthday: DateTime(2020, 10, 2),
         image:
-            'https://booth.pximg.net/2458bc40-5ac8-434a-a59b-32d33771cba3/i/1768071/74062995-425f-4e14-9599-f4913337eb8e_base_resized.jpg'),
+            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
   ];
 
   Future<List<User>> fetchUserList() async {
