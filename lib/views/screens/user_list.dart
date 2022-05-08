@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mans_memory/models/user.dart';
-import 'package:mans_memory/provider/navigator_provider.dart';
 import 'package:mans_memory/provider/user_provider.dart';
 import 'package:mans_memory/views/screens/user_details.dart';
+import 'package:mans_memory/views/widgets/loading.dart';
+
+import '../widgets/input_field/date_input_field.dart';
+import '../widgets/input_field/text_input_field.dart';
 
 class UserListScreen extends ConsumerWidget {
   const UserListScreen({Key? key}) : super(key: key);
@@ -17,7 +20,7 @@ class UserListScreen extends ConsumerWidget {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.menu),
-          onPressed: () {},
+          onPressed: () async {},
         ),
         title: const Text("Title"),
         centerTitle: true,
@@ -36,7 +39,7 @@ class UserListScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
                 ),
                 builder: (BuildContext context) {
-                  return userRegistrationDialog(users);
+                  return userRegistrationDialog(users, context);
                 },
               );
             },
@@ -49,7 +52,7 @@ class UserListScreen extends ConsumerWidget {
           future: users.fetch(),
           builder: (context, AsyncSnapshot<List<User>> snapshot) {
             if (!snapshot.hasData) {
-              return const Text("no data");
+              return loading();
             }
             final userList = snapshot.data!;
             return SingleChildScrollView(
@@ -117,8 +120,9 @@ class UserListScreen extends ConsumerWidget {
     );
   }
 
-  Widget userRegistrationDialog(UserRepository users) {
-    UserTextEditingController controller = UserTextEditingController();
+  Widget userRegistrationDialog(UserRepository users, BuildContext context) {
+    // UserTextEditingController controller = UserTextEditingController();
+    UserDataTable _userDataTable = UserDataTable();
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(100.0),
@@ -146,7 +150,13 @@ class UserListScreen extends ConsumerWidget {
             elevation: 0,
             actions: [
               TextButton(
-                onPressed: () => users.add(controller),
+                onPressed: () {
+                  if (_userDataTable.table1['name']!.text.isNotEmpty) {
+                    users.add(_userDataTable);
+                  } else {
+                    print("データが存在しません");
+                  }
+                },
                 child: const Text(
                   "保存",
                   style: TextStyle(
@@ -160,60 +170,37 @@ class UserListScreen extends ConsumerWidget {
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(children: inputFieldList(controller)),
+        child: Column(children: inputFieldList(_userDataTable, context)),
       ),
     );
   }
 
-  List<Widget> inputFieldList(UserTextEditingController controllers) {
+  List<Widget> inputFieldList(
+      UserDataTable _userDataTable, BuildContext context) {
     List<Widget> widgetsList = [];
     widgetsList.add(Container(
       height: 200,
       width: double.infinity,
       color: Colors.grey,
     ));
-    controllers.basicInformationController.forEach((key, value) {
-      widgetsList.add(inputField(key, value));
+    _userDataTable.table1.forEach((key, value) {
+      if (key == 'birthday') {
+        widgetsList.add(
+            dateInputField(context, userDataConvertedToJapanese[key]!, value));
+      } else {
+        widgetsList
+            .add(textInputField(userDataConvertedToJapanese[key]!, value));
+      }
     });
     widgetsList.add(const SizedBox(height: 40));
-    controllers.hobbiesAndLifeController.forEach((key, value) {
-      widgetsList.add(inputField(key, value));
+    _userDataTable.table2.forEach((key, value) {
+      widgetsList.add(textInputField(userDataConvertedToJapanese[key]!, value));
     });
     widgetsList.add(const SizedBox(height: 40));
-    controllers.educationalBackgroundAndOccupationController
-        .forEach((key, value) {
-      widgetsList.add(inputField(key, value));
+    _userDataTable.table3.forEach((key, value) {
+      widgetsList.add(textInputField(userDataConvertedToJapanese[key]!, value));
     });
     widgetsList.add(const SizedBox(height: 50));
     return widgetsList;
-  }
-
-  Container inputField(String text, TextEditingController controller) {
-    return Container(
-      decoration: const BoxDecoration(
-        border: Border.symmetric(horizontal: BorderSide(width: 0.2)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: TextField(
-          controller: controller,
-          autofocus: true,
-          textInputAction: TextInputAction.next,
-          decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            border: InputBorder.none,
-            prefixIcon: SizedBox(
-                width: 90,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: Text(text,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                )),
-            hintText: text,
-          ),
-        ),
-      ),
-    );
   }
 }

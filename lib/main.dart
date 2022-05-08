@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mans_memory/provider/navigator_provider.dart';
-import 'package:mans_memory/views/screens/user_details.dart';
 import 'package:mans_memory/views/screens/user_list.dart';
 import 'package:mans_memory/views/screens/sign_in.dart';
 import 'provider/authentication_provider.dart';
@@ -35,7 +34,6 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    var page = ref.watch(pageProvider);
     final authentication = ref.watch(authenticationProvider);
 
     return MaterialApp(

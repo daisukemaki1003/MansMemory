@@ -13,6 +13,7 @@
   職種
   年収 
 */
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class User {
@@ -20,7 +21,6 @@ class User {
 
   final String name;
   final String? furigana;
-  final int? age;
   final DateTime? birthday;
 
   final String? birthplace;
@@ -41,7 +41,6 @@ class User {
     required this.birthday,
     required this.birthplace,
     required this.image,
-    required this.age,
     required this.hobby,
     required this.residence,
     required this.holiday,
@@ -51,26 +50,71 @@ class User {
   });
 }
 
-class UserTextEditingController {
-  Map<String, TextEditingController> basicInformationController = {
-    '名前': TextEditingController(),
-    'ふりがな': TextEditingController(),
-    '年齢': TextEditingController(),
-    '生年月日': TextEditingController()
+class UserDataTable {
+  Map<String, TextEditingController> table1 = {
+    'name': TextEditingController(),
+    'furigana': TextEditingController(),
+    'birthday': TextEditingController(),
   };
 
-  Map<String, TextEditingController> hobbiesAndLifeController = {
-    '趣味': TextEditingController(),
-    '出身地': TextEditingController(),
-    '居住地': TextEditingController(),
-    '休日': TextEditingController()
+  Map<String, TextEditingController> table2 = {
+    'hobby': TextEditingController(),
+    'holiday': TextEditingController(),
+    'birthplace': TextEditingController(),
+    'residence': TextEditingController(),
   };
 
-  Map<String, TextEditingController>
-      educationalBackgroundAndOccupationController = {
-    '学歴': TextEditingController(),
-    '職種': TextEditingController(),
-    '年収': TextEditingController(),
+  Map<String, TextEditingController> table3 = {
+    'educational_background': TextEditingController(),
+    'occupation': TextEditingController(),
+    'annual_income': TextEditingController(),
   };
+  // Map<String, dynamic> convertToCorrespondingData() {
+  //   Map<String, dynamic> data = {};
+  //   table.forEach((key, value) {
+  //     data[key] = value.value;
+  //   });
+  //   return data;
+  // }
 }
 
+// Map<String, TextEditingController> userTextEditingControllerTable = {
+//   'name': TextEditingController(),
+//   'furigana': TextEditingController(),
+//   'age': TextEditingController(),
+//   'birthday': TextEditingController(),
+//   'hobby': TextEditingController(),
+//   'holiday': TextEditingController(),
+//   'birthplace': TextEditingController(),
+//   'residence': TextEditingController(),
+//   'educational_background': TextEditingController(),
+//   'occupation': TextEditingController(),
+//   'annual_income': TextEditingController(),
+// };
+
+Map<String, String> userDataConvertedToJapanese = {
+  'name': '名前',
+  'furigana': 'ふりがな',
+  'birthday': '生年月日',
+  'hobby': '趣味',
+  'holiday': '休日',
+  'birthplace': '出身地',
+  'residence': '居住地',
+  'educational_background': '学歴',
+  'occupation': '職種',
+  'annual_income': '年収',
+};
+
+// Map<String, dynamic> userDataKeyCompatibilityTableInType = {
+//   'name': String,
+//   'furigana': String,
+//   'age': int,
+//   'birthday': Timestamp,
+//   'hobby': List<String>,
+//   'holiday': List<bool>,
+//   'birthplace': String,
+//   'residence': String,
+//   'educational_background': String,
+//   'occupation': String,
+//   'annual_income': int,
+// };

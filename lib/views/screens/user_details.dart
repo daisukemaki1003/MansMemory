@@ -57,7 +57,7 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
                   ),
                   profileWidget('名前', user.name),
                   profileWidget('ふりがな', user.furigana!),
-                  profileWidget('年齢', user.age!.toString()),
+                  // profileWidget('年齢', user.age!.toString()),
                 ],
               ),
             ),
