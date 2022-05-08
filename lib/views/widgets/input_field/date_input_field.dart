@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 Container dateInputField(
     BuildContext context, String text, TextEditingController controller) {
+  TextEditingController datetimeController = TextEditingController();
   return Container(
     decoration: const BoxDecoration(
       border: Border.symmetric(horizontal: BorderSide(width: 0.2)),
@@ -11,7 +12,7 @@ Container dateInputField(
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextField(
-        controller: controller,
+        controller: datetimeController,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           contentPadding:
@@ -26,15 +27,18 @@ Container dateInputField(
               )),
           hintText: text,
         ),
-        onTap: () => dateInputPopup(context, controller),
+        onTap: () => dateInputPopup(context, controller, datetimeController),
       ),
     ),
   );
 }
 
 Future<void> dateInputPopup(
-    BuildContext context, TextEditingController controller) {
+    BuildContext context,
+    TextEditingController controller,
+    TextEditingController datetimeController) {
   var _dateTime = DateTime.now();
+
   return showCupertinoModalPopup<void>(
     context: context,
     builder: (BuildContext context) {
@@ -88,7 +92,9 @@ Future<void> dateInputPopup(
               mode: CupertinoDatePickerMode.date,
               initialDateTime: _dateTime,
               onDateTimeChanged: (DateTime newDateTime) {
-                controller.text = DateFormat('yyyy年M月d日').format(newDateTime);
+                datetimeController.text =
+                    DateFormat('yyyy年M月d日').format(newDateTime);
+                controller.text = newDateTime.toString();
               },
             ),
           )

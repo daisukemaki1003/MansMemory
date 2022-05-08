@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:mans_memory/constants/keys.dart';
 import 'package:mans_memory/models/user.dart';
 import 'package:mans_memory/provider/user_provider.dart';
 import 'package:mans_memory/views/screens/user_details.dart';
@@ -106,7 +108,6 @@ class UserListScreen extends ConsumerWidget {
                               return MyTabbedPage(user);
                             }));
                           },
-                          // onTap: () => ref.read(pageProvider.state).state = 1,
                         ),
                       );
                     },
@@ -121,7 +122,6 @@ class UserListScreen extends ConsumerWidget {
   }
 
   Widget userRegistrationDialog(UserRepository users, BuildContext context) {
-    // UserTextEditingController controller = UserTextEditingController();
     UserDataTable _userDataTable = UserDataTable();
     return Scaffold(
       appBar: PreferredSize(
@@ -151,8 +151,22 @@ class UserListScreen extends ConsumerWidget {
             actions: [
               TextButton(
                 onPressed: () {
-                  if (_userDataTable.table1['name']!.text.isNotEmpty) {
-                    users.add(_userDataTable);
+                  if (_userDataTable.data['name']!.text.isNotEmpty) {
+                    users.add(
+                      name: _userDataTable.data[NAME]!.text,
+                      furigana: _userDataTable.data[FURIGANA]!.text,
+                      birthday: Timestamp.fromDate(
+                          DateTime.parse(_userDataTable.data[BIRTHDAY]!.text)),
+                      hobby: [_userDataTable.data[HOBBY]!.text],
+                      holiday: [false, false],
+                      birthplace: _userDataTable.data[BIRTHPLACE]!.text,
+                      residence: _userDataTable.data[RESIDENCE]!.text,
+                      occupation: _userDataTable.data[OCCUPATION]!.text,
+                      educationalBackground:
+                          _userDataTable.data[EDUCATIONAL_BACKGROUND]!.text,
+                      annualIncome: 1,
+                      image: null,
+                    );
                   } else {
                     print("データが存在しません");
                   }
@@ -183,23 +197,48 @@ class UserListScreen extends ConsumerWidget {
       width: double.infinity,
       color: Colors.grey,
     ));
-    _userDataTable.table1.forEach((key, value) {
-      if (key == 'birthday') {
-        widgetsList.add(
-            dateInputField(context, userDataConvertedToJapanese[key]!, value));
-      } else {
-        widgetsList
-            .add(textInputField(userDataConvertedToJapanese[key]!, value));
-      }
-    });
+
+    // NAME
+    // FURIGANA
+    // BIRTHDAY
+    widgetsList.add(textInputField(
+        userDataConvertedToJP[NAME]!, _userDataTable.data[NAME]!));
+    widgetsList.add(textInputField(
+        userDataConvertedToJP[FURIGANA]!, _userDataTable.data[FURIGANA]!));
+    widgetsList.add(dateInputField(context, userDataConvertedToJP[BIRTHDAY]!,
+        _userDataTable.data[BIRTHDAY]!));
+
     widgetsList.add(const SizedBox(height: 40));
-    _userDataTable.table2.forEach((key, value) {
-      widgetsList.add(textInputField(userDataConvertedToJapanese[key]!, value));
-    });
+
+    // HOBBY
+    // HOLIDAY
+    // BIRTHPLACE
+    // RESIDENCE
+    widgetsList.add(dateInputField(
+        context, userDataConvertedToJP[HOBBY]!, _userDataTable.data[HOBBY]!));
+    widgetsList.add(dateInputField(context, userDataConvertedToJP[HOLIDAY]!,
+        _userDataTable.data[HOLIDAY]!));
+    widgetsList.add(dateInputField(context, userDataConvertedToJP[BIRTHPLACE]!,
+        _userDataTable.data[BIRTHPLACE]!));
+    widgetsList.add(dateInputField(context, userDataConvertedToJP[RESIDENCE]!,
+        _userDataTable.data[RESIDENCE]!));
+
     widgetsList.add(const SizedBox(height: 40));
-    _userDataTable.table3.forEach((key, value) {
-      widgetsList.add(textInputField(userDataConvertedToJapanese[key]!, value));
-    });
+
+    // EDUCATIONAL_BACKGROUND
+    // OCCUPATION
+    // ANNUAL_INCOME
+    widgetsList.add(dateInputField(
+        context,
+        userDataConvertedToJP[EDUCATIONAL_BACKGROUND]!,
+        _userDataTable.data[EDUCATIONAL_BACKGROUND]!));
+    widgetsList.add(dateInputField(context, userDataConvertedToJP[OCCUPATION]!,
+        _userDataTable.data[OCCUPATION]!));
+    widgetsList.add(dateInputField(
+        context,
+        userDataConvertedToJP[ANNUAL_INCOME]!,
+        _userDataTable.data[ANNUAL_INCOME]!));
+
     widgetsList.add(const SizedBox(height: 50));
     return widgetsList;
   }

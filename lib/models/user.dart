@@ -16,6 +16,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../constants/keys.dart';
+
 class User {
   final String uid;
 
@@ -51,23 +53,17 @@ class User {
 }
 
 class UserDataTable {
-  Map<String, TextEditingController> table1 = {
-    'name': TextEditingController(),
-    'furigana': TextEditingController(),
-    'birthday': TextEditingController(),
-  };
-
-  Map<String, TextEditingController> table2 = {
-    'hobby': TextEditingController(),
-    'holiday': TextEditingController(),
-    'birthplace': TextEditingController(),
-    'residence': TextEditingController(),
-  };
-
-  Map<String, TextEditingController> table3 = {
-    'educational_background': TextEditingController(),
-    'occupation': TextEditingController(),
-    'annual_income': TextEditingController(),
+  Map<String, TextEditingController> data = {
+    NAME: TextEditingController(),
+    FURIGANA: TextEditingController(),
+    BIRTHDAY: TextEditingController(),
+    HOBBY: TextEditingController(),
+    HOLIDAY: TextEditingController(),
+    BIRTHPLACE: TextEditingController(),
+    RESIDENCE: TextEditingController(),
+    EDUCATIONAL_BACKGROUND: TextEditingController(),
+    OCCUPATION: TextEditingController(),
+    ANNUAL_INCOME: TextEditingController(),
   };
   // Map<String, dynamic> convertToCorrespondingData() {
   //   Map<String, dynamic> data = {};
@@ -78,43 +74,29 @@ class UserDataTable {
   // }
 }
 
-// Map<String, TextEditingController> userTextEditingControllerTable = {
-//   'name': TextEditingController(),
-//   'furigana': TextEditingController(),
-//   'age': TextEditingController(),
-//   'birthday': TextEditingController(),
-//   'hobby': TextEditingController(),
-//   'holiday': TextEditingController(),
-//   'birthplace': TextEditingController(),
-//   'residence': TextEditingController(),
-//   'educational_background': TextEditingController(),
-//   'occupation': TextEditingController(),
-//   'annual_income': TextEditingController(),
-// };
-
-Map<String, String> userDataConvertedToJapanese = {
-  'name': '名前',
-  'furigana': 'ふりがな',
-  'birthday': '生年月日',
-  'hobby': '趣味',
-  'holiday': '休日',
-  'birthplace': '出身地',
-  'residence': '居住地',
-  'educational_background': '学歴',
-  'occupation': '職種',
-  'annual_income': '年収',
+Map<String, String> userDataConvertedToJP = {
+  NAME: '名前',
+  FURIGANA: 'ふりがな',
+  BIRTHDAY: '生年月日',
+  HOBBY: '趣味',
+  HOLIDAY: '休日',
+  BIRTHPLACE: '出身地',
+  RESIDENCE: '居住地',
+  EDUCATIONAL_BACKGROUND: '学歴',
+  OCCUPATION: '職種',
+  ANNUAL_INCOME: '年収',
 };
 
-// Map<String, dynamic> userDataKeyCompatibilityTableInType = {
-//   'name': String,
-//   'furigana': String,
-//   'age': int,
-//   'birthday': Timestamp,
-//   'hobby': List<String>,
-//   'holiday': List<bool>,
-//   'birthplace': String,
-//   'residence': String,
-//   'educational_background': String,
-//   'occupation': String,
-//   'annual_income': int,
-// };
+Map<String, Type> userDataKeyCompatibilityTableInType = {
+  NAME: String,
+  FURIGANA: String,
+  BIRTHDAY: Timestamp,
+  HOBBY: List<String>,
+  HOLIDAY: List<bool>,
+  BIRTHPLACE: String,
+  RESIDENCE: String,
+  EDUCATIONAL_BACKGROUND: String,
+  OCCUPATION: String,
+  ANNUAL_INCOME: int,
+  IMAGE: String,
+};
