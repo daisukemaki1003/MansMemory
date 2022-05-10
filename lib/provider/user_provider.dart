@@ -1,138 +1,93 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mans_memory/constants/keys.dart';
 import '../models/user.dart';
 
 final usersProvider =
-    ChangeNotifierProvider<UsersController>((ref) => UsersController._());
+    ChangeNotifierProvider<UserRepository>((ref) => UserRepository._());
 
-class UsersController extends ChangeNotifier {
-  UsersController._();
+class UserRepository extends ChangeNotifier {
+  UserRepository._();
+  static UserRepository instance = UserRepository._();
 
-  Future<List<User>> fetchUserList() async {
-    return UserRepository.instance.fetchUserList();
-  }
+  final collectionName = 'users';
 
-  Future<void> addUser(BuildContext context) async {
-    var name = '';
-    var wayOfReading = '';
+  Future<List<User>> fetch() async {
+    final QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection(collectionName).get();
 
-    Color textFieldColor = const Color(0xFF000000);
+    final List<User> users = snapshot.docs.map(
+      (DocumentSnapshot document) {
+        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+        final String id = document.id;
+        final String name = data[NAME];
+        final String? furigana = data[FURIGANA];
+        final Timestamp? birthday = data[BIRTHDAY];
 
-    BuildContext mainContext = context; //これを追加
-    final result = showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-      ),
-      builder: (BuildContext context) {
-        return build(mainContext);
+        final List<dynamic>? hobby = data[HOBBY];
+        final List<dynamic>? holiday = data[HOLIDAY];
+        final String? birthplace = data[BIRTHPLACE];
+        final String? residence = data[RESIDENCE];
+
+        final String? occupation = data[OCCUPATION];
+        final String? educationalBackground = data[EDUCATIONAL_BACKGROUND];
+        final int? annualIncome = data[ANNUAL_INCOME];
+        final String? image = data[IMAGE];
+
+        return User(
+            uid: id,
+            name: name,
+            furigana: furigana,
+            annualIncome: annualIncome,
+            educationalBackground: educationalBackground,
+            hobby: hobby,
+            holiday: holiday,
+            occupation: occupation,
+            residence: residence,
+            birthday: birthday!.toDate(),
+            birthplace: birthplace,
+            image: image);
       },
-    );
-
-    if (result == true && name.isNotEmpty) {
-      UserRepository.instance
-          .add(User.create(name: name, wayOfReading: wayOfReading));
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('[$name]を追加しました！'),
-      ));
-      notifyListeners();
-    }
+    ).toList();
+    await Future.delayed(Duration(seconds: 3));
+    return users;
   }
 
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100.0),
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey, //色
-                spreadRadius: 4,
-                blurRadius: 4,
-                offset: Offset(1, 1),
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.only(top: 50.0),
-          child: AppBar(
-            title: const Text(
-              "ユーザー作成",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            elevation: 0,
-            actions: [
-              TextButton(
-                onPressed: () {},
-                child: const Text(
-                  "保存",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.blue),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: 200,
-              width: double.infinity,
-              color: Colors.grey,
-            ),
-            inputField('名前'),
-            inputField('ふりがな'),
-            inputField('年齢'),
-            inputField('生年月日'),
-            SizedBox(height: 40),
-            inputField('趣味'),
-            inputField('居住地'),
-            inputField('休日'),
-            SizedBox(height: 40),
-            inputField('学歴'),
-            inputField('職種'),
-            inputField('年収'),
-            SizedBox(height: 50),
-          ],
-        ),
-      ),
-    );
+  Future<void> add({
+    required String name,
+    required String? furigana,
+    required Timestamp? birthday,
+    required List<String>? hobby,
+    required List<bool>? holiday,
+    required String? birthplace,
+    required String? residence,
+    required String? occupation,
+    required String? educationalBackground,
+    required int? annualIncome,
+    required String? image,
+  }) async {
+    FirebaseFirestore.instance.collection(collectionName).add({
+      NAME: name,
+      FURIGANA: furigana,
+      BIRTHDAY: birthday,
+      HOBBY: hobby,
+      HOLIDAY: holiday,
+      BIRTHPLACE: birthplace,
+      RESIDENCE: residence,
+      EDUCATIONAL_BACKGROUND: occupation,
+      OCCUPATION: educationalBackground,
+      ANNUAL_INCOME: annualIncome,
+      IMAGE: image,
+    });
   }
 
-  Container inputField(String text) {
-    return Container(
-      decoration: const BoxDecoration(
-        border: Border.symmetric(horizontal: BorderSide(width: 0.2)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: TextField(
-          autofocus: true,
-          textInputAction: TextInputAction.next,
-          decoration: InputDecoration(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-            border: InputBorder.none,
-            prefixIcon: SizedBox(
-                width: 90,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: Text(text,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                )),
-            hintText: text,
-          ),
-        ),
-      ),
-    );
-  }
+  void remove(User user) => print("remove");
+}
+
+List<int> stringToList(String listAsString) {
+  return listAsString
+      .split(',')
+      .map<int>((String item) => int.parse(item))
+      .toList();
 }
