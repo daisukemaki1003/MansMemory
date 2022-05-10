@@ -1,7 +1,3 @@
-import 'dart:collection';
-
-import 'package:flutter/material.dart';
-
 /*
 基本情報
   名前
@@ -17,119 +13,90 @@ import 'package:flutter/material.dart';
   職種
   年収 
 */
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+import '../constants/keys.dart';
+
 class User {
-  final int uid;
-  final String? image;
+  final String uid;
 
   final String name;
-  final String? wayOfReading;
-  final int? age;
+  final String? furigana;
   final DateTime? birthday;
 
-  final List<String>? hobby;
+  final String? birthplace;
   final String? residence;
-  final List<int>? holiday;
+  final List<dynamic>? hobby;
+  final List<dynamic>? holiday;
 
   final String? educationalBackground;
   final String? occupation;
   final int? annualIncome;
 
-  final String? memo;
+  final String? image;
 
-  const User.create({
+  User({
+    required this.uid,
     required this.name,
-    this.wayOfReading,
-    this.birthday,
-    this.image,
-    this.age,
-    this.hobby,
-    this.residence,
-    this.holiday,
-    this.educationalBackground,
-    this.occupation,
-    this.annualIncome,
-    this.memo,
-  }) : uid = 0;
+    required this.furigana,
+    required this.birthday,
+    required this.birthplace,
+    required this.image,
+    required this.hobby,
+    required this.residence,
+    required this.holiday,
+    required this.educationalBackground,
+    required this.occupation,
+    required this.annualIncome,
+  });
 }
 
-class UserRepository {
-  UserRepository._();
-  static UserRepository instance = UserRepository._();
-
-  final List<User> _userList = [
-    User.create(
-        name: '山本　太郎',
-        wayOfReading: 'やまもと　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '佐藤　太郎',
-        wayOfReading: 'さとう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-    User.create(
-        name: '近藤　太郎',
-        wayOfReading: 'こんどう　たろう',
-        birthday: DateTime(2020, 10, 2),
-        image:
-            "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-  ];
-
-  Future<List<User>> fetchUserList() async {
-    await Future<void>.delayed(const Duration(milliseconds: 1000));
-    return _userList;
-  }
-
-  void add(User user) => _userList.add(user);
-  void remove(User user) => _userList.remove(user);
+class UserDataTable {
+  Map<String, TextEditingController> data = {
+    NAME: TextEditingController(),
+    FURIGANA: TextEditingController(),
+    BIRTHDAY: TextEditingController(),
+    HOBBY: TextEditingController(),
+    HOLIDAY: TextEditingController(),
+    BIRTHPLACE: TextEditingController(),
+    RESIDENCE: TextEditingController(),
+    EDUCATIONAL_BACKGROUND: TextEditingController(),
+    OCCUPATION: TextEditingController(),
+    ANNUAL_INCOME: TextEditingController(),
+  };
+  // Map<String, dynamic> convertToCorrespondingData() {
+  //   Map<String, dynamic> data = {};
+  //   table.forEach((key, value) {
+  //     data[key] = value.value;
+  //   });
+  //   return data;
+  // }
 }
+
+Map<String, String> userDataConvertedToJP = {
+  NAME: '名前',
+  FURIGANA: 'ふりがな',
+  BIRTHDAY: '生年月日',
+  HOBBY: '趣味',
+  HOLIDAY: '休日',
+  BIRTHPLACE: '出身地',
+  RESIDENCE: '居住地',
+  EDUCATIONAL_BACKGROUND: '学歴',
+  OCCUPATION: '職種',
+  ANNUAL_INCOME: '年収',
+};
+
+Map<String, Type> userDataKeyCompatibilityTableInType = {
+  NAME: String,
+  FURIGANA: String,
+  BIRTHDAY: Timestamp,
+  HOBBY: List<String>,
+  HOLIDAY: List<bool>,
+  BIRTHPLACE: String,
+  RESIDENCE: String,
+  EDUCATIONAL_BACKGROUND: String,
+  OCCUPATION: String,
+  ANNUAL_INCOME: int,
+  IMAGE: String,
+};
