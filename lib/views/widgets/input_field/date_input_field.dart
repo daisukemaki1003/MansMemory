@@ -2,12 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-Container dateInputField(
-    BuildContext context, String text, TextEditingController controller) {
+Container dateInputField(BuildContext context, String text) {
   TextEditingController datetimeController = TextEditingController();
   return Container(
     decoration: const BoxDecoration(
-      border: Border.symmetric(horizontal: BorderSide(width: 0.2)),
+      border: Border.symmetric(horizontal: BorderSide(width: 0.1)),
     ),
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -27,16 +26,15 @@ Container dateInputField(
               )),
           hintText: text,
         ),
-        onTap: () => dateInputPopup(context, controller, datetimeController),
+        onTap: () => dateInputPopup(context),
       ),
     ),
   );
 }
 
 Future<void> dateInputPopup(
-    BuildContext context,
-    TextEditingController controller,
-    TextEditingController datetimeController) {
+  BuildContext context,
+) {
   var _dateTime = DateTime.now();
 
   return showCupertinoModalPopup<void>(
@@ -92,9 +90,9 @@ Future<void> dateInputPopup(
               mode: CupertinoDatePickerMode.date,
               initialDateTime: _dateTime,
               onDateTimeChanged: (DateTime newDateTime) {
-                datetimeController.text =
-                    DateFormat('yyyy年M月d日').format(newDateTime);
-                controller.text = newDateTime.toString();
+                // datetimeController.text =
+                //     DateFormat('yyyy年M月d日').format(newDateTime);
+                // controller.text = newDateTime.toString();
               },
             ),
           )

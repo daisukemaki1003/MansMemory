@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mans_memory/models/user.dart';
 
+import '../../provider/user_provider.dart';
+import '../widgets/input_field/date_input_field.dart';
+import '../widgets/input_field/text_input_field.dart';
 import 'user_list.dart';
 
 class MyTabbedPage extends StatefulWidget {
@@ -179,7 +182,19 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
                             'プロフィールを編集',
                             style: TextStyle(color: Colors.white, fontSize: 16),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(15)),
+                              ),
+                              builder: (BuildContext context) {
+                                return userRegistrationDialog(context);
+                              },
+                            );
+                          },
                         ),
                       ),
                     ),
@@ -309,16 +324,116 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
       ),
     );
   }
+
+  Widget userRegistrationDialog(BuildContext context) {
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(100.0),
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey, //色
+                spreadRadius: 4,
+                blurRadius: 4,
+                offset: Offset(1, 1),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.only(top: 50.0),
+          child: AppBar(
+            title: const Text(
+              "ユーザー編集",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            elevation: 0,
+            actions: [
+              TextButton(
+                onPressed: () {},
+                child: const Text(
+                  "保存",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
+                      color: Colors.blue),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Column(children: inputFieldList(context)),
+      ),
+    );
+  }
+
+  List<Widget> inputFieldList(BuildContext context) {
+    List<Widget> widgetsList = [];
+    widgetsList.add(Container(
+      height: 200,
+      width: double.infinity,
+      color: Colors.grey,
+    ));
+
+    // NAME
+    // FURIGANA
+    // BIRTHDAY
+    widgetsList.add(const SizedBox(height: 40));
+    widgetsList.add(testField('名前'));
+    widgetsList.add(testField('ふりがな'));
+    widgetsList.add(testField('生年月日'));
+
+    // HOBBY
+    // HOLIDAY
+    // BIRTHPLACE
+    // RESIDENCE
+    widgetsList.add(const SizedBox(height: 40));
+    widgetsList.add(testField('趣味'));
+    widgetsList.add(testField('休日'));
+    widgetsList.add(testField('出身地'));
+    widgetsList.add(testField('居住地'));
+
+    // EDUCATIONAL_BACKGROUND
+    // OCCUPATION
+    // ANNUAL_INCOME
+    widgetsList.add(const SizedBox(height: 40));
+    widgetsList.add(testField('学歴'));
+    widgetsList.add(testField('職種'));
+    widgetsList.add(testField('年収'));
+
+    widgetsList.add(const SizedBox(height: 50));
+    return widgetsList;
+  }
+
+  Widget testField(String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+      child: TextField(
+        cursorColor: Colors.black12,
+        // controller: nameController,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.black),
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          // helperText: '名前',
+          // helperStyle: const TextStyle(color: Colors.black),
+          contentPadding:
+              const EdgeInsets.only(left: 20, top: 0, bottom: 3, right: 10),
+          focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(color: Colors.blue)),
+          suffix: IconButton(
+            icon: const Icon(Icons.clear, color: Colors.black54),
+            onPressed: () {
+              // nameController.clear();
+            },
+          ),
+        ),
+      ),
+    );
+  }
 }
-
-
-        // SafeArea(
-        //   child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-        //     TextButton(
-        //         onPressed: () {},
-        //         child: Text(
-        //           'btn',
-        //           style: TextStyle(color: Colors.red),
-        //         )),
-        //   ]),
-        // )

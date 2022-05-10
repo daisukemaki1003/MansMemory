@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-Container textInputField(String text, TextEditingController controller) {
+Container textInputField(String text) {
   return Container(
     decoration: const BoxDecoration(
-      border: Border.symmetric(horizontal: BorderSide(width: 0.2)),
+      border: Border.symmetric(horizontal: BorderSide(width: 0.1)),
     ),
     child: Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: TextField(
-        controller: controller,
+        // controller: controller,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           contentPadding:
