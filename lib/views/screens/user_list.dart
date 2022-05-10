@@ -37,19 +37,9 @@ class UserListScreen extends ConsumerWidget {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => userRegistration(),
+                  builder: (context) => userRegistration(users),
                 ),
               );
-              //   showModalBottomSheet(
-              //     context: context,
-              //     isScrollControlled: true,
-              //     shape: const RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-              //     ),
-              //     builder: (BuildContext context) {
-              //       return userRegistrationDialog(users, context);
-              //     },
-              //   );
             },
           ),
           const SizedBox(width: 5),
@@ -127,7 +117,7 @@ class UserListScreen extends ConsumerWidget {
     );
   }
 
-  Widget userRegistration() {
+  Widget userRegistration(UserRepository users) {
     final TextEditingController nameController = TextEditingController();
 
     return Scaffold(
@@ -157,9 +147,6 @@ class UserListScreen extends ConsumerWidget {
                       },
                     ),
                   ),
-                  // onChanged: (text) {
-                  //   model.newName = text.trim();
-                  // },
                 ),
                 const SizedBox(height: 15),
                 Center(
@@ -173,6 +160,8 @@ class UserListScreen extends ConsumerWidget {
                       ElevatedButton(
                         child: const Text('作成'),
                         onPressed: () async {
+                          /// firebaseにユーザーを登録
+                          users.add(name: nameController.text.trim());
                           // model.startLoading();
                           // try {
                           //   await model.updateName();
@@ -222,125 +211,125 @@ class UserListScreen extends ConsumerWidget {
     );
   }
 
-  Widget userRegistrationDialog(UserRepository users, BuildContext context) {
-    UserDataTable _userDataTable = UserDataTable();
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(100.0),
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey, //色
-                spreadRadius: 4,
-                blurRadius: 4,
-                offset: Offset(1, 1),
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.only(top: 50.0),
-          child: AppBar(
-            title: const Text(
-              "ユーザー作成",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            elevation: 0,
-            actions: [
-              TextButton(
-                onPressed: () {
-                  if (_userDataTable.data['name']!.text.isNotEmpty) {
-                    users.add(
-                      name: _userDataTable.data[NAME]!.text,
-                      furigana: _userDataTable.data[FURIGANA]!.text,
-                      birthday: Timestamp.fromDate(
-                          DateTime.parse(_userDataTable.data[BIRTHDAY]!.text)),
-                      hobby: [_userDataTable.data[HOBBY]!.text],
-                      holiday: [false, false],
-                      birthplace: _userDataTable.data[BIRTHPLACE]!.text,
-                      residence: _userDataTable.data[RESIDENCE]!.text,
-                      occupation: _userDataTable.data[OCCUPATION]!.text,
-                      educationalBackground:
-                          _userDataTable.data[EDUCATIONAL_BACKGROUND]!.text,
-                      annualIncome: 1,
-                      image: null,
-                    );
-                  } else {
-                    print("データが存在しません");
-                  }
-                },
-                child: const Text(
-                  "保存",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.blue),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(children: inputFieldList(_userDataTable, context)),
-      ),
-    );
-  }
+  // Widget userRegistrationDialog(UserRepository users, BuildContext context) {
+  //   UserDataTable _userDataTable = UserDataTable();
+  //   return Scaffold(
+  //     appBar: PreferredSize(
+  //       preferredSize: const Size.fromHeight(100.0),
+  //       child: Container(
+  //         decoration: const BoxDecoration(
+  //           color: Colors.white,
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Colors.grey, //色
+  //               spreadRadius: 4,
+  //               blurRadius: 4,
+  //               offset: Offset(1, 1),
+  //             ),
+  //           ],
+  //         ),
+  //         padding: const EdgeInsets.only(top: 50.0),
+  //         child: AppBar(
+  //           title: const Text(
+  //             "ユーザー作成",
+  //             style: TextStyle(
+  //               fontSize: 18,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //           elevation: 0,
+  //           actions: [
+  //             TextButton(
+  //               onPressed: () {
+  //                 if (_userDataTable.data['name']!.text.isNotEmpty) {
+  //                   users.add(
+  //                     name: _userDataTable.data[NAME]!.text,
+  //                     furigana: _userDataTable.data[FURIGANA]!.text,
+  //                     birthday: Timestamp.fromDate(
+  //                         DateTime.parse(_userDataTable.data[BIRTHDAY]!.text)),
+  //                     hobby: [_userDataTable.data[HOBBY]!.text],
+  //                     holiday: [false, false],
+  //                     birthplace: _userDataTable.data[BIRTHPLACE]!.text,
+  //                     residence: _userDataTable.data[RESIDENCE]!.text,
+  //                     occupation: _userDataTable.data[OCCUPATION]!.text,
+  //                     educationalBackground:
+  //                         _userDataTable.data[EDUCATIONAL_BACKGROUND]!.text,
+  //                     annualIncome: 1,
+  //                     image: null,
+  //                   );
+  //                 } else {
+  //                   print("データが存在しません");
+  //                 }
+  //               },
+  //               child: const Text(
+  //                 "保存",
+  //                 style: TextStyle(
+  //                     fontWeight: FontWeight.bold,
+  //                     fontSize: 15,
+  //                     color: Colors.blue),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //     body: SingleChildScrollView(
+  //       child: Column(children: inputFieldList(_userDataTable, context)),
+  //     ),
+  //   );
+  // }
 
-  List<Widget> inputFieldList(
-      UserDataTable _userDataTable, BuildContext context) {
-    List<Widget> widgetsList = [];
-    widgetsList.add(Container(
-      height: 200,
-      width: double.infinity,
-      color: Colors.grey,
-    ));
+  // List<Widget> inputFieldList(
+  //     UserDataTable _userDataTable, BuildContext context) {
+  //   List<Widget> widgetsList = [];
+  //   widgetsList.add(Container(
+  //     height: 200,
+  //     width: double.infinity,
+  //     color: Colors.grey,
+  //   ));
 
-    // NAME
-    // FURIGANA
-    // BIRTHDAY
-    widgetsList.add(textInputField(
-        userDataConvertedToJP[NAME]!, _userDataTable.data[NAME]!));
-    widgetsList.add(textInputField(
-        userDataConvertedToJP[FURIGANA]!, _userDataTable.data[FURIGANA]!));
-    widgetsList.add(dateInputField(context, userDataConvertedToJP[BIRTHDAY]!,
-        _userDataTable.data[BIRTHDAY]!));
+  //   // NAME
+  //   // FURIGANA
+  //   // BIRTHDAY
+  //   widgetsList.add(textInputField(
+  //       userDataConvertedToJP[NAME]!, _userDataTable.data[NAME]!));
+  //   widgetsList.add(textInputField(
+  //       userDataConvertedToJP[FURIGANA]!, _userDataTable.data[FURIGANA]!));
+  //   widgetsList.add(dateInputField(context, userDataConvertedToJP[BIRTHDAY]!,
+  //       _userDataTable.data[BIRTHDAY]!));
 
-    widgetsList.add(const SizedBox(height: 40));
+  //   widgetsList.add(const SizedBox(height: 40));
 
-    // HOBBY
-    // HOLIDAY
-    // BIRTHPLACE
-    // RESIDENCE
-    widgetsList.add(dateInputField(
-        context, userDataConvertedToJP[HOBBY]!, _userDataTable.data[HOBBY]!));
-    widgetsList.add(dateInputField(context, userDataConvertedToJP[HOLIDAY]!,
-        _userDataTable.data[HOLIDAY]!));
-    widgetsList.add(dateInputField(context, userDataConvertedToJP[BIRTHPLACE]!,
-        _userDataTable.data[BIRTHPLACE]!));
-    widgetsList.add(dateInputField(context, userDataConvertedToJP[RESIDENCE]!,
-        _userDataTable.data[RESIDENCE]!));
+  //   // HOBBY
+  //   // HOLIDAY
+  //   // BIRTHPLACE
+  //   // RESIDENCE
+  //   widgetsList.add(dateInputField(
+  //       context, userDataConvertedToJP[HOBBY]!, _userDataTable.data[HOBBY]!));
+  //   widgetsList.add(dateInputField(context, userDataConvertedToJP[HOLIDAY]!,
+  //       _userDataTable.data[HOLIDAY]!));
+  //   widgetsList.add(dateInputField(context, userDataConvertedToJP[BIRTHPLACE]!,
+  //       _userDataTable.data[BIRTHPLACE]!));
+  //   widgetsList.add(dateInputField(context, userDataConvertedToJP[RESIDENCE]!,
+  //       _userDataTable.data[RESIDENCE]!));
 
-    widgetsList.add(const SizedBox(height: 40));
+  //   widgetsList.add(const SizedBox(height: 40));
 
-    // EDUCATIONAL_BACKGROUND
-    // OCCUPATION
-    // ANNUAL_INCOME
-    widgetsList.add(dateInputField(
-        context,
-        userDataConvertedToJP[EDUCATIONAL_BACKGROUND]!,
-        _userDataTable.data[EDUCATIONAL_BACKGROUND]!));
-    widgetsList.add(dateInputField(context, userDataConvertedToJP[OCCUPATION]!,
-        _userDataTable.data[OCCUPATION]!));
-    widgetsList.add(dateInputField(
-        context,
-        userDataConvertedToJP[ANNUAL_INCOME]!,
-        _userDataTable.data[ANNUAL_INCOME]!));
+  //   // EDUCATIONAL_BACKGROUND
+  //   // OCCUPATION
+  //   // ANNUAL_INCOME
+  //   widgetsList.add(dateInputField(
+  //       context,
+  //       userDataConvertedToJP[EDUCATIONAL_BACKGROUND]!,
+  //       _userDataTable.data[EDUCATIONAL_BACKGROUND]!));
+  //   widgetsList.add(dateInputField(context, userDataConvertedToJP[OCCUPATION]!,
+  //       _userDataTable.data[OCCUPATION]!));
+  //   widgetsList.add(dateInputField(
+  //       context,
+  //       userDataConvertedToJP[ANNUAL_INCOME]!,
+  //       _userDataTable.data[ANNUAL_INCOME]!));
 
-    widgetsList.add(const SizedBox(height: 50));
-    return widgetsList;
-  }
+  //   widgetsList.add(const SizedBox(height: 50));
+  //   return widgetsList;
+  // }
 }

@@ -45,49 +45,31 @@ class UserRepository extends ChangeNotifier {
             holiday: holiday,
             occupation: occupation,
             residence: residence,
-            birthday: birthday!.toDate(),
+            birthday: birthday?.toDate(),
             birthplace: birthplace,
             image: image);
       },
     ).toList();
-    await Future.delayed(Duration(seconds: 3));
     return users;
   }
 
   Future<void> add({
     required String name,
-    required String? furigana,
-    required Timestamp? birthday,
-    required List<String>? hobby,
-    required List<bool>? holiday,
-    required String? birthplace,
-    required String? residence,
-    required String? occupation,
-    required String? educationalBackground,
-    required int? annualIncome,
-    required String? image,
   }) async {
     FirebaseFirestore.instance.collection(collectionName).add({
       NAME: name,
-      FURIGANA: furigana,
-      BIRTHDAY: birthday,
-      HOBBY: hobby,
-      HOLIDAY: holiday,
-      BIRTHPLACE: birthplace,
-      RESIDENCE: residence,
-      EDUCATIONAL_BACKGROUND: occupation,
-      OCCUPATION: educationalBackground,
-      ANNUAL_INCOME: annualIncome,
-      IMAGE: image,
+      FURIGANA: null,
+      BIRTHDAY: null,
+      HOBBY: null,
+      HOLIDAY: null,
+      BIRTHPLACE: null,
+      RESIDENCE: null,
+      EDUCATIONAL_BACKGROUND: null,
+      OCCUPATION: null,
+      ANNUAL_INCOME: null,
+      IMAGE: null,
     });
   }
 
   void remove(User user) => print("remove");
-}
-
-List<int> stringToList(String listAsString) {
-  return listAsString
-      .split(',')
-      .map<int>((String item) => int.parse(item))
-      .toList();
 }

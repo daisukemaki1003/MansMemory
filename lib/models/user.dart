@@ -1,21 +1,3 @@
-/*
-基本情報
-  名前
-  ふりがな
-  年齢
-  生年月日
-趣味、生活
-  趣味
-  居住地
-  休日
-学歴、職種
-  学歴
-  職種
-  年収 
-*/
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-
 import '../constants/keys.dart';
 
 class User {
@@ -52,21 +34,6 @@ class User {
   });
 }
 
-class UserDataTable {
-  Map<String, TextEditingController> data = {
-    NAME: TextEditingController(),
-    FURIGANA: TextEditingController(),
-    BIRTHDAY: TextEditingController(),
-    HOBBY: TextEditingController(),
-    HOLIDAY: TextEditingController(),
-    BIRTHPLACE: TextEditingController(),
-    RESIDENCE: TextEditingController(),
-    EDUCATIONAL_BACKGROUND: TextEditingController(),
-    OCCUPATION: TextEditingController(),
-    ANNUAL_INCOME: TextEditingController(),
-  };
-}
-
 Map<String, String> userDataConvertedToJP = {
   NAME: '名前',
   FURIGANA: 'ふりがな',
@@ -78,18 +45,4 @@ Map<String, String> userDataConvertedToJP = {
   EDUCATIONAL_BACKGROUND: '学歴',
   OCCUPATION: '職種',
   ANNUAL_INCOME: '年収',
-};
-
-Map<String, Type> userDataKeyCompatibilityTableInType = {
-  NAME: String,
-  FURIGANA: String,
-  BIRTHDAY: Timestamp,
-  HOBBY: List<String>,
-  HOLIDAY: List<bool>,
-  BIRTHPLACE: String,
-  RESIDENCE: String,
-  EDUCATIONAL_BACKGROUND: String,
-  OCCUPATION: String,
-  ANNUAL_INCOME: int,
-  IMAGE: String,
 };
