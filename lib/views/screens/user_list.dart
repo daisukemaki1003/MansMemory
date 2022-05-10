@@ -37,7 +37,7 @@ class UserListScreen extends ConsumerWidget {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => userRegistration(users),
+                  builder: (context) => userRegistration(context, users),
                 ),
               );
             },
@@ -117,7 +117,7 @@ class UserListScreen extends ConsumerWidget {
     );
   }
 
-  Widget userRegistration(UserRepository users) {
+  Widget userRegistration(BuildContext context, UserRepository users) {
     final TextEditingController nameController = TextEditingController();
 
     return Scaffold(
@@ -153,24 +153,22 @@ class UserListScreen extends ConsumerWidget {
                   child: Column(
                     children: <Widget>[
                       const Text('登録ユーザーの名前を入力してください。'),
-                      // const SizedBox(
-                      //   height: 8,
-                      // ),
                       const SizedBox(height: 30),
                       ElevatedButton(
                         child: const Text('作成'),
                         onPressed: () async {
                           /// firebaseにユーザーを登録
-                          users.add(name: nameController.text.trim());
-                          // model.startLoading();
-                          // try {
-                          //   await model.updateName();
-                          //   await _showTextDialog(context, 'ニックネームを変更しました');
-                          //   Navigator.of(context).pop();
-                          // } catch (e) {
-                          //   _showTextDialog(context, e.toString());
-                          // }
-                          // model.endLoading();
+                          try {
+                            User user =
+                                await users.add(nameController.text.trim());
+                            await _showTextDialog(context, 'ユーザーを作成しました。');
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return MyTabbedPage(user);
+                            }));
+                          } catch (e) {
+                            _showTextDialog(context, e.toString());
+                          }
                         },
                       ),
                     ],

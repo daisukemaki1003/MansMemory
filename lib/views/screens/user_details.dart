@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mans_memory/models/user.dart';
 
+import 'user_list.dart';
+
 class MyTabbedPage extends StatefulWidget {
   const MyTabbedPage(this.user, {Key? key}) : super(key: key);
   final User user;
@@ -190,6 +192,13 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
                 backgroundColor: const Color.fromARGB(255, 76, 141, 195),
                 pinned: true,
                 elevation: 2,
+                leading: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const UserListScreen(),
+                      ));
+                    }),
                 flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.pin,
                   // centerTitle: true,
