@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mans_memory/models/user.dart';
 
+import 'user_list.dart';
+
 class MyTabbedPage extends StatefulWidget {
   const MyTabbedPage(this.user, {Key? key}) : super(key: key);
   final User user;
@@ -15,18 +17,10 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
   final User user;
   late TabController _tabController;
 
-  List<String> holiday = [];
-  List<String> holidayList = ['月', '火', '水', '木', '金', '土', '日'];
-
   @override
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: 2);
-    for (var i = 0; i < holidayList.length; i++) {
-      if (user.holiday![i]) {
-        holiday.add(holidayList[i]);
-      }
-    }
   }
 
   @override
@@ -56,7 +50,7 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
                   ),
                   profileWidget('名前', user.name),
-                  profileWidget('ふりがな', user.furigana!),
+                  profileWidget('ふりがな', user.furigana ?? '未設定'),
                   // profileWidget('年齢', user.age!.toString()),
                 ],
               ),
@@ -77,10 +71,12 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
                   ),
-                  profileWidget('出身地', user.birthplace!),
-                  profileWidget('居住地', user.residence!),
-                  profileWidget('趣味', user.hobby.toString()),
-                  profileWidget('休日', holiday.toString()),
+                  profileWidget('出身地', user.birthplace ?? '未設定'),
+                  profileWidget('居住地', user.residence ?? '未設定'),
+                  profileWidget(
+                      '趣味', user.hobby != null ? user.hobby.toString() : '未設定'),
+                  profileWidget('休日',
+                      user.holiday != null ? user.holiday.toString() : '未設定'),
                 ],
               ),
             ),
@@ -100,9 +96,13 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
                   ),
-                  profileWidget('学歴', user.educationalBackground!),
-                  profileWidget('職種', user.occupation!),
-                  profileWidget('年収', user.annualIncome.toString()),
+                  profileWidget('学歴', user.educationalBackground ?? '未設定'),
+                  profileWidget('職種', user.occupation ?? '未設定'),
+                  profileWidget(
+                      '年収',
+                      user.annualIncome != null
+                          ? user.annualIncome.toString()
+                          : '未設定'),
                 ],
               ),
             ),
@@ -192,6 +192,13 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
                 backgroundColor: const Color.fromARGB(255, 76, 141, 195),
                 pinned: true,
                 elevation: 2,
+                leading: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const UserListScreen(),
+                      ));
+                    }),
                 flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.pin,
                   // centerTitle: true,
@@ -217,15 +224,17 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
                                   ),
                                 ),
                                 Text(
-                                  user.furigana!,
+                                  user.furigana ?? '',
                                   style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.white,
                                   ),
                                 ),
                                 Text(
-                                  DateFormat('yyyy年M月d日')
-                                      .format(user.birthday!),
+                                  user.birthday != null
+                                      ? DateFormat('yyyy年M月d日')
+                                          .format(user.birthday!)
+                                      : '',
                                   style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.white,

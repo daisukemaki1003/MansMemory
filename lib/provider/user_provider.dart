@@ -45,49 +45,66 @@ class UserRepository extends ChangeNotifier {
             holiday: holiday,
             occupation: occupation,
             residence: residence,
-            birthday: birthday!.toDate(),
+            birthday: birthday?.toDate(),
             birthplace: birthplace,
             image: image);
       },
     ).toList();
-    await Future.delayed(Duration(seconds: 3));
     return users;
   }
 
-  Future<void> add({
-    required String name,
-    required String? furigana,
-    required Timestamp? birthday,
-    required List<String>? hobby,
-    required List<bool>? holiday,
-    required String? birthplace,
-    required String? residence,
-    required String? occupation,
-    required String? educationalBackground,
-    required int? annualIncome,
-    required String? image,
-  }) async {
-    FirebaseFirestore.instance.collection(collectionName).add({
-      NAME: name,
-      FURIGANA: furigana,
-      BIRTHDAY: birthday,
-      HOBBY: hobby,
-      HOLIDAY: holiday,
-      BIRTHPLACE: birthplace,
-      RESIDENCE: residence,
-      EDUCATIONAL_BACKGROUND: occupation,
-      OCCUPATION: educationalBackground,
-      ANNUAL_INCOME: annualIncome,
-      IMAGE: image,
-    });
+  Future<User> add(String inputName) async {
+    if (inputName.isEmpty) throw ('名前を入力してください');
+
+    final userRef =
+        await FirebaseFirestore.instance.collection(collectionName).add(
+      {
+        NAME: inputName,
+        FURIGANA: null,
+        BIRTHDAY: null,
+        HOBBY: null,
+        HOLIDAY: null,
+        BIRTHPLACE: null,
+        RESIDENCE: null,
+        EDUCATIONAL_BACKGROUND: null,
+        OCCUPATION: null,
+        ANNUAL_INCOME: null,
+        IMAGE: null,
+      },
+    ).catchError((e) => throw ('エラーが発生しました'));
+    final userDoc = await userRef.get();
+    print(userDoc.data());
+
+    Map<String, dynamic> data = userDoc.data() as Map<String, dynamic>;
+    final String id = userDoc.id;
+    final String name = data[NAME];
+    final String? furigana = data[FURIGANA];
+    final Timestamp? birthday = data[BIRTHDAY];
+
+    final List<dynamic>? hobby = data[HOBBY];
+    final List<dynamic>? holiday = data[HOLIDAY];
+    final String? birthplace = data[BIRTHPLACE];
+    final String? residence = data[RESIDENCE];
+
+    final String? occupation = data[OCCUPATION];
+    final String? educationalBackground = data[EDUCATIONAL_BACKGROUND];
+    final int? annualIncome = data[ANNUAL_INCOME];
+    final String? image = data[IMAGE];
+
+    return User(
+        uid: id,
+        name: name,
+        furigana: furigana,
+        annualIncome: annualIncome,
+        educationalBackground: educationalBackground,
+        hobby: hobby,
+        holiday: holiday,
+        occupation: occupation,
+        residence: residence,
+        birthday: birthday?.toDate(),
+        birthplace: birthplace,
+        image: image);
   }
 
   void remove(User user) => print("remove");
-}
-
-List<int> stringToList(String listAsString) {
-  return listAsString
-      .split(',')
-      .map<int>((String item) => int.parse(item))
-      .toList();
 }
