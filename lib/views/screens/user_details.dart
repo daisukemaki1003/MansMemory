@@ -31,155 +31,6 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> tabWidgets = [
-      Column(
-        children: [
-          Container(
-            height: 180,
-            decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 242, 242, 242),
-                borderRadius: BorderRadius.circular(30)),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 30.0, left: 40.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "基本情報",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
-                  ),
-                  profileWidget('名前', user.name),
-                  profileWidget('ふりがな', user.furigana ?? '未設定'),
-                  // profileWidget('年齢', user.age!.toString()),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            height: 230,
-            decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 242, 242, 242),
-                borderRadius: BorderRadius.circular(30)),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 30.0, left: 40.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "基本情報",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
-                  ),
-                  profileWidget('出身地', user.birthplace ?? '未設定'),
-                  profileWidget('居住地', user.residence ?? '未設定'),
-                  profileWidget(
-                      '趣味', user.hobby != null ? user.hobby.toString() : '未設定'),
-                  profileWidget('休日',
-                      user.holiday != null ? user.holiday.toString() : '未設定'),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            height: 180,
-            decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 242, 242, 242),
-                borderRadius: BorderRadius.circular(30)),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 30.0, left: 40.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "基本情報",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
-                  ),
-                  profileWidget('学歴', user.educationalBackground ?? '未設定'),
-                  profileWidget('職種', user.occupation ?? '未設定'),
-                  profileWidget(
-                      '年収',
-                      user.annualIncome != null
-                          ? user.annualIncome.toString()
-                          : '未設定'),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-      Column(
-        children: [
-          Container(
-            height: 300,
-            decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 242, 242, 242),
-                borderRadius: BorderRadius.circular(30)),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 30.0, left: 40.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "基本情報",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
-                  ),
-                  profileWidget('名前', 'maki'),
-                  profileWidget('ふりがな', 'daisuke'),
-                  profileWidget('年齢', '21'),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            height: 300,
-            decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 242, 242, 242),
-                borderRadius: BorderRadius.circular(30)),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 30.0, left: 40.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "基本情報",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
-                  ),
-                  profileWidget('名前', 'maki'),
-                  profileWidget('ふりがな', 'daisuke'),
-                  profileWidget('年齢', '21'),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            height: 300,
-            decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 242, 242, 242),
-                borderRadius: BorderRadius.circular(30)),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 30.0, left: 40.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "基本情報",
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
-                  ),
-                  profileWidget('名前', 'maki'),
-                  profileWidget('ふりがな', 'daisuke'),
-                  profileWidget('年齢', '21'),
-                ],
-              ),
-            ),
-          ),
-        ],
-      )
-    ];
     return Scaffold(
       backgroundColor: Colors.white,
       body: NestedScrollView(
@@ -291,8 +142,52 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
         },
         body: TabBarView(
           controller: _tabController,
-          children: tabWidgets.map((Widget w) {
-            return SafeArea(
+          children: [
+            SafeArea(
+              top: false,
+              bottom: false,
+              child: Stack(
+                children: [
+                  Builder(
+                    builder: (BuildContext context) {
+                      return CustomScrollView(
+                        shrinkWrap: true,
+                        slivers: <Widget>[
+                          SliverOverlapInjector(
+                              handle: NestedScrollView
+                                  .sliverOverlapAbsorberHandleFor(context)),
+                          SliverList(delegate: profileList()),
+                        ],
+                      );
+                    },
+                  ),
+                  SafeArea(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 30.0),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                              backgroundColor:
+                                  Color.fromARGB(255, 76, 141, 195),
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(100))),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 50, vertical: 13)),
+                          child: const Text(
+                            'プロフィールを編集',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            SafeArea(
               top: false,
               bottom: false,
               child: Builder(
@@ -301,20 +196,96 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
                     shrinkWrap: true,
                     slivers: <Widget>[
                       SliverOverlapInjector(
-                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                            context),
-                      ),
-                      SliverList(
-                        delegate: SliverChildListDelegate([w]),
-                      ),
+                          handle:
+                              NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                  context)),
+                      SliverList(delegate: SliverChildListDelegate([])),
                     ],
                   );
                 },
               ),
-            );
-          }).toList(),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  SliverChildListDelegate profileList() {
+    return SliverChildListDelegate(
+      [
+        Container(
+          height: 180,
+          decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 242, 242, 242),
+              borderRadius: BorderRadius.circular(30)),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 30.0, left: 40.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "基本情報",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
+                ),
+                profileWidget('名前', user.name),
+                profileWidget('ふりがな', user.furigana ?? '未設定'),
+                // profileWidget('年齢', user.age!.toString()),
+              ],
+            ),
+          ),
+        ),
+        Container(
+          height: 230,
+          decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 242, 242, 242),
+              borderRadius: BorderRadius.circular(30)),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 30.0, left: 40.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "基本情報",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
+                ),
+                profileWidget('出身地', user.birthplace ?? '未設定'),
+                profileWidget('居住地', user.residence ?? '未設定'),
+                profileWidget(
+                    '趣味', user.hobby != null ? user.hobby.toString() : '未設定'),
+                profileWidget('休日',
+                    user.holiday != null ? user.holiday.toString() : '未設定'),
+              ],
+            ),
+          ),
+        ),
+        Container(
+          height: 200,
+          decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 242, 242, 242),
+              borderRadius: BorderRadius.circular(30)),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 30.0, left: 40.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "基本情報",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
+                ),
+                profileWidget('学歴', user.educationalBackground ?? '未設定'),
+                profileWidget('職種', user.occupation ?? '未設定'),
+                profileWidget(
+                    '年収',
+                    user.annualIncome != null
+                        ? user.annualIncome.toString()
+                        : '未設定'),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 130)
+      ],
     );
   }
 
@@ -339,3 +310,15 @@ class UserDetailsScreen extends State with SingleTickerProviderStateMixin {
     );
   }
 }
+
+
+        // SafeArea(
+        //   child: Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+        //     TextButton(
+        //         onPressed: () {},
+        //         child: Text(
+        //           'btn',
+        //           style: TextStyle(color: Colors.red),
+        //         )),
+        //   ]),
+        // )
