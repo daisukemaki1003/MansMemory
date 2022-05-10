@@ -65,13 +65,6 @@ class UserDataTable {
     OCCUPATION: TextEditingController(),
     ANNUAL_INCOME: TextEditingController(),
   };
-  // Map<String, dynamic> convertToCorrespondingData() {
-  //   Map<String, dynamic> data = {};
-  //   table.forEach((key, value) {
-  //     data[key] = value.value;
-  //   });
-  //   return data;
-  // }
 }
 
 Map<String, String> userDataConvertedToJP = {

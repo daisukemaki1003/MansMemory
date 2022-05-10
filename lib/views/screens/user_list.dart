@@ -33,17 +33,23 @@ class UserListScreen extends ConsumerWidget {
           ),
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => userRegistration(),
                 ),
-                builder: (BuildContext context) {
-                  return userRegistrationDialog(users, context);
-                },
               );
+              //   showModalBottomSheet(
+              //     context: context,
+              //     isScrollControlled: true,
+              //     shape: const RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
+              //     ),
+              //     builder: (BuildContext context) {
+              //       return userRegistrationDialog(users, context);
+              //     },
+              //   );
             },
           ),
           const SizedBox(width: 5),
@@ -118,6 +124,101 @@ class UserListScreen extends ConsumerWidget {
           },
         ),
       ),
+    );
+  }
+
+  Widget userRegistration() {
+    final TextEditingController nameController = TextEditingController();
+
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('ユーザー作成'),
+      ),
+      body: Stack(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const Text('名前は後から変更できます。'),
+                TextField(
+                  autofocus: true,
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    suffix: IconButton(
+                      icon: const Icon(
+                        Icons.clear,
+                        color: Colors.black54,
+                      ),
+                      onPressed: () {
+                        nameController.clear();
+                      },
+                    ),
+                  ),
+                  // onChanged: (text) {
+                  //   model.newName = text.trim();
+                  // },
+                ),
+                const SizedBox(height: 15),
+                Center(
+                  child: Column(
+                    children: <Widget>[
+                      const Text('登録ユーザーの名前を入力してください。'),
+                      // const SizedBox(
+                      //   height: 8,
+                      // ),
+                      const SizedBox(height: 30),
+                      ElevatedButton(
+                        child: const Text('作成'),
+                        onPressed: () async {
+                          // model.startLoading();
+                          // try {
+                          //   await model.updateName();
+                          //   await _showTextDialog(context, 'ニックネームを変更しました');
+                          //   Navigator.of(context).pop();
+                          // } catch (e) {
+                          //   _showTextDialog(context, e.toString());
+                          // }
+                          // model.endLoading();
+                        },
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          // model.isLoading
+          //     ? Container(
+          //         color: Colors.black.withOpacity(0.3),
+          //         child: Center(
+          //           child: CircularProgressIndicator(),
+          //         ),
+          //       )
+          //     : SizedBox()
+        ],
+      ),
+    );
+  }
+
+  _showTextDialog(context, message) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
