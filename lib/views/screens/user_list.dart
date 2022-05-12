@@ -132,6 +132,8 @@ class UserListScreen extends ConsumerWidget {
                   autofocus: true,
                   controller: nameController,
                   decoration: InputDecoration(
+                    focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black)),
                     suffix: IconButton(
                       icon: const Icon(
                         Icons.clear,
@@ -152,17 +154,20 @@ class UserListScreen extends ConsumerWidget {
                       ElevatedButton(
                         child: const Text('作成'),
                         onPressed: () async {
-                          /// firebaseにユーザーを登録
                           try {
                             final userId =
                                 await users.add(nameController.text.trim());
-                            await _showTextDialog(context, 'ユーザーを作成しました。');
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return MyTabbedPage(userId);
-                            }));
+                            final result =
+                                await _showTextDialog(context, 'ユーザーを作成しました。');
+
+                            if (result != null && result) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => MyTabbedPage(userId)));
+                            } else {
+                              Navigator.of(context).pop();
+                            }
                           } catch (e) {
-                            _showTextDialog(context, e.toString());
+                            _showErrorDialog(context, e.toString());
                           }
                         },
                       ),
@@ -185,21 +190,43 @@ class UserListScreen extends ConsumerWidget {
     );
   }
 
-  _showTextDialog(context, message) async {
-    await showDialog(
+  Future<bool?> _showTextDialog(context, message) async {
+    return await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(message),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actionsPadding: const EdgeInsets.symmetric(horizontal: 15),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              child: const Text(
+                'ホームへ',
+                style: TextStyle(color: Colors.black),
+              ),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            TextButton(
+              child: const Text(
+                '編集画面へ',
+                style: TextStyle(color: Colors.black),
+              ),
+              onPressed: () => Navigator.of(context).pop(true),
             ),
           ],
         );
+      },
+    );
+  }
+
+  _showErrorDialog(context, message) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            title: Text(message),
+            actionsAlignment: MainAxisAlignment.spaceBetween,
+            actionsPadding: const EdgeInsets.symmetric(horizontal: 15));
       },
     );
   }

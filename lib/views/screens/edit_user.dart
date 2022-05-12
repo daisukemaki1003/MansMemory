@@ -54,6 +54,7 @@ class UserEditScreen extends ConsumerWidget {
                   try {
                     await users.set(user.uid, editUser);
                   } catch (e) {
+                    print(e.toString());
                     final snackBar = SnackBar(
                       backgroundColor: Colors.red,
                       content: Text(e.toString()),
@@ -357,7 +358,7 @@ class UserEditScreen extends ConsumerWidget {
             ),
           ),
 
-          const SizedBox(height: 50),
+          const SizedBox(height: 100),
         ]),
       ),
     );

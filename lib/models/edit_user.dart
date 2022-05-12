@@ -5,16 +5,33 @@ import 'package:mans_memory/models/user.dart';
 class EditUser extends ChangeNotifier {
   final User user;
   EditUser(this.user) {
+    setName(user.name);
     nameController.text = user.name;
+
+    setFurigana(user.furigana ?? '');
     furiganaController.text = user.furigana ?? '';
-    birthdayController.text = user.birthday != null
-        ? DateFormat('yyyy年M月d日').format(user.birthday!)
-        : '';
+
+    if (user.birthday != null) {
+      setBirthday(user.birthday!);
+      birthdayController.text = DateFormat('yyyy年M月d日').format(user.birthday!);
+    }
+
+    setBirthplace(user.birthplace ?? '');
     birthplaceController.text = user.birthplace ?? '';
+
+    setResidence(user.residence ?? '');
     residenceController.text = user.residence ?? '';
+
+    setEducationalBackground(user.educationalBackground ?? '');
     educationalBackgroundController.text = user.educationalBackground ?? '';
+
+    setOccupation(user.occupation ?? '');
     occupationController.text = user.occupation ?? '';
-    annualIncomeController.text = user.annualIncome.toString();
+
+    if (user.annualIncome != null) {
+      setAnnualIncome(user.annualIncome.toString());
+      annualIncomeController.text = user.annualIncome.toString();
+    }
   }
   final nameController = TextEditingController();
   final furiganaController = TextEditingController();
@@ -28,7 +45,7 @@ class EditUser extends ChangeNotifier {
   // final hobbyController = TextEditingController();
   // final holidayController = TextEditingController();
 
-  late String name;
+  String? name;
   String? furigana;
   DateTime? birthday;
 
@@ -43,12 +60,10 @@ class EditUser extends ChangeNotifier {
 
   void setName(String name) {
     this.name = name;
-    notifyListeners();
   }
 
   void setFurigana(String furigana) {
     this.furigana = furigana;
-    notifyListeners();
   }
 
   // void setBirthday(String birthday) {
@@ -58,35 +73,28 @@ class EditUser extends ChangeNotifier {
   //         .replaceFirst('月', '-')
   //         .replaceFirst('日', ''),
   //   );
-  //   notifyListeners();
   // }
   void setBirthday(DateTime birthday) {
     this.birthday = birthday;
-    notifyListeners();
   }
 
   void setBirthplace(String birthplace) {
     this.birthplace = birthplace;
-    notifyListeners();
   }
 
   void setResidence(String residence) {
     this.residence = residence;
-    notifyListeners();
   }
 
   void setEducationalBackground(String educationalBackground) {
     this.educationalBackground = educationalBackground;
-    notifyListeners();
   }
 
   void setOccupation(String occupation) {
     this.occupation = occupation;
-    notifyListeners();
   }
 
   void setAnnualIncome(String annualIncome) {
     this.annualIncome = int.parse(annualIncome);
-    notifyListeners();
   }
 }
