@@ -1,3 +1,4 @@
+
 import '../constants/keys.dart';
 
 class User {
@@ -9,8 +10,8 @@ class User {
 
   final String? birthplace;
   final String? residence;
-  final List<dynamic>? hobby;
-  final List<dynamic>? holiday;
+  // final List<dynamic>? hobby;
+  // final List<dynamic>? holiday;
 
   final String? educationalBackground;
   final String? occupation;
@@ -25,9 +26,9 @@ class User {
     required this.birthday,
     required this.birthplace,
     required this.image,
-    required this.hobby,
+    // required this.hobby,
+    // required this.holiday,
     required this.residence,
-    required this.holiday,
     required this.educationalBackground,
     required this.occupation,
     required this.annualIncome,

@@ -1,15 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:mans_memory/constants/keys.dart';
 import 'package:mans_memory/models/user.dart';
 import 'package:mans_memory/provider/user_provider.dart';
 import 'package:mans_memory/views/screens/user_details.dart';
 import 'package:mans_memory/views/widgets/loading.dart';
-
-import '../widgets/input_field/date_input_field.dart';
-import '../widgets/input_field/text_input_field.dart';
 
 class UserListScreen extends ConsumerWidget {
   const UserListScreen({Key? key}) : super(key: key);
@@ -101,7 +96,7 @@ class UserListScreen extends ConsumerWidget {
                           onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
-                              return MyTabbedPage(user);
+                              return MyTabbedPage(user.uid);
                             }));
                           },
                         ),
@@ -159,12 +154,12 @@ class UserListScreen extends ConsumerWidget {
                         onPressed: () async {
                           /// firebaseにユーザーを登録
                           try {
-                            User user =
+                            final userId =
                                 await users.add(nameController.text.trim());
                             await _showTextDialog(context, 'ユーザーを作成しました。');
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
-                              return MyTabbedPage(user);
+                              return MyTabbedPage(userId);
                             }));
                           } catch (e) {
                             _showTextDialog(context, e.toString());
@@ -208,5 +203,4 @@ class UserListScreen extends ConsumerWidget {
       },
     );
   }
-
 }
