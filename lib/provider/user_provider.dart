@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mans_memory/constants/keys.dart';
+import 'package:mans_memory/models/edit_user.dart';
 import '../models/user.dart';
+
+// final userNameProvider = StateProvider.autoDispose((ref) => TextEditingController());
 
 final usersProvider =
     ChangeNotifierProvider<UserRepository>((ref) => UserRepository._());
@@ -13,81 +16,79 @@ class UserRepository extends ChangeNotifier {
 
   final collectionName = 'users';
 
+  User userCreate(DocumentSnapshot<Object?> document) {
+    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+    return User(
+        uid: document.id,
+        name: data[NAME],
+        furigana: data[FURIGANA],
+        annualIncome: data[ANNUAL_INCOME],
+        educationalBackground: data[EDUCATIONAL_BACKGROUND],
+        // hobby: data[HOBBY],
+        // holiday: data[HOLIDAY],
+        occupation: data[OCCUPATION],
+        residence: data[RESIDENCE],
+        birthday: data[BIRTHDAY]?.toDate(),
+        birthplace: data[BIRTHPLACE],
+        image: data[IMAGE]);
+  }
+
   Future<List<User>> fetch() async {
     final QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection(collectionName).get();
 
-    final List<User> users = snapshot.docs.map(
-      (DocumentSnapshot document) {
-        Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-        final String id = document.id;
-        final String name = data[NAME];
-        final String? furigana = data[FURIGANA];
-        final Timestamp? birthday = data[BIRTHDAY];
-
-        final List<dynamic>? hobby = data[HOBBY];
-        final List<dynamic>? holiday = data[HOLIDAY];
-        final String? birthplace = data[BIRTHPLACE];
-        final String? residence = data[RESIDENCE];
-
-        final String? occupation = data[OCCUPATION];
-        final String? educationalBackground = data[EDUCATIONAL_BACKGROUND];
-        final int? annualIncome = data[ANNUAL_INCOME];
-        final String? image = data[IMAGE];
-
-        return User(
-            uid: id,
-            name: name,
-            furigana: furigana,
-            annualIncome: annualIncome,
-            educationalBackground: educationalBackground,
-            hobby: hobby,
-            holiday: holiday,
-            occupation: occupation,
-            residence: residence,
-            birthday: birthday!.toDate(),
-            birthplace: birthplace,
-            image: image);
-      },
-    ).toList();
-    await Future.delayed(Duration(seconds: 3));
+    final List<User> users = snapshot.docs
+        .map((DocumentSnapshot document) => userCreate(document))
+        .toList();
     return users;
   }
 
-  Future<void> add({
-    required String name,
-    required String? furigana,
-    required Timestamp? birthday,
-    required List<String>? hobby,
-    required List<bool>? holiday,
-    required String? birthplace,
-    required String? residence,
-    required String? occupation,
-    required String? educationalBackground,
-    required int? annualIncome,
-    required String? image,
-  }) async {
-    FirebaseFirestore.instance.collection(collectionName).add({
-      NAME: name,
-      FURIGANA: furigana,
-      BIRTHDAY: birthday,
-      HOBBY: hobby,
-      HOLIDAY: holiday,
-      BIRTHPLACE: birthplace,
-      RESIDENCE: residence,
-      EDUCATIONAL_BACKGROUND: occupation,
-      OCCUPATION: educationalBackground,
-      ANNUAL_INCOME: annualIncome,
-      IMAGE: image,
-    });
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchStream() {
+    return FirebaseFirestore.instance.collection(collectionName).snapshots();
   }
 
-  void remove(User user) => print("remove");
-}
+  /// return user's UID
+  Future<String> add(String inputName) async {
+    if (inputName.isEmpty) throw ('名前を入力してください');
 
-List<int> stringToList(String listAsString) {
-  return listAsString
-      .split(',')
-      .map<int>((String item) => int.parse(item))
-      .toList();
+    return await FirebaseFirestore.instance
+        .collection(collectionName)
+        .add(
+          {NAME: inputName},
+        )
+        .then((value) => value.id)
+        .catchError((e) => throw ('ユーザーの登録に失敗しました。'));
+  }
+
+  Future<User> get(String uid) async {
+    return userCreate(await FirebaseFirestore.instance
+        .collection(collectionName)
+        .doc(uid)
+        .get());
+  }
+
+  Future<void> set(String id, EditUser user) async {
+    await FirebaseFirestore.instance.collection(collectionName).doc(id).set({
+      NAME: user.name,
+      FURIGANA: user.furigana,
+      BIRTHDAY: user.birthday,
+      HOBBY: user.birthplace,
+      BIRTHPLACE: user.residence,
+      EDUCATIONAL_BACKGROUND: user.educationalBackground,
+      OCCUPATION: user.occupation,
+      ANNUAL_INCOME: user.annualIncome,
+      // HOLIDAY: hobby,
+      // RESIDENCE: holiday,
+      // IMAGE: image,
+    }).catchError((e) => throw ('ユーザーの編集に失敗しました。'));
+    notifyListeners();
+  }
+
+  void delete(String id) async {
+    await FirebaseFirestore.instance
+        .collection(collectionName)
+        .doc(id)
+        .delete()
+        .catchError((e) => throw ('ユーザーの編集に失敗しました。'));
+  }
 }
