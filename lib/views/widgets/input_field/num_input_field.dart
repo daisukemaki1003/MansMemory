@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-Widget textInputField(String label, String ?data) {
+Widget numberInputField(String label, String data) {
   TextEditingController controller = TextEditingController();
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
     child: TextField(
+      keyboardType: TextInputType.number,
       controller: controller,
       cursorColor: Colors.black12,
       onChanged: (value) => data = controller.text,

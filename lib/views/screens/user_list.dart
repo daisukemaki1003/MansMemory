@@ -2,14 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:mans_memory/constants/keys.dart';
 import 'package:mans_memory/models/user.dart';
 import 'package:mans_memory/provider/user_provider.dart';
 import 'package:mans_memory/views/screens/user_details.dart';
 import 'package:mans_memory/views/widgets/loading.dart';
-
-import '../widgets/input_field/date_input_field.dart';
-import '../widgets/input_field/text_input_field.dart';
 
 class UserListScreen extends ConsumerWidget {
   const UserListScreen({Key? key}) : super(key: key);
@@ -24,7 +20,7 @@ class UserListScreen extends ConsumerWidget {
           icon: const Icon(Icons.menu),
           onPressed: () async {},
         ),
-        title: const Text("Title"),
+        title: const Text("マンメモ"),
         centerTitle: true,
         actions: [
           IconButton(
@@ -37,7 +33,7 @@ class UserListScreen extends ConsumerWidget {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => userRegistration(context, users),
+                  builder: (context) => UserRegistration(users),
                 ),
               );
             },
@@ -46,13 +42,16 @@ class UserListScreen extends ConsumerWidget {
         ],
       ),
       body: SafeArea(
-        child: FutureBuilder(
-          future: users.fetch(),
-          builder: (context, AsyncSnapshot<List<User>> snapshot) {
+        child: StreamBuilder(
+          stream: users.fetchStream(),
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return loading();
             }
-            final userList = snapshot.data!;
+            // final userList = snapshot.data!;
+            List<User> userList = snapshot.data!.docs
+                .map((DocumentSnapshot document) => users.userCreate(document))
+                .toList();
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
               physics: const ScrollPhysics(),
@@ -66,7 +65,7 @@ class UserListScreen extends ConsumerWidget {
                     itemBuilder: (context, index) {
                       final user = userList[index];
                       return Dismissible(
-                        key: Key(user.name),
+                        key: ObjectKey(user),
                         background: Container(
                           padding: const EdgeInsets.only(
                             right: 10,
@@ -79,7 +78,8 @@ class UserListScreen extends ConsumerWidget {
                           ),
                         ),
                         direction: DismissDirection.endToStart,
-                        onDismissed: (direction) => userList.remove(user),
+                        onDismissed: (direction) => users.delete(user.uid),
+                        // onDismissed: (direction) => userList.remove(user),
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 32.0,
@@ -101,7 +101,7 @@ class UserListScreen extends ConsumerWidget {
                           onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
-                              return MyTabbedPage(user);
+                              return MyTabbedPage(user.uid);
                             }));
                           },
                         ),
@@ -117,9 +117,134 @@ class UserListScreen extends ConsumerWidget {
     );
   }
 
-  Widget userRegistration(BuildContext context, UserRepository users) {
-    final TextEditingController nameController = TextEditingController();
+//   Widget userRegistration(BuildContext context, UserRepository users) {
+//     final TextEditingController nameController = TextEditingController();
 
+//     return Scaffold(
+//       appBar: AppBar(
+//         centerTitle: true,
+//         title: const Text('ユーザー作成'),
+//       ),
+//       body: Stack(
+//         children: <Widget>[
+//           Padding(
+//             padding: const EdgeInsets.all(8),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: <Widget>[
+//                 const Text('名前は後から変更できます。'),
+//                 TextField(
+//                   autofocus: true,
+//                   controller: nameController,
+//                   decoration: InputDecoration(
+//                     focusedBorder: const UnderlineInputBorder(
+//                         borderSide: BorderSide(color: Colors.black)),
+//                     suffix: IconButton(
+//                       icon: const Icon(
+//                         Icons.clear,
+//                         color: Colors.black54,
+//                       ),
+//                       onPressed: () {
+//                         nameController.clear();
+//                       },
+//                     ),
+//                   ),
+//                 ),
+//                 const SizedBox(height: 15),
+//                 Center(
+//                   child: Column(
+//                     children: <Widget>[
+//                       const Text('登録ユーザーの名前を入力してください。'),
+//                       const SizedBox(height: 30),
+//                       ElevatedButton(
+//                         child: const Text('作成'),
+//                         onPressed: () async {
+//                           try {
+//                             final userId =
+//                                 await users.add(nameController.text.trim());
+//                             final result =
+//                                 await _showTextDialog(context, 'ユーザーを作成しました。');
+
+//                             if (result != null && result) {
+//                               Navigator.of(context).pop();
+//                               Navigator.of(context).push(MaterialPageRoute(
+//                                   builder: (context) => MyTabbedPage(userId)));
+//                             } else {
+//                               Navigator.of(context).pop();
+//                             }
+//                           } catch (e) {
+//                             _showErrorDialog(context, e.toString());
+//                           }
+//                         },
+//                       ),
+//                     ],
+//                   ),
+//                 )
+//               ],
+//             ),
+//           ),
+//           // model.isLoading
+//           //     ? Container(
+//           //         color: Colors.black.withOpacity(0.3),
+//           //         child: Center(
+//           //           child: CircularProgressIndicator(),
+//           //         ),
+//           //       )
+//           //     : SizedBox()
+//         ],
+//       ),
+//     );
+//   }
+
+//   Future<bool?> _showTextDialog(context, message) async {
+//     return await showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//           title: Text(message),
+//           actionsAlignment: MainAxisAlignment.spaceBetween,
+//           actionsPadding: const EdgeInsets.symmetric(horizontal: 15),
+//           actions: <Widget>[
+//             TextButton(
+//               child: const Text(
+//                 'ホームへ',
+//                 style: TextStyle(color: Colors.black),
+//               ),
+//               onPressed: () => Navigator.of(context).pop(false),
+//             ),
+//             TextButton(
+//               child: const Text(
+//                 '編集画面へ',
+//                 style: TextStyle(color: Colors.black),
+//               ),
+//               onPressed: () => Navigator.of(context).pop(true),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
+
+//   _showErrorDialog(context, message) async {
+//     await showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//             title: Text(message),
+//             actionsAlignment: MainAxisAlignment.spaceBetween,
+//             actionsPadding: const EdgeInsets.symmetric(horizontal: 15));
+//       },
+//     );
+//   }
+}
+
+class UserRegistration extends StatelessWidget {
+  UserRegistration(this.users, {Key? key}) : super(key: key);
+  UserRepository users;
+
+  @override
+  Widget build(BuildContext context) {
+    final TextEditingController nameController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -137,6 +262,8 @@ class UserListScreen extends ConsumerWidget {
                   autofocus: true,
                   controller: nameController,
                   decoration: InputDecoration(
+                    focusedBorder: const UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black)),
                     suffix: IconButton(
                       icon: const Icon(
                         Icons.clear,
@@ -157,17 +284,21 @@ class UserListScreen extends ConsumerWidget {
                       ElevatedButton(
                         child: const Text('作成'),
                         onPressed: () async {
-                          /// firebaseにユーザーを登録
                           try {
-                            User user =
+                            final userId =
                                 await users.add(nameController.text.trim());
-                            await _showTextDialog(context, 'ユーザーを作成しました。');
-                            Navigator.of(context)
-                                .push(MaterialPageRoute(builder: (context) {
-                              return MyTabbedPage(user);
-                            }));
+                            final result =
+                                await _showTextDialog(context, 'ユーザーを作成しました。');
+
+                            if (result != null && result) {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => MyTabbedPage(userId)));
+                            } else {
+                              Navigator.of(context).pop();
+                            }
                           } catch (e) {
-                            _showTextDialog(context, e.toString());
+                            _showErrorDialog(context, e.toString());
                           }
                         },
                       ),
@@ -190,18 +321,28 @@ class UserListScreen extends ConsumerWidget {
     );
   }
 
-  _showTextDialog(context, message) async {
-    await showDialog(
+  Future<bool?> _showTextDialog(context, message) async {
+    return await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(message),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actionsPadding: const EdgeInsets.symmetric(horizontal: 15),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+              child: const Text(
+                'ホームへ',
+                style: TextStyle(color: Colors.black),
+              ),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            TextButton(
+              child: const Text(
+                '編集画面へ',
+                style: TextStyle(color: Colors.black),
+              ),
+              onPressed: () => Navigator.of(context).pop(true),
             ),
           ],
         );
@@ -209,125 +350,15 @@ class UserListScreen extends ConsumerWidget {
     );
   }
 
-  // Widget userRegistrationDialog(UserRepository users, BuildContext context) {
-  //   UserDataTable _userDataTable = UserDataTable();
-  //   return Scaffold(
-  //     appBar: PreferredSize(
-  //       preferredSize: const Size.fromHeight(100.0),
-  //       child: Container(
-  //         decoration: const BoxDecoration(
-  //           color: Colors.white,
-  //           boxShadow: [
-  //             BoxShadow(
-  //               color: Colors.grey, //色
-  //               spreadRadius: 4,
-  //               blurRadius: 4,
-  //               offset: Offset(1, 1),
-  //             ),
-  //           ],
-  //         ),
-  //         padding: const EdgeInsets.only(top: 50.0),
-  //         child: AppBar(
-  //           title: const Text(
-  //             "ユーザー作成",
-  //             style: TextStyle(
-  //               fontSize: 18,
-  //               fontWeight: FontWeight.bold,
-  //             ),
-  //           ),
-  //           elevation: 0,
-  //           actions: [
-  //             TextButton(
-  //               onPressed: () {
-  //                 if (_userDataTable.data['name']!.text.isNotEmpty) {
-  //                   users.add(
-  //                     name: _userDataTable.data[NAME]!.text,
-  //                     furigana: _userDataTable.data[FURIGANA]!.text,
-  //                     birthday: Timestamp.fromDate(
-  //                         DateTime.parse(_userDataTable.data[BIRTHDAY]!.text)),
-  //                     hobby: [_userDataTable.data[HOBBY]!.text],
-  //                     holiday: [false, false],
-  //                     birthplace: _userDataTable.data[BIRTHPLACE]!.text,
-  //                     residence: _userDataTable.data[RESIDENCE]!.text,
-  //                     occupation: _userDataTable.data[OCCUPATION]!.text,
-  //                     educationalBackground:
-  //                         _userDataTable.data[EDUCATIONAL_BACKGROUND]!.text,
-  //                     annualIncome: 1,
-  //                     image: null,
-  //                   );
-  //                 } else {
-  //                   print("データが存在しません");
-  //                 }
-  //               },
-  //               child: const Text(
-  //                 "保存",
-  //                 style: TextStyle(
-  //                     fontWeight: FontWeight.bold,
-  //                     fontSize: 15,
-  //                     color: Colors.blue),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //     body: SingleChildScrollView(
-  //       child: Column(children: inputFieldList(_userDataTable, context)),
-  //     ),
-  //   );
-  // }
-
-  // List<Widget> inputFieldList(
-  //     UserDataTable _userDataTable, BuildContext context) {
-  //   List<Widget> widgetsList = [];
-  //   widgetsList.add(Container(
-  //     height: 200,
-  //     width: double.infinity,
-  //     color: Colors.grey,
-  //   ));
-
-  //   // NAME
-  //   // FURIGANA
-  //   // BIRTHDAY
-  //   widgetsList.add(textInputField(
-  //       userDataConvertedToJP[NAME]!, _userDataTable.data[NAME]!));
-  //   widgetsList.add(textInputField(
-  //       userDataConvertedToJP[FURIGANA]!, _userDataTable.data[FURIGANA]!));
-  //   widgetsList.add(dateInputField(context, userDataConvertedToJP[BIRTHDAY]!,
-  //       _userDataTable.data[BIRTHDAY]!));
-
-  //   widgetsList.add(const SizedBox(height: 40));
-
-  //   // HOBBY
-  //   // HOLIDAY
-  //   // BIRTHPLACE
-  //   // RESIDENCE
-  //   widgetsList.add(dateInputField(
-  //       context, userDataConvertedToJP[HOBBY]!, _userDataTable.data[HOBBY]!));
-  //   widgetsList.add(dateInputField(context, userDataConvertedToJP[HOLIDAY]!,
-  //       _userDataTable.data[HOLIDAY]!));
-  //   widgetsList.add(dateInputField(context, userDataConvertedToJP[BIRTHPLACE]!,
-  //       _userDataTable.data[BIRTHPLACE]!));
-  //   widgetsList.add(dateInputField(context, userDataConvertedToJP[RESIDENCE]!,
-  //       _userDataTable.data[RESIDENCE]!));
-
-  //   widgetsList.add(const SizedBox(height: 40));
-
-  //   // EDUCATIONAL_BACKGROUND
-  //   // OCCUPATION
-  //   // ANNUAL_INCOME
-  //   widgetsList.add(dateInputField(
-  //       context,
-  //       userDataConvertedToJP[EDUCATIONAL_BACKGROUND]!,
-  //       _userDataTable.data[EDUCATIONAL_BACKGROUND]!));
-  //   widgetsList.add(dateInputField(context, userDataConvertedToJP[OCCUPATION]!,
-  //       _userDataTable.data[OCCUPATION]!));
-  //   widgetsList.add(dateInputField(
-  //       context,
-  //       userDataConvertedToJP[ANNUAL_INCOME]!,
-  //       _userDataTable.data[ANNUAL_INCOME]!));
-
-  //   widgetsList.add(const SizedBox(height: 50));
-  //   return widgetsList;
-  // }
+  _showErrorDialog(context, message) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            title: Text(message),
+            actionsAlignment: MainAxisAlignment.spaceBetween,
+            actionsPadding: const EdgeInsets.symmetric(horizontal: 15));
+      },
+    );
+  }
 }
