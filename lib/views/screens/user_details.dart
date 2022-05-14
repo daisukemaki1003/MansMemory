@@ -64,13 +64,12 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                     leading: IconButton(
                         icon: const Icon(Icons.arrow_back_ios_new),
                         onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
+                          Navigator.of(context).pop(MaterialPageRoute(
                             builder: (context) => const UserListScreen(),
                           ));
                         }),
                     flexibleSpace: FlexibleSpaceBar(
                       collapseMode: CollapseMode.pin,
-                      // centerTitle: true,
                       background: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30),
                         child: Column(
@@ -208,7 +207,6 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                                   ),
                                   builder: (BuildContext context) {
                                     return UserEditScreen(user);
-
                                   },
                                 );
                               },

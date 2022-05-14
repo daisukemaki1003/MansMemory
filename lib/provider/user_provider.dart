@@ -43,6 +43,10 @@ class UserRepository extends ChangeNotifier {
     return users;
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchStream() {
+    return FirebaseFirestore.instance.collection(collectionName).snapshots();
+  }
+
   /// return user's UID
   Future<String> add(String inputName) async {
     if (inputName.isEmpty) throw ('名前を入力してください');
@@ -80,5 +84,11 @@ class UserRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  void remove(User user) => print("remove");
+  void delete(String id) async {
+    await FirebaseFirestore.instance
+        .collection(collectionName)
+        .doc(id)
+        .delete()
+        .catchError((e) => throw ('ユーザーの編集に失敗しました。'));
+  }
 }
