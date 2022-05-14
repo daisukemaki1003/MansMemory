@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "807477144666",
+    "project_id": "mans-memory-apps",
+    "storage_bucket": "mans-memory-apps.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807477144666:android:6e097219221a39e0267c63",
+        "android_client_info": {
+          "package_name": "com.example.mans_memory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "807477144666-0tf7sq33dtkblrm4gf9gt49u9uu3khi0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqzfhXeqItCI_lAZjhzkXG8hAOBHrFHKk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "807477144666-0tf7sq33dtkblrm4gf9gt49u9uu3khi0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "807477144666-nv5sh5ciu4sa86a25crb8ngqp47e92aq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mansMemory"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
