@@ -11,8 +11,6 @@
 - Flutter 2.10.5
 - Flutter riverpod 1.0.3
 
-
-
 ## Setup project
 
 プロジェクトをダウンロード
