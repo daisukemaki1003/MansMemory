@@ -1,35 +1,30 @@
-# 人を記録するアプリ
+# Flutter app to manage people
 
-### ターゲット
-- 夜職の女性
+出会った人の特徴や思い出を記録できます。
 
-### 目的
-- 出会った人との思い出を記録する。
+| Home | Details | Edit |
+|  --- |  ---    |   ---    |
+|<img src="https://user-images.githubusercontent.com/68681355/168603880-fa12189f-d2bf-4983-91cf-cac3e8fb4731.png" width="250">|<img src="https://user-images.githubusercontent.com/68681355/168604037-39b345cb-d5d2-4a04-b7f1-7e49235db5e4.png" width="250">|<img src="https://user-images.githubusercontent.com/68681355/168604882-5077b8bd-dbe0-4e73-8923-249696ace14f.png" width="250">|
 
-### 機能要件
-- 記録
-  - パーソナルデータ
-    - 基本情報
-      - 名前
-      - ふりがな
-      - 年齢
-      - 生年月日
-    - 趣味、生活
-      - 趣味
-      - 居住地
-      - 休日
-    - 学歴、職種
-      - 学歴
-      - 職種
-      - 年収
-  - 日記
-- 表示
-  - 作成日順
 
-### システム構成
-- フロントエンド
-  - flutter
-- バックエンド
-  - firebase
+### Stack
+- Flutter 2.10.5
+- Flutter riverpod 1.0.3
 
+## Setup project
+
+プロジェクトをダウンロード
+```bash
+git clone https://github.com/salvadordeveloper/flutter-crypto-app
+```
+
+フラッターの依存関係を取得
+```bash
+flutter pub get
+```
+
+アプリを実行
+```bash
+flutter run
+```
 
