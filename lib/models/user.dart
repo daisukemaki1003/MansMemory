@@ -17,7 +17,7 @@ class User {
   final String? occupation;
   final int? annualIncome;
 
-  final String? image;
+  final String? icon;
 
   User({
     required this.uid,
@@ -25,7 +25,7 @@ class User {
     required this.furigana,
     required this.birthday,
     required this.birthplace,
-    required this.image,
+    required this.icon,
     // required this.hobby,
     // required this.holiday,
     required this.residence,

@@ -1,11 +1,13 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mans_memory/constants/keys.dart';
 import 'package:mans_memory/models/edit_user.dart';
 import '../models/user.dart';
-
-// final userNameProvider = StateProvider.autoDispose((ref) => TextEditingController());
 
 final usersProvider =
     ChangeNotifierProvider<UserRepository>((ref) => UserRepository._());
@@ -30,7 +32,7 @@ class UserRepository extends ChangeNotifier {
         residence: data[RESIDENCE],
         birthday: data[BIRTHDAY]?.toDate(),
         birthplace: data[BIRTHPLACE],
-        image: data[IMAGE]);
+        icon: data[ICON]);
   }
 
   Future<List<User>> fetch() async {
@@ -82,6 +84,27 @@ class UserRepository extends ChangeNotifier {
       // IMAGE: image,
     }).catchError((e) => throw ('ユーザーの編集に失敗しました。'));
     notifyListeners();
+  }
+
+  Future<void> setImage(String id) async {
+    // ストレージに保存
+    final ImagePicker _picker = ImagePicker();
+    final imageFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (imageFile != null) {
+      final doc = FirebaseFirestore.instance.collection('icons').doc();
+      final task = await FirebaseStorage.instance
+          .ref('icons/${doc.id}')
+          .putFile(File(imageFile.path));
+
+      // firestoreに画像パスを保存
+      final imgUrl = await task.ref.getDownloadURL();
+      await FirebaseFirestore.instance
+          .collection(collectionName)
+          .doc(id)
+          .update({ICON: imgUrl}).catchError((e) => throw ('ユーザーの編集に失敗しました。'));
+      notifyListeners();
+    }
   }
 
   void delete(String id) async {

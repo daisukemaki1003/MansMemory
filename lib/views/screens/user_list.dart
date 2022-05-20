@@ -88,7 +88,7 @@ class UserListScreen extends ConsumerWidget {
                           leading: CircleAvatar(
                             radius: 25,
                             child: ClipOval(
-                              child: Image.network(user.image ??
+                              child: Image.network(user.icon ??
                                   "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
                             ),
                           ),

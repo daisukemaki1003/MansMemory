@@ -12,4 +12,4 @@ String EDUCATIONAL_BACKGROUND = 'educational_background';
 String OCCUPATION = 'occupation';
 String ANNUAL_INCOME = 'annual_income';
 
-String IMAGE = 'image';
+String ICON = 'icon';

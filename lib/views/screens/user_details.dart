@@ -1,5 +1,7 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mans_memory/models/user.dart';
 
@@ -110,35 +112,42 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                                     )
                                   ],
                                 ),
-                                Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 35,
-                                      backgroundImage: const NetworkImage(
-                                          "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-                                      child: Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: const [
-                                            CircleAvatar(
-                                              radius: 10,
-                                              backgroundColor: Colors.white,
-                                            ),
-                                            CircleAvatar(
-                                              radius: 8,
-                                              backgroundColor: Colors.blue,
-                                            ),
-                                            Icon(
-                                              Icons.add,
-                                              color: Colors.white,
-                                              size: 14,
-                                            )
-                                          ],
-                                        ),
+                                RawMaterialButton(
+                                  onPressed: () async {
+                                    try {
+                                      await users.setImage(user.uid);
+                                    } catch (e) {
+                                      print(e);
+                                    }
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 35,
+                                    backgroundImage: NetworkImage(user.icon !=
+                                            null
+                                        ? user.icon!
+                                        : "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+                                    child: Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: const [
+                                          CircleAvatar(
+                                            radius: 10,
+                                            backgroundColor: Colors.white,
+                                          ),
+                                          CircleAvatar(
+                                            radius: 8,
+                                            backgroundColor: Colors.blue,
+                                          ),
+                                          Icon(
+                                            Icons.add,
+                                            color: Colors.white,
+                                            size: 14,
+                                          )
+                                        ],
                                       ),
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
