@@ -115,17 +115,24 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                                 RawMaterialButton(
                                   onPressed: () async {
                                     try {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        },
+                                      );
                                       await users.setImage(user.uid);
+                                      Navigator.of(context).pop();
                                     } catch (e) {
                                       print(e);
                                     }
                                   },
                                   child: CircleAvatar(
                                     radius: 35,
-                                    backgroundImage: NetworkImage(user.icon !=
-                                            null
-                                        ? user.icon!
-                                        : "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+                                    backgroundImage: NetworkImage(user.icon ??
+                                        "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
                                     child: Align(
                                       alignment: Alignment.bottomRight,
                                       child: Stack(

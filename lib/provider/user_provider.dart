@@ -15,8 +15,8 @@ final usersProvider =
 class UserRepository extends ChangeNotifier {
   UserRepository._();
   static UserRepository instance = UserRepository._();
-
   final collectionName = 'users';
+
 
   User userCreate(DocumentSnapshot<Object?> document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
@@ -52,7 +52,6 @@ class UserRepository extends ChangeNotifier {
   /// return user's UID
   Future<String> add(String inputName) async {
     if (inputName.isEmpty) throw ('名前を入力してください');
-
     return await FirebaseFirestore.instance
         .collection(collectionName)
         .add(
@@ -70,7 +69,7 @@ class UserRepository extends ChangeNotifier {
   }
 
   Future<void> set(String id, EditUser user) async {
-    await FirebaseFirestore.instance.collection(collectionName).doc(id).set({
+    await FirebaseFirestore.instance.collection(collectionName).doc(id).update({
       NAME: user.name,
       FURIGANA: user.furigana,
       BIRTHDAY: user.birthday,
