@@ -7,6 +7,7 @@ import 'package:mans_memory/views/screens/sign_up.dart';
 import 'package:mans_memory/views/widgets/google_sign_in_button.dart';
 
 import '../../provider/authentication_provider.dart';
+import 'terms_of_service.dart';
 
 class SignInScreen extends ConsumerWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -145,20 +146,14 @@ class SignInScreen extends ConsumerWidget {
                 const TextSpan(
                     text: '登録すると', style: TextStyle(color: Colors.black)),
                 TextSpan(
-                    text: '利用規約',
-                    style: const TextStyle(color: Colors.blue),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        // タップ時
-                      }),
-                const TextSpan(
-                    text: '、', style: TextStyle(color: Colors.black)),
-                TextSpan(
                     text: 'プライバシーポリシー',
                     style: const TextStyle(color: Colors.blue),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        // タップ時
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (context) {
+                          return const TermsOfServiceScreen();
+                        }));
                       }),
                 const TextSpan(
                     text: 'に同意したものとみなされます。',
