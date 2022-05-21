@@ -9,26 +9,27 @@ import 'package:mans_memory/provider/user_provider.dart';
 import 'package:mans_memory/views/screens/user_details.dart';
 import 'package:mans_memory/views/widgets/loading.dart';
 
+import '../../provider/authentication_provider.dart';
+
 class UserListScreen extends ConsumerWidget {
   const UserListScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final users = ref.watch(usersProvider);
+    final authentication = ref.watch(authenticationProvider);
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.menu),
-          onPressed: () async {},
+          onPressed: () async {
+            authentication.signOut();
+          },
         ),
         title: const Text("マンメモ"),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.sort),
-            onPressed: () {},
-          ),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {

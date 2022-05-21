@@ -668,6 +668,8 @@ PODS:
     - FirebaseCore (~> 8.0)
     - GTMSessionFetcher/Core (~> 1.5)
   - Flutter (1.0.0)
+  - flutter_secure_storage (3.3.1):
+    - Flutter
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
@@ -772,6 +774,10 @@ PODS:
   - ReachabilitySwift (5.0.0)
   - shared_preferences_ios (0.0.1):
     - Flutter
+  - sign_in_with_apple (0.0.1):
+    - Flutter
+  - the_apple_sign_in (1.0.0):
+    - Flutter
   - Toast (4.0.0)
 
 DEPENDENCIES:
@@ -781,11 +787,14 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
+  - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - nb_utils (from `.symlinks/plugins/nb_utils/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
+  - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
+  - the_apple_sign_in (from `.symlinks/plugins/the_apple_sign_in/ios`)
 
 SPEC REPOS:
   trunk:
@@ -825,6 +834,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
     :path: Flutter
+  flutter_secure_storage:
+    :path: ".symlinks/plugins/flutter_secure_storage/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   google_sign_in_ios:
@@ -835,6 +846,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/nb_utils/ios"
   shared_preferences_ios:
     :path: ".symlinks/plugins/shared_preferences_ios/ios"
+  sign_in_with_apple:
+    :path: ".symlinks/plugins/sign_in_with_apple/ios"
+  the_apple_sign_in:
+    :path: ".symlinks/plugins/the_apple_sign_in/ios"
 
 SPEC CHECKSUMS:
   abseil: ebe5b5529fb05d93a8bdb7951607be08b7fa71bc
@@ -852,6 +867,7 @@ SPEC CHECKSUMS:
   FirebaseFirestore: d7023faff8e1b4fd69d0adbcf18e65129bc03842
   FirebaseStorage: 8019af461599b2c3bc61c6a5dbdfa3d2de66a4d9
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   fluttertoast: 16fbe6039d06a763f3533670197d01fc73459037
   google_sign_in_ios: ed71c0dbddfba8b1ea9aa210dbda695f46bf51bd
   GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
@@ -869,6 +885,8 @@ SPEC CHECKSUMS:
   PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
+  sign_in_with_apple: f3bf75217ea4c2c8b91823f225d70230119b8440
+  the_apple_sign_in: 2e78c83cdb09eba07bb16dcc1f3bc12fcdc8263d
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
 PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea

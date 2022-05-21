@@ -39,6 +39,7 @@ class MyApp extends ConsumerWidget {
       theme: ThemeData(
         primarySwatch: materialWhite,
       ),
+      debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.dark(),
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),

@@ -1,6 +1,7 @@
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mans_memory/models/user.dart';
@@ -218,7 +219,7 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -301,7 +302,7 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
             ),
           ),
         ),
-        const SizedBox(height: 130)
+        const SizedBox(height: 130),
       ],
     );
   }
