@@ -27,7 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.807477144666-nv5sh5ciu4sa86a25crb8ngqp47e92aq</string>
+				<string>com.googleusercontent.apps.807477144666-ntbjdeb1pt97qbe72uh0dhehn964thur</string>
 			</array>
 		</dict>
 	</array>
@@ -54,5 +54,14 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	
+		<!-- image setup -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires to access your photo library</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires to add file to your camera</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app requires to add file to your photo library your microphone</string>
+	<!-- image setup -->
 </dict>
 </plist>

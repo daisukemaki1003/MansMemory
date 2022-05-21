@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:mans_memory/views/screens/user_list.dart';
 import 'package:mans_memory/views/screens/sign_up.dart';
 import 'package:mans_memory/views/widgets/google_sign_in_button.dart';
@@ -11,8 +13,8 @@ class SignInScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final passwordController = TextEditingController();
     final emailController = TextEditingController();
+    final passwordController = TextEditingController();
     var infoText = ref.watch(infoTextProvider.state);
     final authentication = ref.watch(authenticationProvider);
 
@@ -22,19 +24,37 @@ class SignInScreen extends ConsumerWidget {
           // padding: const EdgeInsets.all(24),
           padding: const EdgeInsets.fromLTRB(50, 54, 50, 24),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               // メールアドレス入力
               TextFormField(
-                decoration: const InputDecoration(labelText: 'メールアドレス'),
                 controller: emailController,
+                decoration: const InputDecoration(
+                  hintText: 'メールアドレス',
+                  hintStyle: TextStyle(color: Colors.black),
+                  // floatingLabelBehavior: FloatingLabelBehavior.always,
+                  contentPadding:
+                      EdgeInsets.only(left: 10, top: 20, bottom: 15, right: 10),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue)),
+                ),
               ),
+
+              const SizedBox(height: 10),
 
               // パスワード入力
               TextFormField(
-                decoration: const InputDecoration(labelText: 'パスワード'),
                 obscureText: true,
                 controller: passwordController,
+                decoration: const InputDecoration(
+                  hintText: 'パウワード',
+                  hintStyle: TextStyle(color: Colors.black),
+                  // floatingLabelBehavior: FloatingLabelBehavior.always,
+                  contentPadding:
+                      EdgeInsets.only(left: 10, top: 20, bottom: 15, right: 10),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.blue)),
+                ),
               ),
 
               const SizedBox(height: 10),
@@ -76,29 +96,92 @@ class SignInScreen extends ConsumerWidget {
                 ),
               ),
 
-              Container(
-                padding: const EdgeInsets.only(top: 80),
-                child: Column(children: const [
-                  GoogleSignInButton(),
-                ]),
+              const SizedBox(height: 30),
+
+              Row(children: <Widget>[
+                Expanded(
+                  child: Container(
+                      margin: const EdgeInsets.only(left: 10.0, right: 15.0),
+                      child: const Divider(color: Colors.black)),
+                ),
+                const Text('または'),
+                Expanded(
+                  child: Container(
+                      margin: const EdgeInsets.only(left: 15.0, right: 10.0),
+                      child: const Divider(color: Colors.black)),
+                ),
+              ]),
+
+              const SizedBox(height: 10),
+
+              SignInButton(
+                Buttons.GoogleDark,
+                onPressed: () => authentication.signInWithGoogle(),
+              ),
+              const Divider(),
+              SignInButton(
+                Buttons.Apple,
+                onPressed: () => authentication.signInWithApple(),
               ),
 
-              const SizedBox(
-                height: 50,
+              const Divider(),
+              SignInButton(
+                Buttons.FacebookNew,
+                onPressed: () {},
               ),
 
-              SizedBox(
-                width: double.infinity,
-                child: TextButton(
-                    child: const Text('会員登録はこちらから'),
-                    onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) {
-                          return const SignUpScreen();
-                        }),
-                      );
-                    }),
+              const Divider(),
+              SignInButton(
+                Buttons.Twitter,
+                text: "Use Twitter",
+                onPressed: () {},
               ),
+              const Divider(),
+
+              const SizedBox(height: 30),
+
+              RichText(
+                  text: TextSpan(children: [
+                const TextSpan(
+                    text: '登録すると', style: TextStyle(color: Colors.black)),
+                TextSpan(
+                    text: '利用規約',
+                    style: const TextStyle(color: Colors.blue),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // タップ時
+                      }),
+                const TextSpan(
+                    text: '、', style: TextStyle(color: Colors.black)),
+                TextSpan(
+                    text: 'プライバシーポリシー',
+                    style: const TextStyle(color: Colors.blue),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // タップ時
+                      }),
+                const TextSpan(
+                    text: 'に同意したものとみなされます。',
+                    style: TextStyle(color: Colors.black))
+              ])),
+
+              const SizedBox(height: 30),
+
+              RichText(
+                  text: TextSpan(children: [
+                const TextSpan(
+                    text: 'アカウントを持ってない場合は',
+                    style: TextStyle(color: Colors.black)),
+                TextSpan(
+                    text: 'こちらから',
+                    style: const TextStyle(color: Colors.blue),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // タップ時
+                      }),
+              ])),
+
+              const SizedBox(height: 30),
             ],
           ),
         ),
@@ -106,3 +189,20 @@ class SignInScreen extends ConsumerWidget {
     );
   }
 }
+
+
+
+              // SizedBox(
+              //   width: double.infinity,
+              //   child: TextButton(
+              //     child: const Text('会員登録はこちらから'),
+              //     onPressed: () {
+              //       Navigator.of(context).pushReplacement(
+              //         MaterialPageRoute(builder: (context) {
+              //           return const SignUpScreen();
+              //         }),
+              //       );
+              //     },
+              //   ),
+              // ),
+        

@@ -1,5 +1,8 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mans_memory/models/user.dart';
 
@@ -75,7 +78,7 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                         child: Column(
                           children: [
                             const SizedBox(
-                              height: 100,
+                              height: 120,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,35 +113,49 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                                     )
                                   ],
                                 ),
-                                Column(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 35,
-                                      backgroundImage: const NetworkImage(
-                                          "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-                                      child: Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: const [
-                                            CircleAvatar(
-                                              radius: 10,
-                                              backgroundColor: Colors.white,
-                                            ),
-                                            CircleAvatar(
-                                              radius: 8,
-                                              backgroundColor: Colors.blue,
-                                            ),
-                                            Icon(
-                                              Icons.add,
-                                              color: Colors.white,
-                                              size: 14,
-                                            )
-                                          ],
-                                        ),
+                                RawMaterialButton(
+                                  onPressed: () async {
+                                    try {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return const Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        },
+                                      );
+                                      await users.setImage(user.uid);
+                                      Navigator.of(context).pop();
+                                    } catch (e) {
+                                      print(e);
+                                    }
+                                  },
+                                  child: CircleAvatar(
+                                    radius: 35,
+                                    backgroundImage: NetworkImage(user.icon ??
+                                        "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+                                    child: Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: const [
+                                          CircleAvatar(
+                                            radius: 10,
+                                            backgroundColor: Colors.white,
+                                          ),
+                                          CircleAvatar(
+                                            radius: 8,
+                                            backgroundColor: Colors.blue,
+                                          ),
+                                          Icon(
+                                            Icons.add,
+                                            color: Colors.white,
+                                            size: 14,
+                                          )
+                                        ],
                                       ),
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -146,81 +163,16 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                         ),
                       ),
                     ),
-                    bottom: TabBar(
-                      tabs: const <Widget>[
-                        Tab(text: "プロフィール"),
-                        Tab(text: "プロフィール"),
-                      ],
-                      controller: _tabController,
-                    ),
                   ),
                 )
               ];
             },
-            body: TabBarView(
-              controller: _tabController,
-              children: [
-                SafeArea(
-                  top: false,
-                  bottom: false,
-                  child: Stack(
-                    children: [
-                      Builder(
-                        builder: (BuildContext context) {
-                          return CustomScrollView(
-                            shrinkWrap: true,
-                            slivers: <Widget>[
-                              SliverOverlapInjector(
-                                  handle: NestedScrollView
-                                      .sliverOverlapAbsorberHandleFor(context)),
-                              SliverList(delegate: profileList(user)),
-                            ],
-                          );
-                        },
-                      ),
-                      SafeArea(
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 30.0),
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 76, 141, 195),
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(100))),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 50, vertical: 13)),
-                              child: const Text(
-                                'プロフィールを編集',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                              ),
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(15)),
-                                  ),
-                                  builder: (BuildContext context) {
-                                    return UserEditScreen(user);
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                SafeArea(
-                  top: false,
-                  bottom: false,
-                  child: Builder(
+            body: SafeArea(
+              top: false,
+              bottom: false,
+              child: Stack(
+                children: [
+                  Builder(
                     builder: (BuildContext context) {
                       return CustomScrollView(
                         shrinkWrap: true,
@@ -228,13 +180,48 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                           SliverOverlapInjector(
                               handle: NestedScrollView
                                   .sliverOverlapAbsorberHandleFor(context)),
-                          SliverList(delegate: SliverChildListDelegate([])),
+                          SliverList(delegate: profileList(user)),
                         ],
                       );
                     },
                   ),
-                ),
-              ],
+                  SafeArea(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 30.0),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                              backgroundColor:
+                                  const Color.fromARGB(255, 76, 141, 195),
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(100))),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 50, vertical: 13)),
+                          child: const Text(
+                            'プロフィールを編集',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          onPressed: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(15)),
+                              ),
+                              builder: (BuildContext context) {
+                                return UserEditScreen(user);
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -315,7 +302,7 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
             ),
           ),
         ),
-        const SizedBox(height: 130)
+        const SizedBox(height: 130),
       ],
     );
   }

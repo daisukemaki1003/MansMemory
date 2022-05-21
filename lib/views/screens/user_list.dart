@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,26 +9,27 @@ import 'package:mans_memory/provider/user_provider.dart';
 import 'package:mans_memory/views/screens/user_details.dart';
 import 'package:mans_memory/views/widgets/loading.dart';
 
+import '../../provider/authentication_provider.dart';
+
 class UserListScreen extends ConsumerWidget {
   const UserListScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final users = ref.watch(usersProvider);
+    final authentication = ref.watch(authenticationProvider);
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.menu),
-          onPressed: () async {},
+          onPressed: () async {
+            authentication.signOut();
+          },
         ),
         title: const Text("マンメモ"),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.sort),
-            onPressed: () {},
-          ),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
@@ -78,8 +81,12 @@ class UserListScreen extends ConsumerWidget {
                           ),
                         ),
                         direction: DismissDirection.endToStart,
+                        // onDismissed: (direction) async {
+                        //   final result = await dismissed_dialog(context, user);
+                        //   if (result != null && result) users.delete(user.uid);
+                        // },
                         onDismissed: (direction) => users.delete(user.uid),
-                        // onDismissed: (direction) => userList.remove(user),
+
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 32.0,
@@ -88,7 +95,7 @@ class UserListScreen extends ConsumerWidget {
                           leading: CircleAvatar(
                             radius: 25,
                             child: ClipOval(
-                              child: Image.network(user.image ??
+                              child: Image.network(user.icon ??
                                   "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
                             ),
                           ),
@@ -117,125 +124,34 @@ class UserListScreen extends ConsumerWidget {
     );
   }
 
-//   Widget userRegistration(BuildContext context, UserRepository users) {
-//     final TextEditingController nameController = TextEditingController();
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         centerTitle: true,
-//         title: const Text('ユーザー作成'),
-//       ),
-//       body: Stack(
-//         children: <Widget>[
-//           Padding(
-//             padding: const EdgeInsets.all(8),
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: <Widget>[
-//                 const Text('名前は後から変更できます。'),
-//                 TextField(
-//                   autofocus: true,
-//                   controller: nameController,
-//                   decoration: InputDecoration(
-//                     focusedBorder: const UnderlineInputBorder(
-//                         borderSide: BorderSide(color: Colors.black)),
-//                     suffix: IconButton(
-//                       icon: const Icon(
-//                         Icons.clear,
-//                         color: Colors.black54,
-//                       ),
-//                       onPressed: () {
-//                         nameController.clear();
-//                       },
-//                     ),
-//                   ),
-//                 ),
-//                 const SizedBox(height: 15),
-//                 Center(
-//                   child: Column(
-//                     children: <Widget>[
-//                       const Text('登録ユーザーの名前を入力してください。'),
-//                       const SizedBox(height: 30),
-//                       ElevatedButton(
-//                         child: const Text('作成'),
-//                         onPressed: () async {
-//                           try {
-//                             final userId =
-//                                 await users.add(nameController.text.trim());
-//                             final result =
-//                                 await _showTextDialog(context, 'ユーザーを作成しました。');
-
-//                             if (result != null && result) {
-//                               Navigator.of(context).pop();
-//                               Navigator.of(context).push(MaterialPageRoute(
-//                                   builder: (context) => MyTabbedPage(userId)));
-//                             } else {
-//                               Navigator.of(context).pop();
-//                             }
-//                           } catch (e) {
-//                             _showErrorDialog(context, e.toString());
-//                           }
-//                         },
-//                       ),
-//                     ],
-//                   ),
-//                 )
-//               ],
-//             ),
-//           ),
-//           // model.isLoading
-//           //     ? Container(
-//           //         color: Colors.black.withOpacity(0.3),
-//           //         child: Center(
-//           //           child: CircularProgressIndicator(),
-//           //         ),
-//           //       )
-//           //     : SizedBox()
-//         ],
-//       ),
-//     );
-//   }
-
-//   Future<bool?> _showTextDialog(context, message) async {
-//     return await showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: Text(message),
-//           actionsAlignment: MainAxisAlignment.spaceBetween,
-//           actionsPadding: const EdgeInsets.symmetric(horizontal: 15),
-//           actions: <Widget>[
-//             TextButton(
-//               child: const Text(
-//                 'ホームへ',
-//                 style: TextStyle(color: Colors.black),
-//               ),
-//               onPressed: () => Navigator.of(context).pop(false),
-//             ),
-//             TextButton(
-//               child: const Text(
-//                 '編集画面へ',
-//                 style: TextStyle(color: Colors.black),
-//               ),
-//               onPressed: () => Navigator.of(context).pop(true),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
-
-//   _showErrorDialog(context, message) async {
-//     await showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//             title: Text(message),
-//             actionsAlignment: MainAxisAlignment.spaceBetween,
-//             actionsPadding: const EdgeInsets.symmetric(horizontal: 15));
-//       },
-//     );
-//   }
+  Future<bool?> dismissed_dialog(BuildContext context, User user) {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return AlertDialog(
+          title: Text("削除の確認"),
+          content: Text("『${user.name}』を削除しますか？"),
+          actions: [
+            TextButton(
+              child: Text("いいえ"),
+              onPressed: () => Navigator.of(context).pop(false),
+            ),
+            TextButton(
+              child: Text("はい"),
+              onPressed: () async {
+                Navigator.of(context).pop(true);
+                final snackBar = SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text('${user.name}を削除しました'),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class UserRegistration extends StatelessWidget {
@@ -285,8 +201,16 @@ class UserRegistration extends StatelessWidget {
                         child: const Text('作成'),
                         onPressed: () async {
                           try {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              },
+                            );
                             final userId =
                                 await users.add(nameController.text.trim());
+                            Navigator.of(context).pop();
                             final result =
                                 await _showTextDialog(context, 'ユーザーを作成しました。');
 

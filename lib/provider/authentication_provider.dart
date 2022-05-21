@@ -1,9 +1,13 @@
 // ユーザー情報の受け渡しを行うためのProvider
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:the_apple_sign_in/the_apple_sign_in.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:flutter/services.dart';
 
 // エラー情報の受け渡しを行うためのProvider
 final infoTextProvider = StateProvider((ref) => "");
@@ -90,15 +94,36 @@ class Authentication extends ChangeNotifier {
         user = userCredential.user;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
-          // handle the error here
-        } else if (e.code == 'invalid-credential') {
-          // handle the error here
-        }
-      } catch (e) {
-        // handle the error here
-      }
+        } else if (e.code == 'invalid-credential') {}
+      } catch (e) {}
     }
 
+    return user;
+  }
+
+  Future<User?> signInWithApple() async {
+    isSignIn = true;
+    User? user;
+
+    final AuthorizationResult result = await TheAppleSignIn.performRequests([
+      const AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
+    ]);
+
+    try {
+      final appleIdCredential = result.credential!;
+      final oAuthProvider = OAuthProvider('apple.com');
+      final credential = oAuthProvider.credential(
+        idToken: String.fromCharCodes(appleIdCredential.identityToken!),
+        accessToken: String.fromCharCodes(appleIdCredential.authorizationCode!),
+      );
+      
+      final userCredential = await auth.signInWithCredential(credential);
+      isSignIn = false;
+
+      user = userCredential.user;
+    } catch (e) {
+      print(e);
+    }
     return user;
   }
 

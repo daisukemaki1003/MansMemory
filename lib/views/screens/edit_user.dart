@@ -70,11 +70,11 @@ class UserEditScreen extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         child: Column(children: [
-          Container(
-            height: 200,
-            width: double.infinity,
-            color: Colors.grey,
-          ),
+          // Container(
+          //   height: 200,
+          //   width: double.infinity,
+          //   color: Colors.grey,
+          // ),
           const SizedBox(height: 40),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
