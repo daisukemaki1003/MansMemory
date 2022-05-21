@@ -126,18 +126,19 @@ class SignInScreen extends ConsumerWidget {
               ),
 
               const Divider(),
-              SignInButton(
-                Buttons.FacebookNew,
-                onPressed: () {},
-              ),
 
-              const Divider(),
-              SignInButton(
-                Buttons.Twitter,
-                text: "Use Twitter",
-                onPressed: () {},
-              ),
-              const Divider(),
+              // SignInButton(
+              //   Buttons.FacebookNew,
+              //   onPressed: () {},
+              // ),
+
+              // const Divider(),
+              // SignInButton(
+              //   Buttons.Twitter,
+              //   text: "Use Twitter",
+              //   onPressed: () {},
+              // ),
+              // const Divider(),
 
               const SizedBox(height: 30),
 
@@ -172,7 +173,11 @@ class SignInScreen extends ConsumerWidget {
                     style: const TextStyle(color: Colors.blue),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        // タップ時
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) {
+                            return const SignUpScreen();
+                          }),
+                        );
                       }),
               ])),
 
@@ -184,20 +189,3 @@ class SignInScreen extends ConsumerWidget {
     );
   }
 }
-
-
-
-              // SizedBox(
-              //   width: double.infinity,
-              //   child: TextButton(
-              //     child: const Text('会員登録はこちらから'),
-              //     onPressed: () {
-              //       Navigator.of(context).pushReplacement(
-              //         MaterialPageRoute(builder: (context) {
-              //           return const SignUpScreen();
-              //         }),
-              //       );
-              //     },
-              //   ),
-              // ),
-        
