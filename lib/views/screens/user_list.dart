@@ -8,8 +8,10 @@ import 'package:mans_memory/models/user.dart';
 import 'package:mans_memory/provider/user_provider.dart';
 import 'package:mans_memory/views/screens/user_details.dart';
 import 'package:mans_memory/views/widgets/loading.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../provider/authentication_provider.dart';
+import 'terms_of_service.dart';
 
 class UserListScreen extends ConsumerWidget {
   const UserListScreen({Key? key}) : super(key: key);
@@ -24,7 +26,42 @@ class UserListScreen extends ConsumerWidget {
         leading: IconButton(
           icon: const Icon(Icons.menu),
           onPressed: () async {
-            authentication.signOut();
+            showModalBottomSheet<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ListTile(
+                          title: const Text('利用規約'),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return const TermsOfServiceScreen();
+                            }));
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('問い合わせ'),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            openUrl();
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('ログアウト'),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            authentication.signOut();
+                          },
+                        ),
+                        const SizedBox(height: 50),
+                      ],
+                    ),
+                  );
+                });
           },
         ),
         title: const Text("マンメモ"),
@@ -122,6 +159,19 @@ class UserListScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void openUrl() async {
+    const url = 'https://twitter.com/Tc48AyMVVfuUOjM';
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: true,
+        forceWebView: true,
+      );
+    } else {
+      throw 'このURLにはアクセスできません';
+    }
   }
 
   Future<bool?> dismissed_dialog(BuildContext context, User user) {

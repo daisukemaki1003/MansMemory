@@ -5,9 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:flutter/services.dart';
+// import 'package:twitter_login/twitter_login.dart';
 
 // エラー情報の受け渡しを行うためのProvider
 final infoTextProvider = StateProvider((ref) => "");

@@ -14,6 +14,15 @@ class SignUpScreen extends ConsumerWidget {
     final authentication = ref.watch(authenticationProvider);
 
     return Scaffold(
+      appBar: AppBar(
+          title: const Text(
+        '新規登録',
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      )),
       body: Center(
         child: Container(
           // padding: const EdgeInsets.all(24),
@@ -50,7 +59,7 @@ class SignUpScreen extends ConsumerWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  child: const Text('新規登録'),
+                  child: const Text('登録'),
                   onPressed: () async {
                     final FirebaseAuthResultStatus signUpResult =
                         await authentication.signUpWithEmailAndPassword(
