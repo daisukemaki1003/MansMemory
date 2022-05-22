@@ -64,7 +64,7 @@ class UserListScreen extends ConsumerWidget {
                 });
           },
         ),
-        title: const Text("マンメモ"),
+        title: const Text("友達のーと"),
         centerTitle: true,
         actions: [
           IconButton(
