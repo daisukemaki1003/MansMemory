@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:mans_memory/models/user.dart';
 
+import '../../provider/authentication_provider.dart';
 import '../../provider/user_provider.dart';
 import '../widgets/loading.dart';
 import 'edit_user.dart';
@@ -42,12 +43,13 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = ref.watch(currentUserProvider);
     final users = ref.watch(usersProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: FutureBuilder(
-        future: users.get(uid),
-        builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+        future: users.get(currentUser!.uid, uid),
+        builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
           if (!snapshot.hasData) {
             return loading();
           }
@@ -124,7 +126,7 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                                                   CircularProgressIndicator());
                                         },
                                       );
-                                      await users.setImage(user.uid);
+                                      await users.setImage(currentUser!.uid, user.uid);
                                       Navigator.of(context).pop();
                                     } catch (e) {
                                       print(e);
@@ -229,7 +231,7 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
     );
   }
 
-  SliverChildListDelegate profileList(User user) {
+  SliverChildListDelegate profileList(UserModel user) {
     return SliverChildListDelegate(
       [
         Container(

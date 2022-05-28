@@ -6,13 +6,15 @@ import 'package:mans_memory/provider/user_provider.dart';
 
 import '../../models/edit_user.dart';
 import '../../models/user.dart';
+import '../../provider/authentication_provider.dart';
 
 class UserEditScreen extends ConsumerWidget {
   UserEditScreen(this.user, {Key? key}) : super(key: key);
-  final User user;
+  final UserModel user;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(currentUserProvider);
     final users = ref.watch(usersProvider);
     final editUser = EditUser(user);
 
@@ -52,7 +54,7 @@ class UserEditScreen extends ConsumerWidget {
                 ),
                 onPressed: () async {
                   try {
-                    await users.set(user.uid, editUser);
+                    await users.set(currentUser!.uid, user.uid, editUser);
                   } catch (e) {
                     print(e.toString());
                     final snackBar = SnackBar(

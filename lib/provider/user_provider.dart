@@ -16,11 +16,15 @@ class UserRepository extends ChangeNotifier {
   UserRepository._();
   static UserRepository instance = UserRepository._();
   final collectionName = 'users';
+  final docName = 'client';
 
+  // void fieldCreate(String currentUserId) {
+  //   FirebaseFirestore.instance.collection(collectionName).
+  // }
 
-  User userCreate(DocumentSnapshot<Object?> document) {
+  UserModel userCreate(DocumentSnapshot<Object?> document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    return User(
+    return UserModel(
         uid: document.id,
         name: data[NAME],
         furigana: data[FURIGANA],
@@ -35,41 +39,58 @@ class UserRepository extends ChangeNotifier {
         icon: data[ICON]);
   }
 
-  Future<List<User>> fetch() async {
-    final QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection(collectionName).get();
+  // Future<List<User>> fetch() async {
+  //   final QuerySnapshot snapshot =
+  //       await FirebaseFirestore.instance.collection(collectionName).doc().collection(docName).get();
 
-    final List<User> users = snapshot.docs
-        .map((DocumentSnapshot document) => userCreate(document))
-        .toList();
-    return users;
-  }
+  //   final List<User> users = snapshot.docs
+  //       .map((DocumentSnapshot document) => userCreate(document))
+  //       .toList();
+  //   return users;
+  // }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> fetchStream() {
-    return FirebaseFirestore.instance.collection(collectionName).snapshots();
+  Stream<QuerySnapshot<Map<String, dynamic>>> fetchStream(
+      String currentUserId) {
+    return FirebaseFirestore.instance
+        .collection(collectionName)
+        .doc(currentUserId)
+        .collection(docName)
+        .snapshots();
   }
 
   /// return user's UID
-  Future<String> add(String inputName) async {
+  Future<String> add(String currentUserId, String inputName) async {
     if (inputName.isEmpty) throw ('名前を入力してください');
     return await FirebaseFirestore.instance
         .collection(collectionName)
+        .doc(currentUserId)
+        .collection(docName)
         .add(
           {NAME: inputName},
         )
         .then((value) => value.id)
-        .catchError((e) => throw ('ユーザーの登録に失敗しました。'));
+        .catchError((e) {
+          print(e);
+          throw ('ユーザーの登録に失敗しました。');
+        });
   }
 
-  Future<User> get(String uid) async {
+  Future<UserModel> get(String currentUserId, String uid) async {
     return userCreate(await FirebaseFirestore.instance
         .collection(collectionName)
+        .doc(currentUserId)
+        .collection(docName)
         .doc(uid)
         .get());
   }
 
-  Future<void> set(String id, EditUser user) async {
-    await FirebaseFirestore.instance.collection(collectionName).doc(id).update({
+  Future<void> set(String currentUserId, String uuid, EditUser user) async {
+    await FirebaseFirestore.instance
+        .collection(collectionName)
+        .doc(currentUserId)
+        .collection(docName)
+        .doc(uuid)
+        .update({
       NAME: user.name,
       FURIGANA: user.furigana,
       BIRTHDAY: user.birthday,
@@ -85,7 +106,7 @@ class UserRepository extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setImage(String id) async {
+  Future<void> setImage(String currentUserId, String uuid) async {
     // ストレージに保存
     final ImagePicker _picker = ImagePicker();
     final imageFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -100,15 +121,19 @@ class UserRepository extends ChangeNotifier {
       final imgUrl = await task.ref.getDownloadURL();
       await FirebaseFirestore.instance
           .collection(collectionName)
-          .doc(id)
+          .doc(currentUserId)
+          .collection(docName)
+          .doc(uuid)
           .update({ICON: imgUrl}).catchError((e) => throw ('ユーザーの編集に失敗しました。'));
       notifyListeners();
     }
   }
 
-  void delete(String id) async {
+  void delete(String userId, String id) async {
     await FirebaseFirestore.instance
         .collection(collectionName)
+        .doc(userId)
+        .collection(docName)
         .doc(id)
         .delete()
         .catchError((e) => throw ('ユーザーの編集に失敗しました。'));

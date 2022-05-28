@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:mans_memory/models/user.dart';
 
 class EditUser extends ChangeNotifier {
-  final User user;
+  final UserModel user;
   EditUser(this.user) {
     setName(user.name);
     nameController.text = user.name;

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -20,6 +21,7 @@ class UserListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final users = ref.watch(usersProvider);
     final authentication = ref.watch(authenticationProvider);
+    final currentUser = ref.watch(currentUserProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -73,7 +75,7 @@ class UserListScreen extends ConsumerWidget {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => UserRegistration(users),
+                  builder: (context) => UserRegistration(currentUser!, users),
                 ),
               );
             },
@@ -83,13 +85,13 @@ class UserListScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: StreamBuilder(
-          stream: users.fetchStream(),
+          stream: users.fetchStream(currentUser!.uid),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return loading();
             }
             // final userList = snapshot.data!;
-            List<User> userList = snapshot.data!.docs
+            List<UserModel> userList = snapshot.data!.docs
                 .map((DocumentSnapshot document) => users.userCreate(document))
                 .toList();
             return SingleChildScrollView(
@@ -122,7 +124,8 @@ class UserListScreen extends ConsumerWidget {
                         //   final result = await dismissed_dialog(context, user);
                         //   if (result != null && result) users.delete(user.uid);
                         // },
-                        onDismissed: (direction) => users.delete(user.uid),
+                        onDismissed: (direction) =>
+                            users.delete(currentUser.uid, user.uid),
 
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(
@@ -174,21 +177,21 @@ class UserListScreen extends ConsumerWidget {
     }
   }
 
-  Future<bool?> dismissed_dialog(BuildContext context, User user) {
+  Future<bool?> dismissed_dialog(BuildContext context, UserModel user) {
     return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) {
         return AlertDialog(
-          title: Text("削除の確認"),
+          title: const Text("削除の確認"),
           content: Text("『${user.name}』を削除しますか？"),
           actions: [
             TextButton(
-              child: Text("いいえ"),
+              child: const Text("いいえ"),
               onPressed: () => Navigator.of(context).pop(false),
             ),
             TextButton(
-              child: Text("はい"),
+              child: const Text("はい"),
               onPressed: () async {
                 Navigator.of(context).pop(true);
                 final snackBar = SnackBar(
@@ -205,7 +208,8 @@ class UserListScreen extends ConsumerWidget {
 }
 
 class UserRegistration extends StatelessWidget {
-  UserRegistration(this.users, {Key? key}) : super(key: key);
+  UserRegistration(this.currentUser, this.users, {Key? key}) : super(key: key);
+  User currentUser;
   UserRepository users;
 
   @override
@@ -258,8 +262,8 @@ class UserRegistration extends StatelessWidget {
                                     child: CircularProgressIndicator());
                               },
                             );
-                            final userId =
-                                await users.add(nameController.text.trim());
+                            final userId = await users.add(
+                                currentUser!.uid, nameController.text.trim());
                             Navigator.of(context).pop();
                             final result =
                                 await _showTextDialog(context, 'ユーザーを作成しました。');
