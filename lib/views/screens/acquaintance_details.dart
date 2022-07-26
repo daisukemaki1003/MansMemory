@@ -1,16 +1,13 @@
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:mans_memory/models/user.dart';
+import 'package:mans_memory/models/acquaintance.dart';
 
-import '../../provider/authentication_provider.dart';
-import '../../provider/user_provider.dart';
+import '../../provider/authentication.dart';
+import '../../provider/acquaintance.dart';
 import '../widgets/loading.dart';
 import 'edit_user.dart';
-import 'user_list.dart';
+import 'acquaintance_list.dart';
 
 class MyTabbedPage extends ConsumerStatefulWidget {
   const MyTabbedPage(this.uid, {Key? key}) : super(key: key);
@@ -18,12 +15,12 @@ class MyTabbedPage extends ConsumerStatefulWidget {
 
   @override
   // ignore: no_logic_in_create_state
-  UserDetailsScreen createState() => UserDetailsScreen(uid);
+  AcquaintanceDetailsScreen createState() => AcquaintanceDetailsScreen(uid);
 }
 
-class UserDetailsScreen extends ConsumerState<MyTabbedPage>
+class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
     with SingleTickerProviderStateMixin {
-  UserDetailsScreen(this.uid);
+  AcquaintanceDetailsScreen(this.uid);
 
   final String uid;
   late TabController _tabController;
@@ -44,12 +41,13 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
   @override
   Widget build(BuildContext context) {
     final currentUser = ref.watch(currentUserProvider);
-    final users = ref.watch(usersProvider);
+    final acquaintance = ref.watch(acquaintanceProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: FutureBuilder(
-        future: users.get(currentUser!.uid, uid),
-        builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
+        future: acquaintance.get(currentUser!.uid, uid),
+        builder:
+            (BuildContext context, AsyncSnapshot<AcquaintanceModel> snapshot) {
           if (!snapshot.hasData) {
             return loading();
           }
@@ -70,7 +68,8 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                         icon: const Icon(Icons.arrow_back_ios_new),
                         onPressed: () {
                           Navigator.of(context).pop(MaterialPageRoute(
-                            builder: (context) => const UserListScreen(),
+                            builder: (context) =>
+                                const AcquaintanceListScreen(),
                           ));
                         }),
                     flexibleSpace: FlexibleSpaceBar(
@@ -97,13 +96,6 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                                       ),
                                     ),
                                     Text(
-                                      user.furigana ?? '',
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    Text(
                                       user.birthday != null
                                           ? DateFormat('yyyy年M月d日')
                                               .format(user.birthday!)
@@ -126,8 +118,9 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                                                   CircularProgressIndicator());
                                         },
                                       );
-                                      await users.setImage(currentUser!.uid, user.uid);
-                                      Navigator.of(context).pop();
+                                      // await acquaintance.setImage(
+                                      //     currentUser!.uid, user.uid);
+                                      // Navigator.of(context).pop();
                                     } catch (e) {
                                       print(e);
                                     }
@@ -231,7 +224,7 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
     );
   }
 
-  SliverChildListDelegate profileList(UserModel user) {
+  SliverChildListDelegate profileList(AcquaintanceModel user) {
     return SliverChildListDelegate(
       [
         Container(
@@ -249,7 +242,6 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
                 ),
                 profileWidget('名前', user.name),
-                profileWidget('ふりがな', user.furigana ?? '未設定'),
                 // profileWidget('年齢', user.age!.toString()),
               ],
             ),
@@ -293,13 +285,7 @@ class UserDetailsScreen extends ConsumerState<MyTabbedPage>
                   "基本情報",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
                 ),
-                profileWidget('学歴', user.educationalBackground ?? '未設定'),
                 profileWidget('職種', user.occupation ?? '未設定'),
-                profileWidget(
-                    '年収',
-                    user.annualIncome != null
-                        ? user.annualIncome.toString()
-                        : '未設定'),
               ],
             ),
           ),

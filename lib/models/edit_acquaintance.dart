@@ -1,37 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mans_memory/models/user.dart';
+import 'package:mans_memory/models/acquaintance.dart';
 
-class EditUser extends ChangeNotifier {
-  final UserModel user;
-  EditUser(this.user) {
-    setName(user.name);
-    nameController.text = user.name;
+class EditAcquaintance extends ChangeNotifier {
+  final AcquaintanceModel acquaintance;
+  EditAcquaintance(this.acquaintance) {
+    setName(acquaintance.name);
+    nameController.text = acquaintance.name;
 
-    setFurigana(user.furigana ?? '');
-    furiganaController.text = user.furigana ?? '';
-
-    if (user.birthday != null) {
-      setBirthday(user.birthday!);
-      birthdayController.text = DateFormat('yyyy年M月d日').format(user.birthday!);
+    if (acquaintance.birthday != null) {
+      setBirthday(acquaintance.birthday!);
+      birthdayController.text =
+          DateFormat('yyyy年M月d日').format(acquaintance.birthday!);
     }
 
-    setBirthplace(user.birthplace ?? '');
-    birthplaceController.text = user.birthplace ?? '';
+    setBirthplace(acquaintance.birthplace ?? '');
+    birthplaceController.text = acquaintance.birthplace ?? '';
 
-    setResidence(user.residence ?? '');
-    residenceController.text = user.residence ?? '';
+    setResidence(acquaintance.residence ?? '');
+    residenceController.text = acquaintance.residence ?? '';
 
-    setEducationalBackground(user.educationalBackground ?? '');
-    educationalBackgroundController.text = user.educationalBackground ?? '';
-
-    setOccupation(user.occupation ?? '');
-    occupationController.text = user.occupation ?? '';
-
-    if (user.annualIncome != null) {
-      setAnnualIncome(user.annualIncome.toString());
-      annualIncomeController.text = user.annualIncome.toString();
-    }
+    setOccupation(acquaintance.occupation ?? '');
+    occupationController.text = acquaintance.occupation ?? '';
   }
   final nameController = TextEditingController();
   final furiganaController = TextEditingController();

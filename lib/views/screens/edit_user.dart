@@ -2,21 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:mans_memory/provider/user_provider.dart';
+import 'package:mans_memory/provider/acquaintance.dart';
 
-import '../../models/edit_user.dart';
-import '../../models/user.dart';
-import '../../provider/authentication_provider.dart';
+import '../../models/edit_acquaintance.dart';
+import '../../models/acquaintance.dart';
+import '../../provider/authentication.dart';
 
 class UserEditScreen extends ConsumerWidget {
-  UserEditScreen(this.user, {Key? key}) : super(key: key);
-  final UserModel user;
+  UserEditScreen(this.acquaintance, {Key? key}) : super(key: key);
+  final AcquaintanceModel acquaintance;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUser = ref.watch(currentUserProvider);
-    final users = ref.watch(usersProvider);
-    final editUser = EditUser(user);
+    // final acquaintance = ref.watch(acquaintanceProvider);
+    final editUser = EditAcquaintance(acquaintance);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -53,17 +53,18 @@ class UserEditScreen extends ConsumerWidget {
                       color: Colors.blue),
                 ),
                 onPressed: () async {
-                  try {
-                    await users.set(currentUser!.uid, user.uid, editUser);
-                  } catch (e) {
-                    print(e.toString());
-                    final snackBar = SnackBar(
-                      backgroundColor: Colors.red,
-                      content: Text(e.toString()),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                  Navigator.pop(context);
+                  // try {
+                  //   await acquaintance.set(
+                  //       currentUser!.uid, user.uid, editUser);
+                  // } catch (e) {
+                  //   print(e.toString());
+                  //   final snackBar = SnackBar(
+                  //     backgroundColor: Colors.red,
+                  //     content: Text(e.toString()),
+                  //   );
+                  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  // }
+                  // Navigator.pop(context);
                 },
               ),
             ],
@@ -213,7 +214,7 @@ class UserEditScreen extends ConsumerWidget {
                                     top: false,
                                     child: CupertinoDatePicker(
                                       mode: CupertinoDatePickerMode.date,
-                                      initialDateTime: user.birthday,
+                                      initialDateTime: acquaintance.birthday,
                                       onDateTimeChanged:
                                           (DateTime newDateTime) {
                                         editUser.setBirthday(newDateTime);

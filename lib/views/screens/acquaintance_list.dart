@@ -5,21 +5,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:mans_memory/models/user.dart';
-import 'package:mans_memory/provider/user_provider.dart';
-import 'package:mans_memory/views/screens/user_details.dart';
+import 'package:mans_memory/models/acquaintance.dart';
+import 'package:mans_memory/provider/acquaintance.dart';
+import 'package:mans_memory/views/screens/acquaintance_details.dart';
 import 'package:mans_memory/views/widgets/loading.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../provider/authentication_provider.dart';
+import '../../provider/authentication.dart';
 import 'terms_of_service.dart';
 
-class UserListScreen extends ConsumerWidget {
-  const UserListScreen({Key? key}) : super(key: key);
+class AcquaintanceListScreen extends ConsumerWidget {
+  const AcquaintanceListScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final users = ref.watch(usersProvider);
+    final acquaintance = ref.watch(acquaintanceProvider);
     final authentication = ref.watch(authenticationProvider);
     final currentUser = ref.watch(currentUserProvider);
 
@@ -66,7 +66,7 @@ class UserListScreen extends ConsumerWidget {
                 });
           },
         ),
-        title: const Text("友達のーと"),
+        title: const Text("Title"),
         centerTitle: true,
         actions: [
           IconButton(
@@ -75,7 +75,8 @@ class UserListScreen extends ConsumerWidget {
               await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => UserRegistration(currentUser!, users),
+                  builder: (context) =>
+                      UserRegistration(currentUser!, acquaintance),
                 ),
               );
             },
@@ -85,14 +86,15 @@ class UserListScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: StreamBuilder(
-          stream: users.fetchStream(currentUser!.uid),
+          stream: acquaintance.fetchStream(currentUser!.uid),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return loading();
             }
-            // final userList = snapshot.data!;
-            List<UserModel> userList = snapshot.data!.docs
-                .map((DocumentSnapshot document) => users.userCreate(document))
+            // final acquaintanceList = snapshot.data!;
+            List<AcquaintanceModel> acquaintanceList = snapshot.data!.docs
+                .map((DocumentSnapshot document) =>
+                    acquaintance.acquaintanceCreate(document))
                 .toList();
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -103,11 +105,11 @@ class UserListScreen extends ConsumerWidget {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     scrollDirection: Axis.vertical,
-                    itemCount: userList.length,
+                    itemCount: acquaintanceList.length,
                     itemBuilder: (context, index) {
-                      final user = userList[index];
+                      final acquaintance = acquaintanceList[index];
                       return Dismissible(
-                        key: ObjectKey(user),
+                        key: ObjectKey(acquaintance),
                         background: Container(
                           padding: const EdgeInsets.only(
                             right: 10,
@@ -121,11 +123,11 @@ class UserListScreen extends ConsumerWidget {
                         ),
                         direction: DismissDirection.endToStart,
                         // onDismissed: (direction) async {
-                        //   final result = await dismissed_dialog(context, user);
-                        //   if (result != null && result) users.delete(user.uid);
+                        //   final result = await dismissed_dialog(context, acquaintance);
+                        //   if (result != null && result) acquaintance.delete(acquaintance.uid);
                         // },
-                        onDismissed: (direction) =>
-                            users.delete(currentUser.uid, user.uid),
+                        // onDismissed: (direction) =>
+                        //     acquaintance.delete(currentacquaintance.uid, acquaintance.uid),
 
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(
@@ -135,20 +137,19 @@ class UserListScreen extends ConsumerWidget {
                           leading: CircleAvatar(
                             radius: 25,
                             child: ClipOval(
-                              child: Image.network(user.icon ??
+                              child: Image.network(acquaintance.icon ??
                                   "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
                             ),
                           ),
-                          title: Text(user.name),
-                          subtitle: Text(user.furigana ?? ""),
-                          trailing: user.birthday != null
+                          title: Text(acquaintance.name),
+                          trailing: acquaintance.birthday != null
                               ? Text(DateFormat('yyyy年M月d日')
-                                  .format(user.birthday!))
+                                  .format(acquaintance.birthday!))
                               : const Text(""),
                           onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
-                              return MyTabbedPage(user.uid);
+                              return MyTabbedPage(acquaintance.acquaintanceId);
                             }));
                           },
                         ),
@@ -177,7 +178,7 @@ class UserListScreen extends ConsumerWidget {
     }
   }
 
-  Future<bool?> dismissed_dialog(BuildContext context, UserModel user) {
+  Future<bool?> dismissed_dialog(BuildContext context, AcquaintanceModel user) {
     return showDialog(
       context: context,
       barrierDismissible: false,
@@ -208,9 +209,10 @@ class UserListScreen extends ConsumerWidget {
 }
 
 class UserRegistration extends StatelessWidget {
-  UserRegistration(this.currentUser, this.users, {Key? key}) : super(key: key);
+  UserRegistration(this.currentUser, this.acquaintance, {Key? key})
+      : super(key: key);
   User currentUser;
-  UserRepository users;
+  acquaintanceNotifier acquaintance;
 
   @override
   Widget build(BuildContext context) {
@@ -262,8 +264,11 @@ class UserRegistration extends StatelessWidget {
                                     child: CircularProgressIndicator());
                               },
                             );
-                            final userId = await users.add(
-                                currentUser!.uid, nameController.text.trim());
+                            print("sss");
+                            final userId = await acquaintance.add(
+                                currentUser.uid, nameController.text.trim());
+                            print(userId);
+
                             Navigator.of(context).pop();
                             final result =
                                 await _showTextDialog(context, 'ユーザーを作成しました。');

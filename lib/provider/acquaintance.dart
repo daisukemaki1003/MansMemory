@@ -6,47 +6,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mans_memory/constants/keys.dart';
-import 'package:mans_memory/models/edit_user.dart';
-import '../models/user.dart';
+import 'package:mans_memory/models/edit_acquaintance.dart';
+import '../models/acquaintance.dart';
 
-final usersProvider =
-    ChangeNotifierProvider<UserRepository>((ref) => UserRepository._());
+final acquaintanceProvider = ChangeNotifierProvider<acquaintanceNotifier>(
+    (ref) => acquaintanceNotifier._());
 
-class UserRepository extends ChangeNotifier {
-  UserRepository._();
-  static UserRepository instance = UserRepository._();
+class acquaintanceNotifier extends ChangeNotifier {
+  acquaintanceNotifier._();
+  static acquaintanceNotifier instance = acquaintanceNotifier._();
   final collectionName = 'users';
-  final docName = 'client';
+  final docName = 'acquaintance';
 
-  // void fieldCreate(String currentUserId) {
-  //   FirebaseFirestore.instance.collection(collectionName).
-  // }
-
-  UserModel userCreate(DocumentSnapshot<Object?> document) {
+  AcquaintanceModel acquaintanceCreate(DocumentSnapshot<Object?> document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    return UserModel(
-        uid: document.id,
-        name: data[NAME],
-        furigana: data[FURIGANA],
-        annualIncome: data[ANNUAL_INCOME],
-        educationalBackground: data[EDUCATIONAL_BACKGROUND],
-        // hobby: data[HOBBY],
-        // holiday: data[HOLIDAY],
-        occupation: data[OCCUPATION],
-        residence: data[RESIDENCE],
-        birthday: data[BIRTHDAY]?.toDate(),
-        birthplace: data[BIRTHPLACE],
-        icon: data[ICON]);
+    print(data[NAME]);
+    print(data["createdAt"]);
+    return AcquaintanceModel(
+      acquaintanceId: document.id,
+      name: data[NAME],
+      hobby: data[HOBBY],
+      holiday: data[HOLIDAY],
+      occupation: data[OCCUPATION],
+      residence: data[RESIDENCE],
+      birthday: data[BIRTHDAY]?.toDate(),
+      birthplace: data[BIRTHPLACE],
+      age: data[AGE],
+      memo: data[MEMO],
+      icon: data[ICON],
+      createdAt: data["createdAt"],
+    );
   }
 
   // Future<List<User>> fetch() async {
   //   final QuerySnapshot snapshot =
   //       await FirebaseFirestore.instance.collection(collectionName).doc().collection(docName).get();
 
-  //   final List<User> users = snapshot.docs
+  //   final List<User> acquaintance = snapshot.docs
   //       .map((DocumentSnapshot document) => userCreate(document))
   //       .toList();
-  //   return users;
+  //   return acquaintance;
   // }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchStream(
@@ -58,15 +57,57 @@ class UserRepository extends ChangeNotifier {
         .snapshots();
   }
 
-  /// return user's UID
+  // Future<String> create(String currentUserId, String inputName) async {}
+
+  // /// return user's UID
+  // Future<String> add(String currentUserId, String inputName) async {
+  //   if (inputName.isEmpty) throw ('名前を入力してください');
+
+  //   try {
+  //     await FirebaseFirestore.instance
+  //         .collection(collectionName)
+  //         .doc(currentUserId)
+  //         .collection(docName)
+  //         .add(
+  //       {
+  //         NAME: inputName,
+  //         'createdAt': FieldValue.serverTimestamp(),
+  //         'age': null,
+  //         'birthday': null,
+  //         'birthplace': null,
+  //         'residence': null,
+  //         'hobby': null,
+  //         'holiday': null,
+  //         'occupation': null,
+  //         'memo': null,
+  //         'icon': null,
+  //       },
+  //     );
+  //     throw ('ユーザーの登録');
+  //   } catch (e) {
+  //     print(e);
+  //     throw ('ユーザーの登録に失敗しました。');
+  //   }
+
   Future<String> add(String currentUserId, String inputName) async {
-    if (inputName.isEmpty) throw ('名前を入力してください');
     return await FirebaseFirestore.instance
         .collection(collectionName)
         .doc(currentUserId)
         .collection(docName)
         .add(
-          {NAME: inputName},
+          {
+            'createdAt': Timestamp.now(),
+            NAME: inputName,
+            'age': null,
+            'birthday': null,
+            'birthplace': null,
+            'residence': null,
+            'hobby': null,
+            'holiday': null,
+            'occupation': null,
+            'memo': null,
+            'icon': null,
+          },
         )
         .then((value) => value.id)
         .catchError((e) {
@@ -75,8 +116,8 @@ class UserRepository extends ChangeNotifier {
         });
   }
 
-  Future<UserModel> get(String currentUserId, String uid) async {
-    return userCreate(await FirebaseFirestore.instance
+  Future<AcquaintanceModel> get(String currentUserId, String uid) async {
+    return acquaintanceCreate(await FirebaseFirestore.instance
         .collection(collectionName)
         .doc(currentUserId)
         .collection(docName)
@@ -84,7 +125,8 @@ class UserRepository extends ChangeNotifier {
         .get());
   }
 
-  Future<void> set(String currentUserId, String uuid, EditUser user) async {
+  Future<void> set(
+      String currentUserId, String uuid, EditAcquaintance user) async {
     await FirebaseFirestore.instance
         .collection(collectionName)
         .doc(currentUserId)
@@ -96,9 +138,7 @@ class UserRepository extends ChangeNotifier {
       BIRTHDAY: user.birthday,
       HOBBY: user.birthplace,
       BIRTHPLACE: user.residence,
-      EDUCATIONAL_BACKGROUND: user.educationalBackground,
       OCCUPATION: user.occupation,
-      ANNUAL_INCOME: user.annualIncome,
       // HOLIDAY: hobby,
       // RESIDENCE: holiday,
       // IMAGE: image,

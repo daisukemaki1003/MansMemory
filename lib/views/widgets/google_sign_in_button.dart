@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../../provider/authentication_provider.dart';
+import '../../provider/authentication.dart';
 
 class GoogleSignInButton extends ConsumerWidget {
   const GoogleSignInButton({Key? key}) : super(key: key);

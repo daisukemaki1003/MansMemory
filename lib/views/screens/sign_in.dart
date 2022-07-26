@@ -2,11 +2,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:mans_memory/views/screens/user_list.dart';
+import 'package:mans_memory/views/screens/acquaintance_list.dart';
 import 'package:mans_memory/views/screens/sign_up.dart';
-import 'package:mans_memory/views/widgets/google_sign_in_button.dart';
+import '../../provider/user.dart';
 
-import '../../provider/authentication_provider.dart';
+import '../../provider/authentication.dart';
 import 'terms_of_service.dart';
 
 class SignInScreen extends ConsumerWidget {
@@ -18,6 +18,7 @@ class SignInScreen extends ConsumerWidget {
     final passwordController = TextEditingController();
     var infoText = ref.watch(infoTextProvider.state);
     final authentication = ref.watch(authenticationProvider);
+    
 
     return Scaffold(
       body: Center(
@@ -87,9 +88,10 @@ class SignInScreen extends ConsumerWidget {
                     if (signInResult != FirebaseAuthResultStatus.successful) {
                       infoText.state = exceptionMessage(signInResult);
                     } else {
+                      // if (await user.checkExistence()) user.create();
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {
-                          return const UserListScreen();
+                          return const AcquaintanceListScreen();
                         }),
                       );
                     }
@@ -189,4 +191,3 @@ class SignInScreen extends ConsumerWidget {
     );
   }
 }
-
