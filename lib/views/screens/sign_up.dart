@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mans_memory/views/screens/acquaintance_list.dart';
 
 import '../../provider/authentication.dart';
-import '../../provider/user.dart';
 
 class SignUpScreen extends ConsumerWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -13,7 +12,9 @@ class SignUpScreen extends ConsumerWidget {
     final passwordController = TextEditingController();
     final emailController = TextEditingController();
     final authentication = ref.watch(authenticationProvider);
-    final user = ref.watch(userProvider);
+
+    var infoText = ref.watch(infoTextProvider.state);
+    infoText.state = '';
 
     return Scaffold(
       appBar: AppBar(
@@ -53,7 +54,8 @@ class SignUpScreen extends ConsumerWidget {
                 child: Consumer(
                   builder:
                       (BuildContext context, WidgetRef ref, Widget? child) {
-                    return const Text("", style: TextStyle(color: Colors.red));
+                    return Text(infoText.state,
+                        style: const TextStyle(color: Colors.red));
                   },
                 ),
               ),
@@ -70,7 +72,6 @@ class SignUpScreen extends ConsumerWidget {
                     );
                     // test@sample.co.jp
                     if (signUpResult == FirebaseAuthResultStatus.successful) {
-                      await user.create();
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {
                           return const AcquaintanceListScreen();
@@ -84,6 +85,127 @@ class SignUpScreen extends ConsumerWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class Emailcheck extends ConsumerWidget {
+  const Emailcheck({Key? key, required this.email, required this.password})
+      : super(key: key);
+  final String email;
+  final String password;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final authentication = ref.watch(authenticationProvider);
+    var isError = false;
+    var infoText = ref.watch(infoTextProvider.state);
+    final user = ref.watch(currentUserProvider);
+
+    infoText.state = '';
+
+    return Scaffold(
+      // メイン画面
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // 確認メール送信時のメッセージ
+            Container(
+              padding: const EdgeInsets.all(8),
+              child: Consumer(
+                builder: (BuildContext context, WidgetRef ref, Widget? child) {
+                  return Text(
+                    infoText.state,
+                    style: TextStyle(
+                        color: isError != true ? Colors.black : Colors.red),
+                  );
+                },
+              ),
+            ),
+
+            // 確認メールの再送信ボタン
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 30.0),
+              child: ButtonTheme(
+                minWidth: 200.0,
+                // height: 100.0,
+                child: RaisedButton(
+                  // ボタンの形状
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+
+                  onPressed: () async {
+                    try {
+                      // バリデーション後のメールアドレスとパスワードでアカウント登録
+                      authentication.signInWithEmailAndPassword(
+                          email: email, password: password);
+
+                      // 確認メール送信
+                      user!.sendEmailVerification();
+                      isError = false;
+                      infoText.state = '$email\nに確認メールを送信しました。';
+                    } catch (error) {
+                      print(error);
+                    }
+                  },
+
+                  child: const Text(
+                    '確認メールを再送信',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  textColor: Colors.white,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+
+            // メール確認完了のボタン配置（Home画面に遷移）
+            ButtonTheme(
+              minWidth: 350.0,
+              // height: 100.0,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.blue,
+                  onPrimary: Colors.purple,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () async {
+                  final FirebaseAuthResultStatus signInResult =
+                      await authentication.signInWithEmailAndPassword(
+                          email: email, password: password);
+
+                  if (user!.emailVerified) {
+                    if (signInResult != FirebaseAuthResultStatus.successful) {
+                      infoText.state = exceptionMessage(signInResult);
+                    } else {
+                      await Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) {
+                          return const AcquaintanceListScreen();
+                        }),
+                      );
+                    }
+                  } else {
+                    isError = true;
+                    infoText.state =
+                        'まだメール確認が完了していません。\n確認メール内のリンクをクリックしてください。';
+                  }
+                },
+                child: const Text(
+                  'メール確認完了',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

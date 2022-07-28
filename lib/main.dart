@@ -36,6 +36,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authentication = ref.watch(authenticationProvider);
     final user = ref.watch(userProvider);
+    final currentUser = ref.watch(currentUserProvider);
 
     return MaterialApp(
       theme: ThemeData(
