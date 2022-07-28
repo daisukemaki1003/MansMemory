@@ -5,10 +5,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart';
-// import 'package:twitter_login/twitter_login.dart';
 
 // エラー情報の受け渡しを行うためのProvider
 final infoTextProvider = StateProvider((ref) => "");
+
+final currentUserProvider = StateProvider((ref) {
+  return FirebaseAuth.instance.currentUser;
+});
 
 final authenticationProvider =
     ChangeNotifierProvider((ref) => Authentication());
@@ -17,7 +20,6 @@ final authenticationProvider =
 class Authentication extends ChangeNotifier {
   bool _isSignIn = false;
   bool get isSignIn => _isSignIn;
-  final FirebaseAuth auth = FirebaseAuth.instance;
 
   set isSignIn(bool isSignIn) {
     _isSignIn = isSignIn;
@@ -33,8 +35,8 @@ class Authentication extends ChangeNotifier {
       {required String email, required String password}) async {
     FirebaseAuthResultStatus result;
     try {
-      UserCredential userCredential = await auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
 
       if (userCredential.user != null) {
         result = FirebaseAuthResultStatus.successful;
@@ -52,8 +54,8 @@ class Authentication extends ChangeNotifier {
       {required String email, required String password}) async {
     FirebaseAuthResultStatus result;
     try {
-      UserCredential userCredential = await auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
 
       if (userCredential.user != null) {
         result = FirebaseAuthResultStatus.successful;
@@ -86,7 +88,7 @@ class Authentication extends ChangeNotifier {
 
       try {
         final UserCredential userCredential =
-            await auth.signInWithCredential(credential);
+            await FirebaseAuth.instance.signInWithCredential(credential);
         isSignIn = false;
 
         user = userCredential.user;
@@ -114,8 +116,9 @@ class Authentication extends ChangeNotifier {
         idToken: String.fromCharCodes(appleIdCredential.identityToken!),
         accessToken: String.fromCharCodes(appleIdCredential.authorizationCode!),
       );
-      
-      final userCredential = await auth.signInWithCredential(credential);
+
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
       isSignIn = false;
 
       user = userCredential.user;
@@ -127,7 +130,7 @@ class Authentication extends ChangeNotifier {
 
   Future<void> signOut() async {
     isSignIn = true;
-    await auth.signOut();
+    await FirebaseAuth.instance.signOut();
     isSignIn = false;
   }
 }

@@ -1,20 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
-import 'package:mans_memory/provider/user_provider.dart';
+import 'package:mans_memory/provider/acquaintance.dart';
 
-import '../../models/edit_user.dart';
-import '../../models/user.dart';
+import '../../models/acquaintance.dart';
+import '../../provider/authentication.dart';
 
-class UserEditScreen extends ConsumerWidget {
-  UserEditScreen(this.user, {Key? key}) : super(key: key);
-  final User user;
+class AcquaintanceEditScreen extends ConsumerWidget {
+  AcquaintanceEditScreen(this.acquaintance, {Key? key}) : super(key: key);
+  final AcquaintanceModel acquaintance;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final users = ref.watch(usersProvider);
-    final editUser = EditUser(user);
+    final userProvider = ref.watch(currentUserProvider);
+    final acquaintanceProvider = ref.watch(acquaintanceStateProvider);
+
+    final nameController = TextEditingController(text: acquaintance.name);
+    final ageController =
+        TextEditingController(text: acquaintance.age.toString());
+    final birthdayController =
+        TextEditingController(text: acquaintance.birthday);
+    final birthplaceController =
+        TextEditingController(text: acquaintance.birthplace);
+    final residenceController =
+        TextEditingController(text: acquaintance.residence);
+    // final holidayController = TextEditingController(text: acquaintance.holiday);
+    final occupationController =
+        TextEditingController(text: acquaintance.occupation);
+    final memoController = TextEditingController(text: acquaintance.memo);
 
     return Scaffold(
       appBar: PreferredSize(
@@ -52,7 +65,23 @@ class UserEditScreen extends ConsumerWidget {
                 ),
                 onPressed: () async {
                   try {
-                    await users.set(user.uid, editUser);
+                    await acquaintanceProvider.set(
+                        userId: userProvider!.uid,
+                        acquaintance: AcquaintanceModel(
+                            acquaintanceId: acquaintance.acquaintanceId,
+                            name: nameController.text,
+                            createdAt: acquaintance.createdAt,
+                            age: int.parse(ageController.text),
+                            birthday: birthdayController.text,
+                            birthplace: birthplaceController.text,
+                            residence: residenceController.text,
+                            holiday: 0,
+                            occupation: occupationController.text,
+                            memo: memoController.text,
+                            icon: acquaintance.icon));
+                    // AcquaintanceModel
+                    // await acquaintanceProvider.set(
+                    //     currentUser!.uid, acquaintance.acquaintanceId);
                   } catch (e) {
                     print(e.toString());
                     final snackBar = SnackBar(
@@ -70,71 +99,51 @@ class UserEditScreen extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         child: Column(children: [
-          // Container(
-          //   height: 200,
-          //   width: double.infinity,
-          //   color: Colors.grey,
-          // ),
           const SizedBox(height: 40),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
             child: TextField(
-              controller: editUser.nameController,
+              controller: nameController,
               cursorColor: Colors.black12,
-              onChanged: (value) => editUser.setName(value),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: '名前',
-                labelStyle: const TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.black),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                contentPadding: const EdgeInsets.only(
-                    left: 20, top: 0, bottom: 3, right: 10),
-                focusedBorder: const UnderlineInputBorder(
+                contentPadding:
+                    EdgeInsets.only(left: 20, top: -10, bottom: 3, right: 10),
+                focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue)),
-                suffix: IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.black54),
-                  onPressed: () {
-                    editUser.nameController.clear();
-                  },
-                ),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
             child: TextField(
-              controller: editUser.furiganaController,
+              controller: ageController,
+              keyboardType: TextInputType.number,
               cursorColor: Colors.black12,
-              onChanged: (value) => editUser.setFurigana(value),
-              decoration: InputDecoration(
-                labelText: 'ふりがな',
-                labelStyle: const TextStyle(color: Colors.black),
+              decoration: const InputDecoration(
+                labelText: '年齢',
+                labelStyle: TextStyle(color: Colors.black),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                contentPadding: const EdgeInsets.only(
-                    left: 20, top: 0, bottom: 3, right: 10),
-                focusedBorder: const UnderlineInputBorder(
+                contentPadding:
+                    EdgeInsets.only(left: 20, top: -10, bottom: 3, right: 10),
+                focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue)),
-                suffix: IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.black54),
-                  onPressed: () {
-                    editUser.furiganaController.clear();
-                  },
-                ),
               ),
             ),
           ),
-
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
             child: TextField(
               readOnly: true,
-              controller: editUser.birthdayController,
               cursorColor: Colors.black12,
               decoration: InputDecoration(
                 labelText: '生年月日',
                 labelStyle: const TextStyle(color: Colors.black),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
                 contentPadding: const EdgeInsets.only(
-                    left: 20, top: 0, bottom: 3, right: 20),
+                    left: 20, top: -10, bottom: 3, right: 20),
                 focusedBorder: const UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue)),
                 suffix: TextButton(
@@ -183,11 +192,7 @@ class UserEditScreen extends ConsumerWidget {
                                       '追加',
                                       style: TextStyle(color: Colors.blue),
                                     ),
-                                    onPressed: () {
-                                      // editUser.setBirthday(
-                                      //     editUser.birthdayController.text);
-                                      Navigator.pop(context);
-                                    },
+                                    onPressed: () => Navigator.pop(context),
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 16.0,
                                       vertical: 5.0,
@@ -211,14 +216,15 @@ class UserEditScreen extends ConsumerWidget {
                                     top: false,
                                     child: CupertinoDatePicker(
                                       mode: CupertinoDatePickerMode.date,
-                                      initialDateTime: user.birthday,
-                                      onDateTimeChanged:
-                                          (DateTime newDateTime) {
-                                        editUser.setBirthday(newDateTime);
-                                        editUser.birthdayController.text =
-                                            DateFormat('yyyy年M月d日')
-                                                .format(newDateTime);
-                                      },
+                                      // initialDateTime: acquaintance.birthday,
+                                      onDateTimeChanged: (value) {},
+                                      // onDateTimeChanged:
+                                      //     (DateTime newDateTime) {
+                                      //   changedAcquaintanceBirthdayProvider
+                                      //           .text =
+                                      //       DateFormat('yyyy年M月d日')
+                                      //           .format(newDateTime);
+                                      // },
                                     ),
                                   ),
                                 ),
@@ -233,127 +239,69 @@ class UserEditScreen extends ConsumerWidget {
               ),
             ),
           ),
-
-          const SizedBox(height: 40),
-          // textInputField('趣味', hobbyController),
-          // textInputField('休日', holidayController),
-
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
             child: TextField(
-              controller: editUser.birthplaceController,
+              controller: birthplaceController,
               cursorColor: Colors.black12,
-              onChanged: (value) => editUser.setBirthplace(value),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: '出身地',
-                labelStyle: const TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.black),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                contentPadding: const EdgeInsets.only(
-                    left: 20, top: 0, bottom: 3, right: 10),
-                focusedBorder: const UnderlineInputBorder(
+                contentPadding:
+                    EdgeInsets.only(left: 20, top: -10, bottom: 3, right: 10),
+                focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue)),
-                suffix: IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.black54),
-                  onPressed: () {
-                    editUser.birthplaceController.clear();
-                  },
-                ),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
             child: TextField(
-              controller: editUser.residenceController,
+              controller: residenceController,
               cursorColor: Colors.black12,
-              onChanged: (value) => editUser.setResidence(value),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: '居住地',
-                labelStyle: const TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.black),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                contentPadding: const EdgeInsets.only(
-                    left: 20, top: 0, bottom: 3, right: 10),
-                focusedBorder: const UnderlineInputBorder(
+                contentPadding:
+                    EdgeInsets.only(left: 20, top: -10, bottom: 3, right: 10),
+                focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue)),
-                suffix: IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.black54),
-                  onPressed: () {
-                    editUser.residenceController.clear();
-                  },
-                ),
               ),
             ),
           ),
-
-          const SizedBox(height: 40),
-
+          // const SizedBox(height: 10),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
             child: TextField(
-              controller: editUser.educationalBackgroundController,
+              controller: occupationController,
               cursorColor: Colors.black12,
-              onChanged: (value) => editUser.setEducationalBackground(value),
-              decoration: InputDecoration(
-                labelText: '学歴',
-                labelStyle: const TextStyle(color: Colors.black),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-                contentPadding: const EdgeInsets.only(
-                    left: 20, top: 0, bottom: 3, right: 10),
-                focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue)),
-                suffix: IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.black54),
-                  onPressed: () {
-                    editUser.educationalBackgroundController.clear();
-                  },
-                ),
-              ),
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-            child: TextField(
-              controller: editUser.occupationController,
-              cursorColor: Colors.black12,
-              onChanged: (value) => editUser.setOccupation(value),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: '職種',
-                labelStyle: const TextStyle(color: Colors.black),
+                labelStyle: TextStyle(color: Colors.black),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                contentPadding: const EdgeInsets.only(
-                    left: 20, top: 0, bottom: 3, right: 10),
-                focusedBorder: const UnderlineInputBorder(
+                contentPadding:
+                    EdgeInsets.only(left: 20, top: -10, bottom: 3, right: 10),
+                focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue)),
-                suffix: IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.black54),
-                  onPressed: () {
-                    editUser.occupationController.clear();
-                  },
-                ),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
             child: TextField(
-              controller: editUser.annualIncomeController,
-              cursorColor: Colors.black12,
-              onChanged: (value) => editUser.setAnnualIncome(value),
-              decoration: InputDecoration(
-                labelText: '年収',
-                labelStyle: const TextStyle(color: Colors.black),
+              controller: memoController,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              decoration: const InputDecoration(
+                hintText: 'メモ',
+                labelStyle: TextStyle(color: Colors.black),
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                contentPadding: const EdgeInsets.only(
-                    left: 20, top: 0, bottom: 3, right: 10),
-                focusedBorder: const UnderlineInputBorder(
+                contentPadding:
+                    EdgeInsets.only(left: 20, top: -10, bottom: 3, right: 10),
+                focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: Colors.blue)),
-                suffix: IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.black54),
-                  onPressed: () {
-                    editUser.annualIncomeController.clear();
-                  },
-                ),
               ),
             ),
           ),

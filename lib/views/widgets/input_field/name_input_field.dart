@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/user.dart';
+import '../../../models/acquaintance.dart';
 
 // Padding nameInputField(User user) {
 //   TextEditingController controller = TextEditingController();
