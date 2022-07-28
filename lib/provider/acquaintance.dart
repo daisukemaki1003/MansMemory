@@ -6,10 +6,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mans_memory/constants/keys.dart';
-import 'package:mans_memory/models/edit_acquaintance.dart';
 import '../models/acquaintance.dart';
 
-final acquaintanceProvider = ChangeNotifierProvider<acquaintanceNotifier>(
+final changedAcquaintanceNameStateProvider =
+    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
+final changedAcquaintanceAgeStateProvider =
+    StateProvider.autoDispose((ref) => 0);
+
+// final age = StateProvider.autoDispose((ref) => 0);
+
+final changedAcquaintanceBirthdayStateProvider =
+    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
+final changedAcquaintanceBirthplaceStateProvider =
+    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
+final changedAcquaintanceResidenceStateProvider =
+    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
+final changedAcquaintanceHobbyStateProvider =
+    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
+final changedAcquaintanceHolidayStateProvider =
+    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
+final changedAcquaintanceOccupationStateProvider =
+    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
+final changedAcquaintanceMemoStateProvider =
+    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
+
+final acquaintanceStateProvider = ChangeNotifierProvider<acquaintanceNotifier>(
     (ref) => acquaintanceNotifier._());
 
 class acquaintanceNotifier extends ChangeNotifier {
@@ -25,11 +46,10 @@ class acquaintanceNotifier extends ChangeNotifier {
     return AcquaintanceModel(
       acquaintanceId: document.id,
       name: data[NAME],
-      hobby: data[HOBBY],
       holiday: data[HOLIDAY],
       occupation: data[OCCUPATION],
       residence: data[RESIDENCE],
-      birthday: data[BIRTHDAY]?.toDate(),
+      birthday: data[BIRTHDAY],
       birthplace: data[BIRTHPLACE],
       age: data[AGE],
       memo: data[MEMO],
@@ -37,16 +57,6 @@ class acquaintanceNotifier extends ChangeNotifier {
       createdAt: data["createdAt"],
     );
   }
-
-  // Future<List<User>> fetch() async {
-  //   final QuerySnapshot snapshot =
-  //       await FirebaseFirestore.instance.collection(collectionName).doc().collection(docName).get();
-
-  //   final List<User> acquaintance = snapshot.docs
-  //       .map((DocumentSnapshot document) => userCreate(document))
-  //       .toList();
-  //   return acquaintance;
-  // }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchStream(
       String currentUserId) {
@@ -57,39 +67,7 @@ class acquaintanceNotifier extends ChangeNotifier {
         .snapshots();
   }
 
-  // Future<String> create(String currentUserId, String inputName) async {}
-
-  // /// return user's UID
-  // Future<String> add(String currentUserId, String inputName) async {
-  //   if (inputName.isEmpty) throw ('名前を入力してください');
-
-  //   try {
-  //     await FirebaseFirestore.instance
-  //         .collection(collectionName)
-  //         .doc(currentUserId)
-  //         .collection(docName)
-  //         .add(
-  //       {
-  //         NAME: inputName,
-  //         'createdAt': FieldValue.serverTimestamp(),
-  //         'age': null,
-  //         'birthday': null,
-  //         'birthplace': null,
-  //         'residence': null,
-  //         'hobby': null,
-  //         'holiday': null,
-  //         'occupation': null,
-  //         'memo': null,
-  //         'icon': null,
-  //       },
-  //     );
-  //     throw ('ユーザーの登録');
-  //   } catch (e) {
-  //     print(e);
-  //     throw ('ユーザーの登録に失敗しました。');
-  //   }
-
-  Future<String> add(String currentUserId, String inputName) async {
+  Future<String> create(String currentUserId, String inputName) async {
     return await FirebaseFirestore.instance
         .collection(collectionName)
         .doc(currentUserId)
@@ -98,15 +76,14 @@ class acquaintanceNotifier extends ChangeNotifier {
           {
             'createdAt': Timestamp.now(),
             NAME: inputName,
-            'age': null,
-            'birthday': null,
-            'birthplace': null,
-            'residence': null,
-            'hobby': null,
-            'holiday': null,
-            'occupation': null,
-            'memo': null,
-            'icon': null,
+            AGE: -1,
+            BIRTHDAY: '',
+            BIRTHPLACE: '',
+            RESIDENCE: '',
+            HOLIDAY: -1,
+            OCCUPATION: '',
+            MEMO: '',
+            ICON: '',
           },
         )
         .then((value) => value.id)
@@ -126,27 +103,29 @@ class acquaintanceNotifier extends ChangeNotifier {
   }
 
   Future<void> set(
-      String currentUserId, String uuid, EditAcquaintance user) async {
+      {required String userId, required AcquaintanceModel acquaintance}) async {
     await FirebaseFirestore.instance
         .collection(collectionName)
-        .doc(currentUserId)
+        .doc(userId)
         .collection(docName)
-        .doc(uuid)
+        .doc(acquaintance.acquaintanceId)
         .update({
-      NAME: user.name,
-      FURIGANA: user.furigana,
-      BIRTHDAY: user.birthday,
-      HOBBY: user.birthplace,
-      BIRTHPLACE: user.residence,
-      OCCUPATION: user.occupation,
-      // HOLIDAY: hobby,
-      // RESIDENCE: holiday,
-      // IMAGE: image,
+      NAME: acquaintance.name,
+      'createdAt': acquaintance.createdAt,
+      AGE: acquaintance.age,
+      BIRTHDAY: acquaintance.birthday,
+      BIRTHPLACE: acquaintance.birthplace,
+      RESIDENCE: acquaintance.residence,
+      HOLIDAY: acquaintance.holiday,
+      OCCUPATION: acquaintance.occupation,
+      MEMO: acquaintance.memo,
+      ICON: acquaintance.icon
     }).catchError((e) => throw ('ユーザーの編集に失敗しました。'));
     notifyListeners();
   }
 
-  Future<void> setImage(String currentUserId, String uuid) async {
+  Future<void> setImage(
+      {required String userId, required String acquaintanceId}) async {
     // ストレージに保存
     final ImagePicker _picker = ImagePicker();
     final imageFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -161,20 +140,21 @@ class acquaintanceNotifier extends ChangeNotifier {
       final imgUrl = await task.ref.getDownloadURL();
       await FirebaseFirestore.instance
           .collection(collectionName)
-          .doc(currentUserId)
+          .doc(userId)
           .collection(docName)
-          .doc(uuid)
+          .doc(acquaintanceId)
           .update({ICON: imgUrl}).catchError((e) => throw ('ユーザーの編集に失敗しました。'));
       notifyListeners();
     }
   }
 
-  void delete(String userId, String id) async {
+  Future<void> delete(
+      {required String userId, required String acquaintanceId}) async {
     await FirebaseFirestore.instance
         .collection(collectionName)
         .doc(userId)
         .collection(docName)
-        .doc(id)
+        .doc(acquaintanceId)
         .delete()
         .catchError((e) => throw ('ユーザーの編集に失敗しました。'));
   }

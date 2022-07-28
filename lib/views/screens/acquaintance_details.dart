@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mans_memory/models/acquaintance.dart';
+import 'package:mans_memory/provider/user.dart';
 
 import '../../provider/authentication.dart';
 import '../../provider/acquaintance.dart';
 import '../widgets/loading.dart';
-import 'edit_user.dart';
+import 'edit_acquaintance.dart';
 import 'acquaintance_list.dart';
 
 class MyTabbedPage extends ConsumerStatefulWidget {
@@ -41,17 +42,17 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
   @override
   Widget build(BuildContext context) {
     final currentUser = ref.watch(currentUserProvider);
-    final acquaintance = ref.watch(acquaintanceProvider);
+    final acquaintanceProvider = ref.watch(acquaintanceStateProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: FutureBuilder(
-        future: acquaintance.get(currentUser!.uid, uid),
+        future: acquaintanceProvider.get(currentUser!.uid, uid),
         builder:
             (BuildContext context, AsyncSnapshot<AcquaintanceModel> snapshot) {
           if (!snapshot.hasData) {
             return loading();
           }
-          final user = snapshot.data!;
+          final acquaintance = snapshot.data!;
           return NestedScrollView(
             headerSliverBuilder:
                 (BuildContext context, bool innerBoxIsScrolled) {
@@ -88,7 +89,7 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      user.name,
+                                      acquaintance.name,
                                       style: const TextStyle(
                                         fontSize: 30,
                                         fontWeight: FontWeight.bold,
@@ -96,10 +97,8 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
                                       ),
                                     ),
                                     Text(
-                                      user.birthday != null
-                                          ? DateFormat('yyyy年M月d日')
-                                              .format(user.birthday!)
-                                          : '',
+                                      DateFormat('yyyy年M月d日').format(
+                                          acquaintance.createdAt.toDate()),
                                       style: const TextStyle(
                                         fontSize: 15,
                                         color: Colors.white,
@@ -118,17 +117,21 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
                                                   CircularProgressIndicator());
                                         },
                                       );
-                                      // await acquaintance.setImage(
-                                      //     currentUser!.uid, user.uid);
-                                      // Navigator.of(context).pop();
+                                      await acquaintanceProvider.setImage(
+                                          userId: currentUser.uid,
+                                          acquaintanceId:
+                                              acquaintance.acquaintanceId);
+                                      Navigator.of(context).pop();
                                     } catch (e) {
                                       print(e);
                                     }
                                   },
                                   child: CircleAvatar(
                                     radius: 35,
-                                    backgroundImage: NetworkImage(user.icon ??
-                                        "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+                                    backgroundImage: NetworkImage(acquaintance
+                                            .icon.isNotEmpty
+                                        ? acquaintance.icon
+                                        : "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
                                     child: Align(
                                       alignment: Alignment.bottomRight,
                                       child: Stack(
@@ -175,7 +178,7 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
                           SliverOverlapInjector(
                               handle: NestedScrollView
                                   .sliverOverlapAbsorberHandleFor(context)),
-                          SliverList(delegate: profileList(user)),
+                          SliverList(delegate: profileList(acquaintance)),
                         ],
                       );
                     },
@@ -207,7 +210,7 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
                                     top: Radius.circular(15)),
                               ),
                               builder: (BuildContext context) {
-                                return UserEditScreen(user);
+                                return AcquaintanceEditScreen(acquaintance);
                               },
                             );
                           },
@@ -224,16 +227,15 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
     );
   }
 
-  SliverChildListDelegate profileList(AcquaintanceModel user) {
+  SliverChildListDelegate profileList(AcquaintanceModel acquaintance) {
     return SliverChildListDelegate(
       [
         Container(
-          height: 180,
           decoration: BoxDecoration(
               color: const Color.fromARGB(255, 242, 242, 242),
               borderRadius: BorderRadius.circular(30)),
           child: Padding(
-            padding: const EdgeInsets.only(top: 30.0, left: 40.0),
+            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 40),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -241,19 +243,27 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
                   "基本情報",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
                 ),
-                profileWidget('名前', user.name),
-                // profileWidget('年齢', user.age!.toString()),
+                const SizedBox(height: 20),
+                profileWidget(
+                    '出身地',
+                    acquaintance.birthplace.isNotEmpty
+                        ? acquaintance.birthplace
+                        : '未設定'),
+                profileWidget(
+                    '居住地',
+                    acquaintance.residence.isNotEmpty
+                        ? acquaintance.residence
+                        : '未設定'),
               ],
             ),
           ),
         ),
         Container(
-          height: 230,
           decoration: BoxDecoration(
               color: const Color.fromARGB(255, 242, 242, 242),
               borderRadius: BorderRadius.circular(30)),
           child: Padding(
-            padding: const EdgeInsets.only(top: 30.0, left: 40.0),
+            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 40),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -261,31 +271,41 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
                   "基本情報",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
                 ),
-                profileWidget('出身地', user.birthplace ?? '未設定'),
-                profileWidget('居住地', user.residence ?? '未設定'),
-                // profileWidget(
-                //     '趣味', user.hobby != null ? user.hobby.toString() : '未設定'),
-                // profileWidget('休日',
-                //     user.holiday != null ? user.holiday.toString() : '未設定'),
+                const SizedBox(height: 20),
+                profileWidget(
+                    '職種',
+                    acquaintance.occupation.isNotEmpty
+                        ? acquaintance.occupation
+                        : '未設定'),
+                profileWidget(
+                    '休日',
+                    acquaintance.occupation.isNotEmpty
+                        ? acquaintance.occupation
+                        : '未設定'),
               ],
             ),
           ),
         ),
+        const SizedBox(height: 1),
         Container(
-          height: 200,
           decoration: BoxDecoration(
               color: const Color.fromARGB(255, 242, 242, 242),
               borderRadius: BorderRadius.circular(30)),
           child: Padding(
-            padding: const EdgeInsets.only(top: 30.0, left: 40.0),
+            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 40),
+            // padding: const EdgeInsets.only(top: 30.0, left: 40.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  "基本情報",
+                  "メモ",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
                 ),
-                profileWidget('職種', user.occupation ?? '未設定'),
+                const SizedBox(height: 20),
+                Text(
+                  acquaintance.memo.isNotEmpty ? acquaintance.memo : '未設定',
+                  style: const TextStyle(fontSize: 15.0, color: Colors.black),
+                ),
               ],
             ),
           ),

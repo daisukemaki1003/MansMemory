@@ -19,9 +19,9 @@ class AcquaintanceListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final acquaintance = ref.watch(acquaintanceProvider);
+    final acquaintanceProvider = ref.watch(acquaintanceStateProvider);
     final authentication = ref.watch(authenticationProvider);
-    final currentUser = ref.watch(currentUserProvider);
+    final userProvider = ref.watch(currentUserProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -66,7 +66,9 @@ class AcquaintanceListScreen extends ConsumerWidget {
                 });
           },
         ),
-        title: const Text("Title"),
+        // title: const Text("友達のーと"),
+        title: const Text(
+            bool.fromEnvironment('dart.vm.product') ? "友達のーと" : "友達のーと(開発)"),
         centerTitle: true,
         actions: [
           IconButton(
@@ -76,7 +78,7 @@ class AcquaintanceListScreen extends ConsumerWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) =>
-                      UserRegistration(currentUser!, acquaintance),
+                      UserRegistration(userProvider!, acquaintanceProvider),
                 ),
               );
             },
@@ -86,21 +88,21 @@ class AcquaintanceListScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: StreamBuilder(
-          stream: acquaintance.fetchStream(currentUser!.uid),
+          stream: acquaintanceProvider.fetchStream(userProvider!.uid),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return loading();
             }
-            // final acquaintanceList = snapshot.data!;
             List<AcquaintanceModel> acquaintanceList = snapshot.data!.docs
                 .map((DocumentSnapshot document) =>
-                    acquaintance.acquaintanceCreate(document))
+                    acquaintanceProvider.acquaintanceCreate(document))
                 .toList();
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
               physics: const ScrollPhysics(),
               child: Column(
                 children: [
+                  const SizedBox(height: 15),
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -110,25 +112,46 @@ class AcquaintanceListScreen extends ConsumerWidget {
                       final acquaintance = acquaintanceList[index];
                       return Dismissible(
                         key: ObjectKey(acquaintance),
-                        background: Container(
-                          padding: const EdgeInsets.only(
-                            right: 10,
-                          ),
-                          alignment: AlignmentDirectional.centerEnd,
-                          color: Colors.red,
-                          child: const Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                          ),
-                        ),
                         direction: DismissDirection.endToStart,
-                        // onDismissed: (direction) async {
-                        //   final result = await dismissed_dialog(context, acquaintance);
-                        //   if (result != null && result) acquaintance.delete(acquaintance.uid);
-                        // },
-                        // onDismissed: (direction) =>
-                        //     acquaintance.delete(currentacquaintance.uid, acquaintance.uid),
-
+                        background: Container(
+                          alignment: Alignment.centerRight,
+                          color: Colors.redAccent[700],
+                          child: const Padding(
+                              padding:
+                                  EdgeInsets.fromLTRB(10.0, 0.0, 20.0, 0.0),
+                              child: Icon(Icons.delete, color: Colors.white)),
+                        ),
+                        confirmDismiss: (DismissDirection direction) async {
+                          return await showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text("確認"),
+                                content: const Text("削除します。よろしいですか？"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () async {
+                                        Navigator.of(context).pop(true);
+                                        acquaintanceProvider.delete(
+                                            userId: userProvider.uid,
+                                            acquaintanceId:
+                                                acquaintance.acquaintanceId);
+                                      },
+                                      child: const Text(
+                                        "削除",
+                                        style: TextStyle(color: Colors.black),
+                                      )),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    child: const Text("キャンセル",
+                                        style: TextStyle(color: Colors.black)),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 32.0,
@@ -137,15 +160,16 @@ class AcquaintanceListScreen extends ConsumerWidget {
                           leading: CircleAvatar(
                             radius: 25,
                             child: ClipOval(
-                              child: Image.network(acquaintance.icon ??
-                                  "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
+                              child: Image.network(acquaintance.icon.isNotEmpty
+                                  ? acquaintance.icon
+                                  : "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
                             ),
                           ),
                           title: Text(acquaintance.name),
-                          trailing: acquaintance.birthday != null
-                              ? Text(DateFormat('yyyy年M月d日')
-                                  .format(acquaintance.birthday!))
-                              : const Text(""),
+                          // trailing: acquaintance.birthday != null
+                          //     ? Text(DateFormat('yyyy年M月d日')
+                          //         .format(acquaintance.birthday))
+                          //     : const Text(""),
                           onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
@@ -265,7 +289,7 @@ class UserRegistration extends StatelessWidget {
                               },
                             );
                             print("sss");
-                            final userId = await acquaintance.add(
+                            final userId = await acquaintance.create(
                                 currentUser.uid, nameController.text.trim());
                             print(userId);
 

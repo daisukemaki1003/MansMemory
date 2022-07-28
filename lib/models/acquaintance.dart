@@ -6,16 +6,15 @@ class AcquaintanceModel {
   final String acquaintanceId; // Acquaintance id
   final String name; // 名前
   final Timestamp createdAt; // 作成日
-  final int? age; // 年齢
-  final DateTime? birthday; // 誕生日
-  final String? birthplace; // 出身地
-  final String? residence; // 居住地
-  final List<String>? hobby; // 趣味
-  final int? holiday; // 休日
-  final String? occupation; // 職業
-  final String? memo; // メモ
+  final int age; // 年齢
+  final String birthday; // 誕生日
+  final String birthplace; // 出身地
+  final String residence; // 居住地
+  final int holiday; // 休日
+  final String occupation; // 職業
+  final String memo; // メモ
 
-  final String? icon;
+  final String icon;
 
   AcquaintanceModel({
     required this.acquaintanceId,
@@ -25,7 +24,6 @@ class AcquaintanceModel {
     required this.birthday,
     required this.birthplace,
     required this.residence,
-    required this.hobby,
     required this.holiday,
     required this.occupation,
     required this.memo,
