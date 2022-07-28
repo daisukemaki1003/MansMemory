@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mans_memory/views/screens/user_list.dart';
+import 'package:mans_memory/views/screens/acquaintance_list.dart';
 
-import '../../provider/authentication_provider.dart';
+import '../../provider/authentication.dart';
+import '../../provider/user.dart';
 
 class SignUpScreen extends ConsumerWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -12,8 +13,18 @@ class SignUpScreen extends ConsumerWidget {
     final passwordController = TextEditingController();
     final emailController = TextEditingController();
     final authentication = ref.watch(authenticationProvider);
+    final user = ref.watch(userProvider);
 
     return Scaffold(
+      appBar: AppBar(
+          title: const Text(
+        '新規登録',
+        style: TextStyle(
+          color: Colors.black,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+        ),
+      )),
       body: Center(
         child: Container(
           // padding: const EdgeInsets.all(24),
@@ -50,18 +61,19 @@ class SignUpScreen extends ConsumerWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  child: const Text('新規登録'),
+                  child: const Text('登録'),
                   onPressed: () async {
                     final FirebaseAuthResultStatus signUpResult =
                         await authentication.signUpWithEmailAndPassword(
                       email: emailController.text,
                       password: passwordController.text,
                     );
-// @
+                    // test@sample.co.jp
                     if (signUpResult == FirebaseAuthResultStatus.successful) {
+                      await user.create();
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {
-                          return const UserListScreen();
+                          return const AcquaintanceListScreen();
                         }),
                       );
                     } else {

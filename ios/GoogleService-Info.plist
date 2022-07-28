@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>807477144666-nv5sh5ciu4sa86a25crb8ngqp47e92aq.apps.googleusercontent.com</string>
+	<string>807477144666-ntbjdeb1pt97qbe72uh0dhehn964thur.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.807477144666-nv5sh5ciu4sa86a25crb8ngqp47e92aq</string>
+	<string>com.googleusercontent.apps.807477144666-ntbjdeb1pt97qbe72uh0dhehn964thur</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBAds2yRHUVpTtaalrp4qNzn1T65mxHOJM</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.mansMemory</string>
+	<string>com.a20288d.mansMemory</string>
 	<key>PROJECT_ID</key>
 	<string>mans-memory-apps</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:807477144666:ios:6dcd424e6deea9c1267c63</string>
+	<string>1:807477144666:ios:f6e7047bae5253cd267c63</string>
 </dict>
 </plist>

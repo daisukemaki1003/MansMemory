@@ -1,15 +1,18 @@
-String AGE = 'age';
-String NAME = 'name';
-String FURIGANA = 'furigana';
-String BIRTHDAY = 'birthday';
+// ignore_for_file: non_constant_identifier_names
 
-String HOBBY = 'hobby';
-String HOLIDAY = 'holiday';
-String BIRTHPLACE = 'birthplace';
-String RESIDENCE = 'residence';
+String AGE = 'age'; // 年齢
+String NAME = 'name'; // 名前
+String FURIGANA = 'furigana'; // ふりがな
+String BIRTHDAY = 'birthday'; // 誕生日
 
-String EDUCATIONAL_BACKGROUND = 'educational_background';
-String OCCUPATION = 'occupation';
-String ANNUAL_INCOME = 'annual_income';
+String HOBBY = 'hobby'; // 趣味
+String HOLIDAY = 'holiday'; // 休日
+String BIRTHPLACE = 'birthplace'; // 出身地
+String RESIDENCE = 'residence'; // 居住地
 
-String IMAGE = 'image';
+String OCCUPATION = 'occupation'; // 職業
+String MEMO = 'memo'; // メモ
+String DIARY = 'diary'; // 日記
+
+String ICON = 'icon';
+

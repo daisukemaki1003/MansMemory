@@ -2,9 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mans_memory/views/screens/user_list.dart';
+import 'package:mans_memory/views/screens/acquaintance_list.dart';
 import 'package:mans_memory/views/screens/sign_in.dart';
-import 'provider/authentication_provider.dart';
+import 'provider/authentication.dart';
+import 'provider/user.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,11 +35,13 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authentication = ref.watch(authenticationProvider);
+    final user = ref.watch(userProvider);
 
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: materialWhite,
       ),
+      debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.dark(),
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
@@ -46,7 +49,8 @@ class MyApp extends ConsumerWidget {
           if (authentication.isSignIn) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasData) {
-            return const UserListScreen();
+            user.create();
+            return const AcquaintanceListScreen();
           } else {
             return const SignInScreen();
           }

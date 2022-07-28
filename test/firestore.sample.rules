@@ -1,0 +1,84 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isUserAuthenticated(userId) {
+      return isAuthenticated() && userId == request.auth.uid;
+    }
+
+    function isValidUser(user) {
+      return user.size() == 3
+      && 'createdAt' in user && user.createdAt is timestamp
+      && 'email' in user && user.email is string
+      && 'userId' in user && user.userId is string;
+    }
+
+    // 支出データのスキーマ検証
+    function isValidAcquaintance(acquaintance) {
+      return acquaintance.size() == 12
+      && 'userId' in acquaintance && acquaintance.userId is string
+      && 'createdAt' in acquaintance && acquaintance.createdAt is timestamp
+      && 'name' in acquaintance && acquaintance.name is string
+      && 'age' in acquaintance && acquaintance.age is int
+      && 'birthday' in acquaintance && acquaintance.birthday is timestamp
+      && 'birthplace' in acquaintance && acquaintance.birthplace is string
+      && 'residence' in acquaintance && acquaintance.residence is string
+      && 'hobby' in acquaintance && acquaintance.hobby is list
+      && 'holiday' in acquaintance && acquaintance.holiday is int
+      && 'occupation' in acquaintance && acquaintance.occupation is string
+      && 'memo' in acquaintance && acquaintance.memo is string
+      && 'icon' in acquaintance && acquaintance.icon is string;
+    }
+
+    match /users/{userId} {
+      // ユーザー情報の取得のルール
+      allow get: if isUserAuthenticated(userId);
+
+      // ユーザー情報の作成のルール
+      allow create: if isUserAuthenticated(userId)
+      && isValidUser(request.resource.data)
+      && request.resource.data.createdAt == request.time 
+      && request.resource.data.userId == userId;
+
+      // ユーザー情報の更新のルール
+      allow update: if isUserAuthenticated(userId)
+      && isValidUser(request.resource.data)
+      && request.resource.data.createdAt == resource.data.createdAt
+      && request.resource.data.userId == resource.data.userId;
+
+      match /acquaintance/{acquaintanceID} {
+        // 支出データの読み取りのルール
+        allow read: if isUserAuthenticated(userId);
+
+        // 支出データの作成のルール
+        allow create: if isUserAuthenticated(userId)
+        && isValidAcquaintance(request.resource.data)
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.userId == userId
+        && request.resource.data.name.size() > 0
+        && request.resource.data.age == null
+        && request.resource.data.birthday == null
+        && request.resource.data.birthplace == null
+        && request.resource.data.residence == null
+        && request.resource.data.hobby == null
+        && request.resource.data.holiday == null
+        && request.resource.data.occupation == null
+        && request.resource.data.memo == null
+        && request.resource.data.icon == null;
+
+        // 支出データの更新のルール
+        allow update: if isUserAuthenticated(userId)
+        && isValidAcquaintance(request.resource.data)
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.userId == resource.data.userId
+        && request.resource.data.name.size() > 0;
+
+        // 支出データの削除のルール
+        allow delete: if isUserAuthenticated(userId);
+      }
+    }
+  }
+}
