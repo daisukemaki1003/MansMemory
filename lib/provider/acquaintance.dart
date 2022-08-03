@@ -8,28 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mans_memory/constants/keys.dart';
 import '../models/acquaintance.dart';
 
-final changedAcquaintanceNameStateProvider =
-    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
-final changedAcquaintanceAgeStateProvider =
-    StateProvider.autoDispose((ref) => 0);
-
-// final age = StateProvider.autoDispose((ref) => 0);
-
-final changedAcquaintanceBirthdayStateProvider =
-    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
-final changedAcquaintanceBirthplaceStateProvider =
-    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
-final changedAcquaintanceResidenceStateProvider =
-    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
-final changedAcquaintanceHobbyStateProvider =
-    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
-final changedAcquaintanceHolidayStateProvider =
-    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
-final changedAcquaintanceOccupationStateProvider =
-    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
-final changedAcquaintanceMemoStateProvider =
-    StateProvider.autoDispose((ref) => TextEditingController(text: ''));
-
 final acquaintanceStateProvider = ChangeNotifierProvider<acquaintanceNotifier>(
     (ref) => acquaintanceNotifier._());
 
@@ -41,8 +19,6 @@ class acquaintanceNotifier extends ChangeNotifier {
 
   AcquaintanceModel acquaintanceCreate(DocumentSnapshot<Object?> document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    print(data[NAME]);
-    print(data["createdAt"]);
     return AcquaintanceModel(
       acquaintanceId: document.id,
       name: data[NAME],
@@ -56,6 +32,28 @@ class acquaintanceNotifier extends ChangeNotifier {
       icon: data[ICON],
       createdAt: data["createdAt"],
     );
+  }
+
+  /*
+  name: String length(<30),
+  age: int(<150),
+  holiday: int(<128),
+  occupation:String length(20),
+  residence: String length(20),
+  birthday: String length(20),
+  birthplace: String length(20),
+  memo: String length(<300),
+  icon:String length(*),
+  */
+  bool validation(AcquaintanceModel data) {
+    return data.name.length < 30 &&
+        data.age < 150 &&
+        data.holiday < 128 &&
+        data.occupation.length < 20 &&
+        data.residence.length < 20 &&
+        data.birthday.length < 6 &&
+        data.birthplace.length < 20 &&
+        data.memo.length < 300;
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> fetchStream(
@@ -76,11 +74,11 @@ class acquaintanceNotifier extends ChangeNotifier {
           {
             'createdAt': Timestamp.now(),
             NAME: inputName,
-            AGE: -1,
+            AGE: 0,
             BIRTHDAY: '',
             BIRTHPLACE: '',
             RESIDENCE: '',
-            HOLIDAY: -1,
+            HOLIDAY: 0,
             OCCUPATION: '',
             MEMO: '',
             ICON: '',
@@ -104,6 +102,8 @@ class acquaintanceNotifier extends ChangeNotifier {
 
   Future<void> set(
       {required String userId, required AcquaintanceModel acquaintance}) async {
+    if (!validation(acquaintance)) throw ('入力データの型が正しくありません。');
+
     await FirebaseFirestore.instance
         .collection(collectionName)
         .doc(userId)

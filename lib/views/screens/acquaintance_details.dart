@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mans_memory/models/acquaintance.dart';
-import 'package:mans_memory/provider/user.dart';
 
+import '../../models/acquaintance_holiday.dart';
 import '../../provider/authentication.dart';
 import '../../provider/acquaintance.dart';
 import '../widgets/loading.dart';
@@ -83,28 +83,33 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
                               height: 120,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      acquaintance.name,
-                                      style: const TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        acquaintance.name,
+                                        softWrap: false,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      DateFormat('yyyy年M月d日').format(
-                                          acquaintance.createdAt.toDate()),
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                  ],
+                                      Text(
+                                        DateFormat('登録日 yyyy年M月d日').format(
+                                            acquaintance.createdAt.toDate()),
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                                 RawMaterialButton(
                                   onPressed: () async {
@@ -210,7 +215,8 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
                                     top: Radius.circular(15)),
                               ),
                               builder: (BuildContext context) {
-                                return AcquaintanceEditScreen(acquaintance);
+                                return AcquaintanceEditScreen(
+                                    acquaintance: acquaintance);
                               },
                             );
                           },
@@ -244,6 +250,14 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),
                 ),
                 const SizedBox(height: 20),
+                profileWidget('名前', acquaintance.name),
+                profileWidget('年齢',
+                    acquaintance.age > 0 ? acquaintance.age.toString() : '未設定'),
+                profileWidget(
+                    '誕生日',
+                    acquaintance.birthday.isNotEmpty
+                        ? acquaintance.birthday
+                        : '未設定'),
                 profileWidget(
                     '出身地',
                     acquaintance.birthplace.isNotEmpty
@@ -279,8 +293,8 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
                         : '未設定'),
                 profileWidget(
                     '休日',
-                    acquaintance.occupation.isNotEmpty
-                        ? acquaintance.occupation
+                    acquaintance.holiday != 0
+                        ? getHolidayText(acquaintance.holiday)
                         : '未設定'),
               ],
             ),
@@ -327,9 +341,12 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
               style: const TextStyle(fontSize: 15.0, color: Colors.black54),
             ),
           ),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 15.0, color: Colors.black),
+          Expanded(
+            child: Text(
+              value,
+              softWrap: true,
+              style: const TextStyle(fontSize: 15.0, color: Colors.black),
+            ),
           ),
         ],
       ),
