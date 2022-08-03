@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:mans_memory/models/acquaintance.dart';
 import 'package:mans_memory/provider/acquaintance.dart';
 import 'package:mans_memory/views/screens/acquaintance_details.dart';
@@ -22,6 +20,8 @@ class AcquaintanceListScreen extends ConsumerWidget {
     final acquaintanceProvider = ref.watch(acquaintanceStateProvider);
     final authentication = ref.watch(authenticationProvider);
     final userProvider = ref.watch(currentUserProvider);
+
+    // var selectedAcquaintance = ref.watch(selectedStateAcquaintance);
 
     return Scaffold(
       appBar: AppBar(
@@ -46,12 +46,11 @@ class AcquaintanceListScreen extends ConsumerWidget {
                           },
                         ),
                         ListTile(
-                          title: const Text('問い合わせ'),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            openUrl();
-                          },
-                        ),
+                            title: const Text('問い合わせ'),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              openUrl();
+                            }),
                         ListTile(
                           title: const Text('ログアウト'),
                           onTap: () {
@@ -155,7 +154,7 @@ class AcquaintanceListScreen extends ConsumerWidget {
                         child: ListTile(
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 32.0,
-                            vertical: 3.0,
+                            vertical: 8.0,
                           ),
                           leading: CircleAvatar(
                             radius: 25,
@@ -173,6 +172,7 @@ class AcquaintanceListScreen extends ConsumerWidget {
                           onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
+                              // selectedAcquaintance = acquaintance;
                               return MyTabbedPage(acquaintance.acquaintanceId);
                             }));
                           },
@@ -288,10 +288,8 @@ class UserRegistration extends StatelessWidget {
                                     child: CircularProgressIndicator());
                               },
                             );
-                            print("sss");
                             final userId = await acquaintance.create(
                                 currentUser.uid, nameController.text.trim());
-                            print(userId);
 
                             Navigator.of(context).pop();
                             final result =
