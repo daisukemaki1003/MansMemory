@@ -27,6 +27,7 @@ dependencies:
   url_launcher: ^6.0.18
   twitter_login: ^4.2.3
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

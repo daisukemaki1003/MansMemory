@@ -41,3 +41,23 @@ Map<String, String> userDataConvertedToJP = {
   RESIDENCE: '居住地',
   OCCUPATION: '職種',
 };
+
+/*
+name: String length(<30),
+age: int(<150),
+holiday: int(<128),
+occupation:String length(20),
+residence: String length(20),
+birthday: String length(20),
+birthplace: String length(20),
+memo: String length(<300),
+icon:String length(*),
+*/
+
+int maxLengthOfName = 30;
+int maxLengthOfAge = 3;
+int maxLengthOfHoliday = 30;
+int maxLengthOfOccupation = 10;
+int maxLengthOfResidence = 10;
+int maxLengthOfBirthplace = 10;
+int maxLengthOfMemo = 300;
