@@ -33,15 +33,10 @@ class Authentication extends ChangeNotifier {
 
   Future<FirebaseAuthResultStatus> signUpWithEmailAndPassword(
       {required String email, required String password}) async {
-    isSignIn = true;
-
     FirebaseAuthResultStatus result;
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-
-      await FirebaseAuth.instance.currentUser!.sendEmailVerification();
-      isSignIn = false;
 
       if (userCredential.user != null) {
         result = FirebaseAuthResultStatus.successful;
@@ -52,19 +47,15 @@ class Authentication extends ChangeNotifier {
       print(e.toString());
       result = handleException(e);
     }
-
     return result;
   }
 
   Future<FirebaseAuthResultStatus> signInWithEmailAndPassword(
       {required String email, required String password}) async {
-    isSignIn = true;
-
     FirebaseAuthResultStatus result;
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      isSignIn = false;
 
       if (userCredential.user != null) {
         result = FirebaseAuthResultStatus.successful;

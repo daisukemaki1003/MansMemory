@@ -18,7 +18,7 @@ class SignInScreen extends ConsumerWidget {
     final passwordController = TextEditingController();
     var infoText = ref.watch(infoTextProvider.state);
     final authentication = ref.watch(authenticationProvider);
-    infoText.state = '';
+    
 
     return Scaffold(
       body: Center(
