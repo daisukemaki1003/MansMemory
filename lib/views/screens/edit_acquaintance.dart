@@ -7,8 +7,6 @@ import '../../models/acquaintance.dart';
 import '../../models/acquaintance_holiday.dart';
 import '../../provider/authentication.dart';
 
-import '../widgets/holiday_edit_widget.dart';
-
 class AcquaintanceEditScreen extends ConsumerStatefulWidget {
   const AcquaintanceEditScreen({Key? key, required this.acquaintance})
       : super(key: key);
@@ -38,8 +36,8 @@ class _AcquaintanceEditScreenState
   @override
   void initState() {
     // Binary(Holiday data)変換
-    List<holidayCheckboxData> holidayList =
-        convertHolidayDataIntoBinary(widget.acquaintance.holiday);
+    holidayList = convertHolidayDataIntoBinary(widget.acquaintance.holiday);
+    print(widget.acquaintance.holiday);
 
     // TextEditingController初期化
     nameController.text = widget.acquaintance.name;
@@ -103,26 +101,11 @@ class _AcquaintanceEditScreenState
                 ),
                 onPressed: () async {
                   try {
-                    print('save');
-                    // 休日バリデーション
+                    // 休日バイナリ変換
                     String holiday = '';
                     for (var item in holidayList.reversed) {
                       item.checked ? holiday += '1' : holiday += '0';
                     }
-                    print(holiday);
-                    print(int.parse(holiday, radix: 2));
-
-                    print(widget.acquaintance.acquaintanceId);
-                    print(widget.acquaintance.createdAt);
-                    print(widget.acquaintance.name);
-                    print(widget.acquaintance.age);
-                    print(widget.acquaintance.birthday);
-                    print(widget.acquaintance.birthplace);
-                    print(widget.acquaintance.residence);
-                    print(widget.acquaintance.holiday);
-                    print(widget.acquaintance.occupation);
-                    print(widget.acquaintance.memo);
-                    print(widget.acquaintance.icon);
 
                     await acquaintanceProvider.set(
                         userId: userProvider!.uid,
@@ -130,7 +113,9 @@ class _AcquaintanceEditScreenState
                             acquaintanceId: widget.acquaintance.acquaintanceId,
                             name: nameController.text,
                             createdAt: widget.acquaintance.createdAt,
-                            age: int.parse(ageController.text),
+                            age: ageController.text.isNotEmpty
+                                ? int.parse(ageController.text)
+                                : 0,
                             birthday: birthdayController.text,
                             birthplace: birthplaceController.text,
                             residence: residenceController.text,
@@ -138,9 +123,7 @@ class _AcquaintanceEditScreenState
                             occupation: occupationController.text,
                             memo: memoController.text,
                             icon: widget.acquaintance.icon));
-                    // AcquaintanceModel
-                    // await acquaintanceProvider.set(
-                    //     currentUser!.uid, acquaintance.acquaintanceId);
+                    Navigator.pop(context);
                   } catch (e) {
                     print(e.toString());
                     final snackBar = SnackBar(
@@ -149,7 +132,6 @@ class _AcquaintanceEditScreenState
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
                   }
-                  Navigator.pop(context);
                 },
               ),
             ],
@@ -401,7 +383,7 @@ class _AcquaintanceEditScreenState
       isScrollControlled: true,
       context: context,
       builder: (BuildContext context) {
-        return Container(
+        return SizedBox(
           height: 500,
           child: StatefulBuilder(
             builder: (BuildContext context, StateSetter state) {
@@ -424,6 +406,7 @@ class _AcquaintanceEditScreenState
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: holidayList.map<Widget>(
                       (data) {
+                        print(data);
                         return SizedBox(
                           height: 60,
                           child: Column(

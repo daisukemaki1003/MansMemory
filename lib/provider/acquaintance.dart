@@ -127,13 +127,12 @@ class acquaintanceNotifier extends ChangeNotifier {
   Future<void> setImage(
       {required String userId, required String acquaintanceId}) async {
     // ストレージに保存
-    final ImagePicker _picker = ImagePicker();
-    final imageFile = await _picker.pickImage(source: ImageSource.gallery);
+    final imageFile = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, maxHeight: 100, maxWidth: 100);
 
     if (imageFile != null) {
-      final doc = FirebaseFirestore.instance.collection('icons').doc();
       final task = await FirebaseStorage.instance
-          .ref('icons/${doc.id}')
+          .ref('icons/$userId/$acquaintanceId')
           .putFile(File(imageFile.path));
 
       // firestoreに画像パスを保存

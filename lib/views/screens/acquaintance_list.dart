@@ -158,17 +158,19 @@ class AcquaintanceListScreen extends ConsumerWidget {
                           ),
                           leading: CircleAvatar(
                             radius: 25,
-                            child: ClipOval(
-                              child: Image.network(acquaintance.icon.isNotEmpty
-                                  ? acquaintance.icon
-                                  : "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
-                            ),
+                            backgroundImage: NetworkImage(acquaintance
+                                    .icon.isNotEmpty
+                                ? acquaintance.icon
+                                : "https://gws-ug.jp/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png"),
                           ),
                           title: Text(acquaintance.name),
-                          // trailing: acquaintance.birthday != null
-                          //     ? Text(DateFormat('yyyy年M月d日')
-                          //         .format(acquaintance.birthday))
-                          //     : const Text(""),
+                          trailing: Text(
+                            acquaintance.birthday,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
                           onTap: () {
                             Navigator.of(context)
                                 .push(MaterialPageRoute(builder: (context) {
