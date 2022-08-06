@@ -107,34 +107,15 @@ class _AcquaintanceEditScreenState
                       item.checked ? holiday += '1' : holiday += '0';
                     }
 
-                    // if (nameController.text != widget.acquaintance.name)
-                    //   print('name');
-                    // if (ageController.text !=
-                    //     widget.acquaintance.age.toString()) print('age');
-                    // if (birthdayController.text != widget.acquaintance.birthday)
-                    //   print('birthday');
-                    // if (birthplaceController.text !=
-                    //     widget.acquaintance.birthplace) print('birthplace');
-                    // if (residenceController.text !=
-                    //     widget.acquaintance.residence) print('residence');
-                    // if (int.parse(holiday, radix: 2) !=
-                    //     widget.acquaintance.holiday) {
-                    //   print('holiday');
-                    //   print(int.parse(holiday, radix: 2));
-                    //   print(widget.acquaintance.holiday);
-                    // }
-                    // if (occupationController.text !=
-                    //     widget.acquaintance.occupation) print('occ');
-                    // if (memoController.text != widget.acquaintance.memo)
-                    //   print('memo');
-
                     await acquaintanceProvider.set(
                         userId: userProvider!.uid,
                         acquaintance: AcquaintanceModel(
                             acquaintanceId: widget.acquaintance.acquaintanceId,
                             name: nameController.text,
                             createdAt: widget.acquaintance.createdAt,
-                            age: int.parse(ageController.text),
+                            age: ageController.text.isNotEmpty
+                                ? int.parse(ageController.text)
+                                : 0,
                             birthday: birthdayController.text,
                             birthplace: birthplaceController.text,
                             residence: residenceController.text,
