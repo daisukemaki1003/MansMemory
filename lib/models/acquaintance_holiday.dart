@@ -15,7 +15,6 @@ class holidayCheckboxData {
 // Binary(Holiday data)変換
 List<holidayCheckboxData> convertHolidayDataIntoBinary(int holidayNum) {
   List<holidayCheckboxData> holidayList = [];
-
   String holidayBinary = holidayNum.toRadixString(2);
   List<String> holidayBinaryList = holidayBinary.padLeft(7, '0').split('');
 
