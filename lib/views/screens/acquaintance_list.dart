@@ -65,9 +65,7 @@ class AcquaintanceListScreen extends ConsumerWidget {
                 });
           },
         ),
-        // title: const Text("友達のーと"),
-        title: const Text(
-            bool.fromEnvironment('dart.vm.product') ? "友達のーと" : "友達のーと(開発)"),
+        title: const Text("マンメモ"),
         centerTitle: true,
         actions: [
           IconButton(
