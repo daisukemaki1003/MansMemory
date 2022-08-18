@@ -71,6 +71,7 @@
 	<string>http</string>
 	</array>
 	<!-- Deep Links ここまで追加 -->
+	
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 </dict>

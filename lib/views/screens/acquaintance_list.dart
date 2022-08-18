@@ -65,8 +65,7 @@ class AcquaintanceListScreen extends ConsumerWidget {
                 });
           },
         ),
-        // title: const Text("友達のーと"),
-        title: const Text("友達のーと"),
+        title: const Text("マンメモ"),
         centerTitle: true,
         actions: [
           IconButton(
