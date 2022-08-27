@@ -26,11 +26,13 @@ class Authentication extends ChangeNotifier {
     notifyListeners();
   }
 
+  // 初期化
   Future<FirebaseApp> initializeFirebase() async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
     return firebaseApp;
   }
 
+  // メールアドレスでサインアップ
   Future<FirebaseAuthResultStatus> signUpWithEmailAndPassword(
       {required String email, required String password}) async {
     FirebaseAuthResultStatus result;
@@ -50,6 +52,7 @@ class Authentication extends ChangeNotifier {
     return result;
   }
 
+  // メールアドレスでサインイン
   Future<FirebaseAuthResultStatus> signInWithEmailAndPassword(
       {required String email, required String password}) async {
     FirebaseAuthResultStatus result;
@@ -69,6 +72,7 @@ class Authentication extends ChangeNotifier {
     return result;
   }
 
+  // Gmail
   Future<User?> signInWithGoogle() async {
     isSignIn = true;
     User? user;
@@ -101,6 +105,7 @@ class Authentication extends ChangeNotifier {
     return user;
   }
 
+  // Apple ID
   Future<User?> signInWithApple() async {
     isSignIn = true;
     User? user;

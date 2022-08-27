@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mans_memory/constants/keys.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../models/acquaintance.dart';
 
 final acquaintanceStateProvider = ChangeNotifierProvider<acquaintanceNotifier>(
@@ -126,24 +127,32 @@ class acquaintanceNotifier extends ChangeNotifier {
 
   Future<void> setImage(
       {required String userId, required String acquaintanceId}) async {
-    // ストレージに保存
-    final imageFile = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, maxHeight: 100, maxWidth: 100);
+    // カメラの権限をリクエスト
+    final status = await Permission.camera.request();
 
-    if (imageFile != null) {
-      final task = await FirebaseStorage.instance
-          .ref('icons/$userId/$acquaintanceId')
-          .putFile(File(imageFile.path));
+    // カメラの権限をリクエストかつ許可がもらえたかどうかを判定する.
+    if (await Permission.camera.request().isGranted) {
+      // ここは権限の許可がある状態の処理を書く.
+      // ストレージに保存
+      final imageFile = await ImagePicker().pickImage(
+          source: ImageSource.gallery, maxHeight: 100, maxWidth: 100);
 
-      // firestoreに画像パスを保存
-      final imgUrl = await task.ref.getDownloadURL();
-      await FirebaseFirestore.instance
-          .collection(collectionName)
-          .doc(userId)
-          .collection(docName)
-          .doc(acquaintanceId)
-          .update({ICON: imgUrl}).catchError((e) => throw ('ユーザーの編集に失敗しました。'));
-      notifyListeners();
+      if (imageFile != null) {
+        final task = await FirebaseStorage.instance
+            .ref('icons/$userId/$acquaintanceId')
+            .putFile(File(imageFile.path));
+
+        // firestoreに画像パスを保存
+        final imgUrl = await task.ref.getDownloadURL();
+        await FirebaseFirestore.instance
+            .collection(collectionName)
+            .doc(userId)
+            .collection(docName)
+            .doc(acquaintanceId)
+            .update({ICON: imgUrl}).catchError(
+                (e) => throw ('ユーザーの編集に失敗しました。'));
+        notifyListeners();
+      }
     }
   }
 
