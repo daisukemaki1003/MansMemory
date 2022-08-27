@@ -104,7 +104,7 @@ class acquaintanceNotifier extends ChangeNotifier {
   Future<void> set(
       {required String userId, required AcquaintanceModel acquaintance}) async {
     if (!validation(acquaintance)) throw ('入力データの型が正しくありません。');
-
+    print(userId);
     await FirebaseFirestore.instance
         .collection(collectionName)
         .doc(userId)
@@ -149,10 +149,11 @@ class acquaintanceNotifier extends ChangeNotifier {
             .doc(userId)
             .collection(docName)
             .doc(acquaintanceId)
-            .update({ICON: imgUrl}).catchError(
-                (e) => throw ('ユーザーの編集に失敗しました。'));
+            .update({ICON: imgUrl}).catchError((e) => throw ('アイコンが設定できません。'));
         notifyListeners();
       }
+    } else {
+      throw ('アイコンが設定できません。');
     }
   }
 
@@ -165,5 +166,13 @@ class acquaintanceNotifier extends ChangeNotifier {
         .doc(acquaintanceId)
         .delete()
         .catchError((e) => throw ('ユーザーの編集に失敗しました。'));
+  }
+
+  Future<void> deleteAll(String userId) async {
+    await FirebaseFirestore.instance
+        .collection(collectionName)
+        .doc(userId)
+        .delete()
+        .catchError((e) => throw ('データ削除に失敗しました。'));
   }
 }

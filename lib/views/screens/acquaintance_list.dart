@@ -21,8 +21,6 @@ class AcquaintanceListScreen extends ConsumerWidget {
     final authentication = ref.watch(authenticationProvider);
     final userProvider = ref.watch(currentUserProvider);
 
-    // var selectedAcquaintance = ref.watch(selectedStateAcquaintance);
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -56,6 +54,37 @@ class AcquaintanceListScreen extends ConsumerWidget {
                           onTap: () {
                             Navigator.of(context).pop();
                             authentication.signOut();
+                          },
+                        ),
+                        ListTile(
+                          title: const Text('退会'),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            showDialog(
+                              context: context,
+                              builder: (_) {
+                                return AlertDialog(
+                                  title: const Text("退会しますか？"),
+                                  content: const Text("保存されたデータは削除されます。"),
+                                  actions: <Widget>[
+                                    // ボタン領域
+                                    ElevatedButton(
+                                      child: const Text("Cancel"),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                    ElevatedButton(
+                                      child: const Text("OK"),
+                                      onPressed: () async {
+                                        Navigator.pop(context);
+                                        await acquaintanceProvider
+                                            .deleteAll(userProvider!.uid);
+                                        await authentication.delete();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           },
                         ),
                         const SizedBox(height: 50),

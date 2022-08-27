@@ -1,10 +1,15 @@
 // ユーザー情報の受け渡しを行うためのProvider
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'acquaintance.dart';
 
 // エラー情報の受け渡しを行うためのProvider
 final infoTextProvider = StateProvider((ref) => "");
@@ -31,6 +36,23 @@ class Authentication extends ChangeNotifier {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
     return firebaseApp;
   }
+
+  // // 匿名で利用
+  // void signInAnonymously() async {
+  //   var prefs = await SharedPreferences.getInstance(); // インスタンスを取得
+  //   String? token = await prefs.getString('uid');
+
+  //   if (token != null && token.isNotEmpty) {
+  //     // if (false) {
+  //     print("token: " + token);
+  //     await FirebaseAuth.instance.signInWithCredential(token as AuthCredential);
+  //   } else {
+  //     // アカウント作成
+  //     UserCredential credential =
+  //         await FirebaseAuth.instance.signInAnonymously();
+  //     await prefs.setString('uid', credential.toString());
+  //   }
+  // }
 
   // メールアドレスでサインアップ
   Future<FirebaseAuthResultStatus> signUpWithEmailAndPassword(
@@ -137,6 +159,12 @@ class Authentication extends ChangeNotifier {
     isSignIn = true;
     await FirebaseAuth.instance.signOut();
     isSignIn = false;
+  }
+
+  Future<void> delete() async {
+    final user = FirebaseAuth.instance.currentUser;
+    // await signOut();
+    await user!.delete();
   }
 }
 

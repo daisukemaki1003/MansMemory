@@ -128,7 +128,16 @@ class AcquaintanceDetailsScreen extends ConsumerState<MyTabbedPage>
                                               acquaintance.acquaintanceId);
                                       Navigator.of(context).pop();
                                     } catch (e) {
-                                      print(e);
+                                      Navigator.of(context).pop();
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) {
+                                            return AlertDialog(
+                                              title: Text(e.toString()),
+                                              content: const Text(
+                                                  "本アプリにカメラロールへのアクセス権が存在することをご確認ください。"),
+                                            );
+                                          });
                                     }
                                   },
                                   child: CircleAvatar(
