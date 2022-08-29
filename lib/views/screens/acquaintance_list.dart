@@ -21,8 +21,6 @@ class AcquaintanceListScreen extends ConsumerWidget {
     final authentication = ref.watch(authenticationProvider);
     final userProvider = ref.watch(currentUserProvider);
 
-    // var selectedAcquaintance = ref.watch(selectedStateAcquaintance);
-
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -51,11 +49,48 @@ class AcquaintanceListScreen extends ConsumerWidget {
                               Navigator.of(context).pop();
                               openUrl();
                             }),
+                        if (!userProvider!.isAnonymous)
+                          ListTile(
+                            title: const Text('ログアウト'),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              authentication.signOut();
+                            },
+                          ),
                         ListTile(
-                          title: const Text('ログアウト'),
+                          title: const Text('退会'),
                           onTap: () {
                             Navigator.of(context).pop();
-                            authentication.signOut();
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text("退会しますか？"),
+                                  content: const Text("保存されたデータは削除されます。"),
+                                  actions: <Widget>[
+                                    // ボタン領域
+                                    TextButton(
+                                      child: const Text("Cancel",
+                                          style:
+                                              TextStyle(color: Colors.black)),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
+                                    ),
+                                    TextButton(
+                                      child: const Text("OK",
+                                          style:
+                                              TextStyle(color: Colors.black)),
+                                      onPressed: () async {
+                                        Navigator.of(context).pop();
+                                        await acquaintanceProvider
+                                            .deleteAll(userProvider.uid);
+                                        await authentication.delete();
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           },
                         ),
                         const SizedBox(height: 50),

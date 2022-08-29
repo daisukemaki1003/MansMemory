@@ -27,6 +27,8 @@ dependencies:
   url_launcher: ^6.0.18
   twitter_login: ^4.2.3
   flutter_launcher_icons: ^0.10.0
+  permission_handler: ^10.0.0
+  shared_preferences: ^2.0.15
 
 flutter_icons:
   android: true 
@@ -41,5 +43,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/
+    # - assets/images/
+    - assets/images/30FD2538-40E9-4A17-BDF9-CE64685BFCB4.png
 

@@ -1,10 +1,15 @@
 // ユーザー情報の受け渡しを行うためのProvider
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:the_apple_sign_in/the_apple_sign_in.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'acquaintance.dart';
 
 // エラー情報の受け渡しを行うためのProvider
 final infoTextProvider = StateProvider((ref) => "");
@@ -26,11 +31,22 @@ class Authentication extends ChangeNotifier {
     notifyListeners();
   }
 
+  // 初期化
   Future<FirebaseApp> initializeFirebase() async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
     return firebaseApp;
   }
 
+  // 匿名で利用
+  void signInAnonymously() async {
+    isSignIn = true;
+
+    // アカウント作成
+    await FirebaseAuth.instance.signInAnonymously();
+    isSignIn = false;
+  }
+
+  // メールアドレスでサインアップ
   Future<FirebaseAuthResultStatus> signUpWithEmailAndPassword(
       {required String email, required String password}) async {
     FirebaseAuthResultStatus result;
@@ -50,6 +66,7 @@ class Authentication extends ChangeNotifier {
     return result;
   }
 
+  // メールアドレスでサインイン
   Future<FirebaseAuthResultStatus> signInWithEmailAndPassword(
       {required String email, required String password}) async {
     FirebaseAuthResultStatus result;
@@ -69,6 +86,7 @@ class Authentication extends ChangeNotifier {
     return result;
   }
 
+  // Gmail
   Future<User?> signInWithGoogle() async {
     isSignIn = true;
     User? user;
@@ -101,6 +119,7 @@ class Authentication extends ChangeNotifier {
     return user;
   }
 
+  // Apple ID
   Future<User?> signInWithApple() async {
     isSignIn = true;
     User? user;
@@ -132,6 +151,12 @@ class Authentication extends ChangeNotifier {
     isSignIn = true;
     await FirebaseAuth.instance.signOut();
     isSignIn = false;
+  }
+
+  Future<void> delete() async {
+    final user = FirebaseAuth.instance.currentUser;
+    // await signOut();
+    await user!.delete();
   }
 }
 

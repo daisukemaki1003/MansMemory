@@ -54,24 +54,17 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	
-		<!-- image setup -->
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app requires to access your photo library</string>
+	<string>カメラロールへのアクセスを許可しますか？</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app requires to add file to your camera</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app requires to add file to your photo library your microphone</string>
-	<!-- image setup -->
-
-	<!-- Deep Links ここから -->
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-	<string>https</string>
-	<string>http</string>
+		<string>https</string>
+		<string>http</string>
 	</array>
-	<!-- Deep Links ここまで追加 -->
-	
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 </dict>
