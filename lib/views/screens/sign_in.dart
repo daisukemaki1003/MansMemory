@@ -28,83 +28,87 @@ class SignInScreen extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                // メールアドレス入力
-                TextFormField(
-                  controller: emailController,
-                  decoration: const InputDecoration(
-                    hintText: 'メールアドレス',
-                    hintStyle: TextStyle(color: Colors.black),
-                    // floatingLabelBehavior: FloatingLabelBehavior.always,
-                    contentPadding: EdgeInsets.only(
-                        left: 10, top: 20, bottom: 15, right: 10),
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue)),
-                  ),
-                ),
+                // // メールアドレス入力
+                // TextFormField(
+                //   controller: emailController,
+                //   decoration: const InputDecoration(
+                //     hintText: 'メールアドレス',
+                //     hintStyle: TextStyle(color: Colors.black),
+                //     // floatingLabelBehavior: FloatingLabelBehavior.always,
+                //     contentPadding: EdgeInsets.only(
+                //         left: 10, top: 20, bottom: 15, right: 10),
+                //     focusedBorder: UnderlineInputBorder(
+                //         borderSide: BorderSide(color: Colors.blue)),
+                //   ),
+                // ),
 
-                const SizedBox(height: 10),
+                // const SizedBox(height: 10),
 
-                // パスワード入力
-                TextFormField(
-                  obscureText: true,
-                  controller: passwordController,
-                  decoration: const InputDecoration(
-                    hintText: 'パウワード',
-                    hintStyle: TextStyle(color: Colors.black),
-                    // floatingLabelBehavior: FloatingLabelBehavior.always,
-                    contentPadding: EdgeInsets.only(
-                        left: 10, top: 20, bottom: 15, right: 10),
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue)),
-                  ),
-                ),
+                // // パスワード入力
+                // TextFormField(
+                //   obscureText: true,
+                //   controller: passwordController,
+                //   decoration: const InputDecoration(
+                //     hintText: 'パウワード',
+                //     hintStyle: TextStyle(color: Colors.black),
+                //     // floatingLabelBehavior: FloatingLabelBehavior.always,
+                //     contentPadding: EdgeInsets.only(
+                //         left: 10, top: 20, bottom: 15, right: 10),
+                //     focusedBorder: UnderlineInputBorder(
+                //         borderSide: BorderSide(color: Colors.blue)),
+                //   ),
+                // ),
 
-                const SizedBox(height: 10),
+                // const SizedBox(height: 10),
 
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  // メッセージ表示
-                  child: Consumer(
-                    builder:
-                        (BuildContext context, WidgetRef ref, Widget? child) {
-                      return Text(
-                        infoText.state,
-                        style: const TextStyle(color: Colors.red),
-                      );
-                    },
-                  ),
-                ),
+                // Container(
+                //   padding: const EdgeInsets.all(8),
+                //   // メッセージ表示
+                //   child: Consumer(
+                //     builder:
+                //         (BuildContext context, WidgetRef ref, Widget? child) {
+                //       return Text(
+                //         infoText.state,
+                //         style: const TextStyle(color: Colors.red),
+                //       );
+                //     },
+                //   ),
+                // ),
+
+                // SizedBox(
+                //   width: double.infinity,
+                //   child: ElevatedButton(
+                //     child: const Text('ログイン'),
+                //     onPressed: () async {
+                //       final FirebaseAuthResultStatus signInResult =
+                //           await authentication.signInWithEmailAndPassword(
+                //               email: emailController.text,
+                //               password: passwordController.text);
+
+                //       if (signInResult != FirebaseAuthResultStatus.successful) {
+                //         infoText.state = exceptionMessage(signInResult);
+                //       } else {
+                //         // if (await user.checkExistence()) user.create();
+                //         await Navigator.of(context).pushReplacement(
+                //           MaterialPageRoute(builder: (context) {
+                //             return const AcquaintanceListScreen();
+                //           }),
+                //         );
+                //       }
+                //     },
+                //   ),
+                // ),
+                Center(
+                    child: Image.asset(
+                        'assets/images/30FD2538-40E9-4A17-BDF9-CE64685BFCB4.png')),
 
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    child: const Text('ログイン'),
-                    onPressed: () async {
-                      final FirebaseAuthResultStatus signInResult =
-                          await authentication.signInWithEmailAndPassword(
-                              email: emailController.text,
-                              password: passwordController.text);
-
-                      if (signInResult != FirebaseAuthResultStatus.successful) {
-                        infoText.state = exceptionMessage(signInResult);
-                      } else {
-                        // if (await user.checkExistence()) user.create();
-                        await Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) {
-                            return const AcquaintanceListScreen();
-                          }),
-                        );
-                      }
-                    },
+                    onPressed: authentication.signInAnonymously,
+                    child: const Text('登録せず利用'),
                   ),
                 ),
-                // SizedBox(
-                //   width: double.infinity,
-                //   child: ElevatedButton(
-                //     onPressed: () => authentication.signInAnonymously(),
-                //     child: const Text('登録せず利用'),
-                //   ),
-                // ),
 
                 const SizedBox(height: 30),
 
@@ -172,23 +176,23 @@ class SignInScreen extends ConsumerWidget {
 
                 const SizedBox(height: 30),
 
-                RichText(
-                    text: TextSpan(children: [
-                  const TextSpan(
-                      text: 'アカウントを持ってない場合は',
-                      style: TextStyle(color: Colors.black)),
-                  TextSpan(
-                      text: 'こちらから',
-                      style: const TextStyle(color: Colors.blue),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(builder: (context) {
-                              return const SignUpScreen();
-                            }),
-                          );
-                        }),
-                ])),
+                // RichText(
+                //     text: TextSpan(children: [
+                //   const TextSpan(
+                //       text: 'アカウントを持ってない場合は',
+                //       style: TextStyle(color: Colors.black)),
+                //   TextSpan(
+                //       text: 'こちらから',
+                //       style: const TextStyle(color: Colors.blue),
+                //       recognizer: TapGestureRecognizer()
+                //         ..onTap = () {
+                //           Navigator.of(context).push(
+                //             MaterialPageRoute(builder: (context) {
+                //               return const SignUpScreen();
+                //             }),
+                //           );
+                //         }),
+                // ])),
 
                 const SizedBox(height: 30),
               ],

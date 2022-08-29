@@ -49,35 +49,41 @@ class AcquaintanceListScreen extends ConsumerWidget {
                               Navigator.of(context).pop();
                               openUrl();
                             }),
-                        ListTile(
-                          title: const Text('ログアウト'),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            authentication.signOut();
-                          },
-                        ),
+                        if (!userProvider!.isAnonymous)
+                          ListTile(
+                            title: const Text('ログアウト'),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              authentication.signOut();
+                            },
+                          ),
                         ListTile(
                           title: const Text('退会'),
                           onTap: () {
                             Navigator.of(context).pop();
                             showDialog(
                               context: context,
-                              builder: (_) {
+                              builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: const Text("退会しますか？"),
                                   content: const Text("保存されたデータは削除されます。"),
                                   actions: <Widget>[
                                     // ボタン領域
-                                    ElevatedButton(
-                                      child: const Text("Cancel"),
-                                      onPressed: () => Navigator.pop(context),
+                                    TextButton(
+                                      child: const Text("Cancel",
+                                          style:
+                                              TextStyle(color: Colors.black)),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(),
                                     ),
-                                    ElevatedButton(
-                                      child: const Text("OK"),
+                                    TextButton(
+                                      child: const Text("OK",
+                                          style:
+                                              TextStyle(color: Colors.black)),
                                       onPressed: () async {
-                                        Navigator.pop(context);
+                                        Navigator.of(context).pop();
                                         await acquaintanceProvider
-                                            .deleteAll(userProvider!.uid);
+                                            .deleteAll(userProvider.uid);
                                         await authentication.delete();
                                       },
                                     ),
