@@ -6,6 +6,7 @@ import 'package:mans_memory/views/screens/acquaintance_list.dart';
 import 'package:mans_memory/views/screens/sign_in.dart';
 import 'provider/authentication.dart';
 import 'provider/user.dart';
+import 'views/widgets/loading.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +48,7 @@ class MyApp extends ConsumerWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (authentication.isSignIn) {
-            return const Center(child: CircularProgressIndicator());
+            return loading();
           } else if (snapshot.hasData) {
             user.create();
             return const AcquaintanceListScreen();

@@ -169,10 +169,16 @@ class acquaintanceNotifier extends ChangeNotifier {
   }
 
   Future<void> deleteAll(String userId) async {
-    await FirebaseFirestore.instance
+    DocumentSnapshot data = await FirebaseFirestore.instance
         .collection(collectionName)
         .doc(userId)
-        .delete()
-        .catchError((e) => throw ('データ削除に失敗しました。'));
+        .get();
+    if (data.exists) {
+      await FirebaseFirestore.instance
+          .collection(collectionName)
+          .doc(userId)
+          .delete()
+          .catchError((e) => throw ('データ削除に失敗しました。'));
+    }
   }
 }

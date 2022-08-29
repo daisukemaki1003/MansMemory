@@ -37,22 +37,14 @@ class Authentication extends ChangeNotifier {
     return firebaseApp;
   }
 
-  // // 匿名で利用
-  // void signInAnonymously() async {
-  //   var prefs = await SharedPreferences.getInstance(); // インスタンスを取得
-  //   String? token = await prefs.getString('uid');
+  // 匿名で利用
+  void signInAnonymously() async {
+    isSignIn = true;
 
-  //   if (token != null && token.isNotEmpty) {
-  //     // if (false) {
-  //     print("token: " + token);
-  //     await FirebaseAuth.instance.signInWithCredential(token as AuthCredential);
-  //   } else {
-  //     // アカウント作成
-  //     UserCredential credential =
-  //         await FirebaseAuth.instance.signInAnonymously();
-  //     await prefs.setString('uid', credential.toString());
-  //   }
-  // }
+    // アカウント作成
+    await FirebaseAuth.instance.signInAnonymously();
+    isSignIn = false;
+  }
 
   // メールアドレスでサインアップ
   Future<FirebaseAuthResultStatus> signUpWithEmailAndPassword(
